@@ -109,6 +109,7 @@ under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <skipTests>true</skipTests>
           <argLine>-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m</argLine>
           <systemPropertyVariables>
             <osgi.debug>${osgi.debug}</osgi.debug>
