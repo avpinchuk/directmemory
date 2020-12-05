@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,23 +17,19 @@ package org.apache.directmemory.serialization;
  * under the License.
  */
 
-import static java.lang.String.format;
+package org.apache.directmemory.serialization;
 
-import java.util.Iterator;
+import static java.lang.String.format;
 
 import static java.util.ServiceLoader.load;
 
-public final class SerializerFactory
-{
+public final class SerializerFactory {
 
-    public static Serializer createNewSerializer()
-    {
-        return createNewSerializer( SerializerFactory.class.getClassLoader() );
+    public static Serializer createNewSerializer() {
+        return createNewSerializer(SerializerFactory.class.getClassLoader());
     }
 
-    public static Serializer createNewSerializer( ClassLoader classLoader )
-    {
-
+    public static Serializer createNewSerializer(ClassLoader classLoader) {
         // iterate over all found services
         for (Serializer serializer : load(Serializer.class, classLoader)) {
             // try getting the current service and return
@@ -45,14 +39,10 @@ public final class SerializerFactory
                 // just ignore, skip and try getting the next
             }
         }
-
         return new StandardSerializer();
     }
 
-    public static <S extends Serializer> S createNewSerializer( Class<S> serializer )
-        throws SerializerNotFoundException
-    {
-
+    public static <S extends Serializer> S createNewSerializer(Class<S> serializer) throws SerializerNotFoundException {
         // iterate over all found services
         for (Serializer serializer1 : load(Serializer.class, serializer.getClassLoader())) {
             // try getting the current service and return
@@ -65,46 +55,34 @@ public final class SerializerFactory
                 // just ignore, skip and try getting the next
             }
         }
-
-        throw new SerializerNotFoundException( serializer );
+        throw new SerializerNotFoundException(serializer);
     }
 
-    public static Serializer createNewSerializer( String serializerClassName )
-                    throws SerializerNotFoundException
-    {
-        return createNewSerializer( serializerClassName, SerializerFactory.class.getClassLoader() );
+    public static Serializer createNewSerializer(String serializerClassName) throws SerializerNotFoundException {
+        return createNewSerializer(serializerClassName, SerializerFactory.class.getClassLoader());
     }
 
-    public static Serializer createNewSerializer( String serializerClassName, ClassLoader classLoader )
-        throws SerializerNotFoundException
-    {
+    public static Serializer createNewSerializer(String serializerClassName, ClassLoader classLoader) throws SerializerNotFoundException {
         Class<?> anonSerializerClass;
-        try
-        {
-            anonSerializerClass = classLoader.loadClass( serializerClassName );
-        }
-        catch ( ClassNotFoundException e )
-        {
-            throw new SerializerNotFoundException( serializerClassName );
+        try {
+            anonSerializerClass = classLoader.loadClass(serializerClassName);
+        } catch (ClassNotFoundException e) {
+            throw new SerializerNotFoundException(serializerClassName);
         }
 
-        if ( Serializer.class.isAssignableFrom( anonSerializerClass ) )
-        {
-            @SuppressWarnings( "unchecked" ) // the assignment is guarded by the previous check
+        if (Serializer.class.isAssignableFrom(anonSerializerClass)) {
+            @SuppressWarnings("unchecked") // the assignment is guarded by the previous check
             Class<? extends Serializer> serializerClass = (Class<? extends Serializer>) anonSerializerClass;
-
-            return createNewSerializer( serializerClass );
+            return createNewSerializer(serializerClass);
         }
-
-        throw new IllegalArgumentException( format( "Class %s is not a valid Serializer type",
-                                                    anonSerializerClass.getName() ) );
+        throw new IllegalArgumentException(format("Class %s is not a valid Serializer type",
+                                                  anonSerializerClass.getName()));
     }
 
     /**
      * Hidden constructor, this class cannot be instantiated
      */
-    private SerializerFactory()
-    {
+    private SerializerFactory() {
         // do nothing
     }
 

@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,19 +17,18 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryException
-    extends Exception
-{
-    public DirectMemoryException( String message )
-    {
-        super( message );
+public class DirectMemoryException extends Exception {
+
+    public DirectMemoryException(String message) {
+        super(message);
     }
 
-    public DirectMemoryException( String message, Throwable throwable )
-    {
-        super( message, throwable );
+    public DirectMemoryException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 }

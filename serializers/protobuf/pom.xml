@@ -17,65 +17,67 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.apache.directmemory</groupId>
-    <artifactId>directmemory-serializers</artifactId>
-    <version>0.3-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <groupId>org.apache.directmemory</groupId>
+        <artifactId>directmemory-serializers</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>directmemory-protobuf</artifactId>
-  <name>Apache DirectMemory :: Serializers :: Protobuf</name>
-  <packaging>bundle</packaging>
-  <description>Protobuf serializer adapter for DirectMemory Cache</description>
+    <artifactId>directmemory-protobuf</artifactId>
+    <name>Apache DirectMemory :: Serializers :: Protobuf</name>
+    <packaging>bundle</packaging>
+    <description>Protobuf serializer adapter for DirectMemory Cache</description>
 
-  <!-- TODO need the help of some OSGi expert here -->
-  <properties>
-    <osgi.import>
-      !org.apache.directmemory*,
-      com.google.protobuf*;version=${protobuf.version},
-      com.google.common.base,
-      com.google.common.collect,
-      org.aspectj.lang,
-      org.aspectj.lang.annotation,
-      org.aspectj.runtime.internal,
-      org.slf4j;resolution:=optional
-    </osgi.import>
-    <osgi.export>org.apache.directmemory.serialization.protobuf*;version="${project.version}</osgi.export>
-  </properties>
+    <!-- TODO need the help of some OSGi expert here -->
+    <properties>
+        <osgi.import>
+            !org.apache.directmemory*,
+            com.google.protobuf*;version=${protobuf.version},
+            com.google.common.base,
+            com.google.common.collect,
+            org.aspectj.lang,
+            org.aspectj.lang.annotation,
+            org.aspectj.runtime.internal,
+            org.slf4j;resolution:=optional
+        </osgi.import>
+        <osgi.export>org.apache.directmemory.serialization.protobuf*;version="${project.version}</osgi.export>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>${project.parent.groupId}</groupId>
-      <artifactId>directmemory-cache</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>directmemory-cache</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m</argLine>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -17,63 +17,63 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <groupId>org.apache.directmemory.server</groupId>
-    <artifactId>server</artifactId>
-    <version>0.3-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>directmemory-server-client</artifactId>
-  <name>Apache DirectMemory :: Server :: Client</name>
-  <description>${project.name}</description>
+    <parent>
+        <groupId>org.apache.directmemory.server</groupId>
+        <artifactId>server</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </parent>
 
-  <properties>
-    <httpclient.version>4.2.5</httpclient.version>
-    <httpclient.core.version>4.2.4</httpclient.core.version>
-  </properties>
+    <artifactId>directmemory-server-client</artifactId>
+    <name>Apache DirectMemory :: Server :: Client</name>
+    <description>${project.name}</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.directmemory.server</groupId>
-      <artifactId>directmemory-server-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>${httpclient.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>${httpclient.core.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+    <properties>
+        <httpclient.version>4.2.5</httpclient.version>
+        <httpclient.core.version>4.2.4</httpclient.core.version>
+    </properties>
 
-    <dependency>
-      <groupId>com.ning</groupId>
-      <artifactId>async-http-client</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.directmemory.server</groupId>
+            <artifactId>directmemory-server-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${httpclient.core.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.ning</groupId>
+            <artifactId>async-http-client</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>

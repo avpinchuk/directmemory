@@ -1,4 +1,3 @@
-package org.apache.directmemory.server.services;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +17,8 @@ package org.apache.directmemory.server.services;
  * under the License.
  */
 
+package org.apache.directmemory.server.services;
+
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -25,25 +26,19 @@ import static junit.framework.Assert.assertEquals;
 /**
  * @author Olivier Lamy
  */
-public class ExtractKeyFromPathTest
-{
+public class ExtractKeyFromPathTest {
 
     private DirectMemoryServlet directMemoryServlet = new DirectMemoryServlet();
 
     @Test
-    public void pathEndedWithSlash()
-        throws Exception
-    {
-        String key = directMemoryServlet.retrieveKeyFromPath( "cache/foo/" );
-        assertEquals( "foo", key );
+    public void pathEndedWithSlash() {
+        String key = directMemoryServlet.retrieveKeyFromPath("cache/foo/");
+        assertEquals("foo", key);
     }
 
     @Test
-    public void pathNotEndedWithSlash()
-        throws Exception
-    {
-        String key = directMemoryServlet.retrieveKeyFromPath( "/cache/foo" );
-        assertEquals( "foo", key );
-
+    public void pathNotEndedWithSlash() {
+        String key = directMemoryServlet.retrieveKeyFromPath("/cache/foo");
+        assertEquals("foo", key);
     }
 }

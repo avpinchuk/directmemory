@@ -1,4 +1,3 @@
-package org.apache.directmemory.server.services;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +17,17 @@ package org.apache.directmemory.server.services;
  * under the License.
  */
 
+package org.apache.directmemory.server.services;
+
 import org.apache.directmemory.server.commons.ExchangeType;
 
 /**
  * @author Olivier Lamy
  */
-public class ServletWithClientJsonTypeTest
-    extends AbstractServletWithClientTest
-{
+public class ServletWithClientJsonTypeTest extends AbstractServletWithClientTest {
+
     @Override
-    protected ExchangeType getExchangeType()
-    {
+    protected ExchangeType getExchangeType() {
         return ExchangeType.JSON;
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.client;
  * under the License.
  */
 
+package org.apache.directmemory.server.client;
+
 import org.apache.directmemory.server.commons.DirectMemoryException;
 import org.apache.directmemory.server.commons.DirectMemoryRequest;
 import org.apache.directmemory.server.commons.DirectMemoryResponse;
@@ -29,11 +29,12 @@ import java.util.concurrent.Future;
 /**
  * @author Olivier Lamy
  */
-public interface DirectMemoryClient
-{
+public interface DirectMemoryClient {
+
     /**
      * <p>will ask the server if any content corresponding to the key passed in  {@link DirectMemoryRequest}</p>
      * <p>if the server doesn't return content {@link DirectMemoryResponse#isFound()} will be <code>false</code> </p>
+     *
      * @param directMemoryRequest
      * @return
      * @throws DirectMemoryException
@@ -42,42 +43,36 @@ public interface DirectMemoryClient
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    DirectMemoryResponse retrieve( DirectMemoryRequest directMemoryRequest )
-        throws DirectMemoryException, IOException, ClassNotFoundException, InstantiationException,
-        IllegalAccessException;
+    DirectMemoryResponse retrieve(DirectMemoryRequest directMemoryRequest)
+            throws DirectMemoryException, IOException, ClassNotFoundException, InstantiationException,
+            IllegalAccessException;
 
     /**
      * same as retrieve
      */
-    Future<DirectMemoryResponse> asyncRetrieve( DirectMemoryRequest directMemoryRequest )
-        throws DirectMemoryException;
+    Future<DirectMemoryResponse> asyncRetrieve(DirectMemoryRequest directMemoryRequest) throws DirectMemoryException;
 
 
-    DirectMemoryResponse put( DirectMemoryRequest directMemoryRequest )
-        throws DirectMemoryException;
+    DirectMemoryResponse put(DirectMemoryRequest directMemoryRequest) throws DirectMemoryException;
 
     /**
-     *
      * same as put.
      */
-    Future<DirectMemoryResponse> asyncPut( DirectMemoryRequest directMemoryRequest )
-        throws DirectMemoryException;
+    Future<DirectMemoryResponse> asyncPut(DirectMemoryRequest directMemoryRequest) throws DirectMemoryException;
 
     /**
-     *
      * @param directMemoryRequest
      * @return check {@link DirectMemoryResponse#isDeleted()} to verify if the content has been deleted
      * @throws DirectMemoryException
      */
-    DirectMemoryResponse delete( DirectMemoryRequest directMemoryRequest )
-        throws DirectMemoryException;
+    DirectMemoryResponse delete(DirectMemoryRequest directMemoryRequest) throws DirectMemoryException;
 
     /**
      * same as async.
+     *
      * @param directMemoryRequest
      * @return
      * @throws DirectMemoryException
      */
-    Future<DirectMemoryResponse> asyncDelete( DirectMemoryRequest directMemoryRequest )
-        throws DirectMemoryException;
+    Future<DirectMemoryResponse> asyncDelete(DirectMemoryRequest directMemoryRequest) throws DirectMemoryException;
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.utils;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,48 +17,44 @@ package org.apache.directmemory.utils;
  * under the License.
  */
 
+package org.apache.directmemory.utils;
+
 import java.util.Iterator;
 
 import org.apache.directmemory.cache.CacheService;
 import org.apache.directmemory.memory.Pointer;
 
-public class StrictCacheValuesIterator<K, V>
-    implements Iterator<V>
-{
+public class StrictCacheValuesIterator<K, V> implements Iterator<V> {
     private Iterator<K> keysIterator;
 
     private CacheService<K, V> cacheService;
 
     private K currentKey;
 
-    public StrictCacheValuesIterator( Iterator<K> keysIterator, CacheService<K, V> cacheService )
-    {
+    public StrictCacheValuesIterator(Iterator<K> keysIterator, CacheService<K, V> cacheService) {
         this.keysIterator = keysIterator;
         this.cacheService = cacheService;
     }
 
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         return keysIterator.hasNext();
     }
 
     @Override
-    public V next()
-    {
+    public V next() {
         currentKey = keysIterator.next();
-        Pointer<V> pointer = cacheService.getPointer( currentKey );
-        if ( pointer != null && pointer.isExpired() )
-        {
-            throw new RuntimeException( "Value pointer has expired" );
+        Pointer<V> pointer = cacheService.getPointer(currentKey);
+        if (pointer != null && pointer.isExpired()) {
+            throw new RuntimeException("Value pointer has expired");
         }
-        return cacheService.retrieve( currentKey );
+        return cacheService.retrieve(currentKey);
     }
 
     @Override
-    public void remove()
-    {
-        cacheService.free( currentKey );
+    public void remove() {
+        cacheService.free(currentKey);
         keysIterator.remove();
     }
-};
+
+}

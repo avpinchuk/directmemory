@@ -1,5 +1,3 @@
-package org.apache.directmemory.conf;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,64 +17,55 @@ package org.apache.directmemory.conf;
  * under the License.
  */
 
+package org.apache.directmemory.conf;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Provides a global single point of access to all singleton properties comprehensible to DirectMemory.
+ *
  * @since 0.2
  */
-public final class Configuration
-{
-    private static final Logger logger = LoggerFactory.getLogger( Configuration.class );
+public final class Configuration {
 
-    public static int getNumberOfBuffers()
-    {
+    private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
+
+    public static int getNumberOfBuffers() {
         return configurationService.getNumberOfBuffers();
     }
 
-    public static int getInitialCapacity()
-    {
+    public static int getInitialCapacity() {
         return configurationService.getInitialCapacity();
     }
 
-    public static int getRamMegaBytes()
-    {
+    public static int getRamMegaBytes() {
         return configurationService.getRamMegaBytes();
     }
 
-    public static long getDisposalTime()
-    {
+    public static long getDisposalTime() {
         return configurationService.getDisposalTime();
     }
 
-    public static int getConcurrencyLevel()
-    {
+    public static int getConcurrencyLevel() {
         return configurationService.getConcurrencyLevel();
     }
 
     private static ConfigurationService configurationService;
 
-    static
-    {
-        if ( configurationService == null )
-        {
+    static {
+        if (configurationService == null) {
             // if not otherwise specified with another mechanism it uses the default implementation
-            logger.info( "using default configuration implementation" );
+            logger.info("using default configuration implementation");
             configurationService = new SimplePropertiesConfiguration();
         }
     }
 
     // Prevent instance escape
-    private Configuration()
-    {
-    }
+    private Configuration() { }
 
-    public static void configureFromYaml()
-    {
-        logger.info( "using yaml configuration implementation" );
+    public static void configureFromYaml() {
+        logger.info("using yaml configuration implementation");
         configurationService = YamlConfiguration.load();
     }
-
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,52 +17,42 @@ package org.apache.directmemory.serialization;
  * under the License.
  */
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+package org.apache.directmemory.serialization;
 
 import org.apache.directmemory.measures.Ram;
 import org.apache.directmemory.misc.DummyPojo;
 
-public final class DummyPojoSerializer
-    implements Serializer
-{
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 
-    final DummyPojo pojo = new DummyPojo( "test", Ram.Kb( 2 ) );
+public final class DummyPojoSerializer implements Serializer {
+
+    final DummyPojo pojo = new DummyPojo("test", Ram.Kb(2));
 
     final byte[] data;
 
-    public DummyPojoSerializer()
-    {
+    public DummyPojoSerializer() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try
-        {
-            ObjectOutputStream oos = new ObjectOutputStream( baos );
-            oos.writeObject( pojo );
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(pojo);
             oos.flush();
             oos.close();
-        }
-        catch ( Exception e )
-        {
+        } catch (Exception e) {
             // should not happen
         }
         data = baos.toByteArray();
     }
 
-    @SuppressWarnings( "unchecked" ) // it is just a dummy class for tests
+    @SuppressWarnings("unchecked") // it is just a dummy class for tests
     @Override
-    public <T> T deserialize( byte[] source, Class<T> clazz )
-        throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
+    public <T> T deserialize(byte[] source, Class<T> clazz) {
         // testing puts only
         return (T) pojo;
     }
 
     @Override
-    public <T> byte[] serialize( T obj )
-        throws IOException
-    {
+    public <T> byte[] serialize(T obj) {
         return data;
     }
-
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.directmemory.serialization.Serializer;
@@ -31,103 +31,83 @@ import java.io.StringWriter;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryWriter
-{
+public class DirectMemoryWriter {
+
     private JsonFactory jsonFactory;
 
     private static final DirectMemoryWriter INSTANCE = new DirectMemoryWriter();
 
-    private Logger log = LoggerFactory.getLogger( getClass() );
+    private Logger log = LoggerFactory.getLogger(getClass());
 
-    public static DirectMemoryWriter instance()
-    {
+    public static DirectMemoryWriter instance() {
         return INSTANCE;
     }
 
-    private DirectMemoryWriter()
-    {
+    private DirectMemoryWriter() {
         this.jsonFactory = new JsonFactory();
     }
 
-    public String generateJsonRequest( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
+    public String generateJsonRequest(DirectMemoryRequest request) throws DirectMemoryException {
         // TODO configure a minimum size for the writer
         StringWriter stringWriter = new StringWriter();
 
-        try
-        {
-            JsonGenerator g = this.jsonFactory.createJsonGenerator( stringWriter );
+        try {
+            JsonGenerator g = this.jsonFactory.createJsonGenerator(stringWriter);
 
             g.writeStartObject();
 
-            g.writeStringField( DirectMemoryConstants.KEY_FIELD_NAME, request.getKey() );
+            g.writeStringField(DirectMemoryConstants.KEY_FIELD_NAME, request.getKey());
 
-            g.writeBooleanField( DirectMemoryConstants.PUT_FIELD_NAME, request.isUpdate() );
+            g.writeBooleanField(DirectMemoryConstants.PUT_FIELD_NAME, request.isUpdate());
 
-            g.writeNumberField( DirectMemoryConstants.EXPIRES_IN_FIELD_NAME, request.getExpiresIn() );
+            g.writeNumberField(DirectMemoryConstants.EXPIRES_IN_FIELD_NAME, request.getExpiresIn());
 
             // FIXME take care of NPE
             // cache content generation
             Serializer serializer = request.getSerializer();
             // if no Object users are able to pass a string content
             byte[] bytes = request.getObject() != null
-                ? request.getSerializer().serialize( request.getObject() )
-                : request.getCacheContent();
+                           ? request.getSerializer().serialize(request.getObject())
+                           : request.getCacheContent();
 
-            g.writeFieldName( DirectMemoryConstants.CACHE_CONTENT_FIELD_NAME );
-            g.writeBinary( bytes );
+            g.writeFieldName(DirectMemoryConstants.CACHE_CONTENT_FIELD_NAME);
+            g.writeBinary(bytes);
 
-            if ( serializer != null )
-            {
-                g.writeStringField( DirectMemoryConstants.SERIALIZER_FIELD_NAME, serializer.getClass().getName() );
+            if (serializer != null) {
+                g.writeStringField(DirectMemoryConstants.SERIALIZER_FIELD_NAME, serializer.getClass().getName());
             }
 
             g.writeEndObject();
             g.close();
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
 
         return stringWriter.toString();
     }
 
-    public String generateJsonResponse( DirectMemoryResponse response )
-        throws DirectMemoryException
-    {
-
+    public String generateJsonResponse(DirectMemoryResponse response) throws DirectMemoryException {
         // TODO configure a minimum size for the writer
         StringWriter stringWriter = new StringWriter();
 
-        try
-        {
-
-            JsonGenerator g = this.jsonFactory.createJsonGenerator( stringWriter );
-
+        try {
+            JsonGenerator g = this.jsonFactory.createJsonGenerator(stringWriter);
             g.writeStartObject();
+            g.writeBooleanField(DirectMemoryConstants.FOUND_FIELD_NAME, response.isFound());
+            g.writeStringField(DirectMemoryConstants.KEY_FIELD_NAME, response.getKey());
 
-            g.writeBooleanField( DirectMemoryConstants.FOUND_FIELD_NAME, response.isFound() );
-
-            g.writeStringField( DirectMemoryConstants.KEY_FIELD_NAME, response.getKey() );
-
-            if ( response.getCacheContent() != null && response.getCacheContent().length > 0 )
-            {
-                g.writeFieldName( DirectMemoryConstants.CACHE_CONTENT_FIELD_NAME );
-                g.writeBinary( response.getCacheContent() );
+            if (response.getCacheContent() != null && response.getCacheContent().length > 0) {
+                g.writeFieldName(DirectMemoryConstants.CACHE_CONTENT_FIELD_NAME);
+                g.writeBinary(response.getCacheContent());
             }
 
             g.writeEndObject();
             g.close();
 
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
 
         return stringWriter.toString();
-
     }
 }

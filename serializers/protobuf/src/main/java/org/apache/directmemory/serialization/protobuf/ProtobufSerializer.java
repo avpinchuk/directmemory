@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization.protobuf;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.serialization.protobuf;
  * under the License.
  */
 
+package org.apache.directmemory.serialization.protobuf;
+
 import static java.lang.String.format;
 
 import java.io.ByteArrayOutputStream;
@@ -30,9 +30,7 @@ import org.apache.directmemory.serialization.Serializer;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 
-public final class ProtobufSerializer
-    implements Serializer
-{
+public final class ProtobufSerializer implements Serializer {
 
     private static final String NEW_BUILDER_METHOD = "newBuilder";
 
@@ -40,29 +38,20 @@ public final class ProtobufSerializer
      * {@inheritDoc}
      */
     @Override
-    public <T> byte[] serialize( T obj )
-        throws IOException
-    {
-        checkProtobufMessage( obj.getClass() );
+    public <T> byte[] serialize(T obj) throws IOException {
+        checkProtobufMessage(obj.getClass());
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        try
-        {
-            ( (Message) obj ).writeTo( baos );
-        }
-        finally
-        {
-            try
-            {
+        try {
+            ((Message) obj).writeTo(baos);
+        } finally {
+            try {
                 baos.close();
-            }
-            catch ( Exception e )
-            {
+            } catch (Exception e) {
                 // close quietly
             }
         }
-
         return baos.toByteArray();
     }
 
@@ -70,38 +59,30 @@ public final class ProtobufSerializer
      * {@inheritDoc}
      */
     @Override
-    public <T> T deserialize( byte[] source, Class<T> clazz )
-        throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
-        clazz = checkProtobufMessage( clazz );
+    public <T> T deserialize(byte[] source, Class<T> clazz) throws IOException {
+        clazz = checkProtobufMessage(clazz);
 
-        try
-        {
-            Method newBuilder = clazz.getMethod( NEW_BUILDER_METHOD );
+        try {
+            Method newBuilder = clazz.getMethod(NEW_BUILDER_METHOD);
 
             // fixme no idea ATM how to fix type inference here
-            GeneratedMessage.Builder builder = (GeneratedMessage.Builder) newBuilder.invoke( clazz );
+            GeneratedMessage.Builder builder = (GeneratedMessage.Builder) newBuilder.invoke(clazz);
 
-            @SuppressWarnings( "unchecked" ) // cast should be safe since it is driven by the type
-            T deserialized = (T) builder.mergeFrom( source ).build();
+            @SuppressWarnings("unchecked") // cast should be safe since it is driven by the type
+            T deserialized = (T) builder.mergeFrom(source).build();
 
             return deserialized;
-        }
-        catch ( Throwable t )
-        {
-            throw new IOException( t );
+        } catch (Throwable t) {
+            throw new IOException(t);
         }
     }
 
-    private static <T> Class<T> checkProtobufMessage( Class<T> clazz )
-    {
-        if ( !Message.class.isAssignableFrom( clazz ) )
-        {
-            throw new IllegalArgumentException( format( "Class %s cannot be serialized via Google Protobuf, it is not a %s",
-                                                        clazz.getName(),
-                                                        Message.class.getName() ) );
+    private static <T> Class<T> checkProtobufMessage(Class<T> clazz) {
+        if (!Message.class.isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException(format("Class %s cannot be serialized via Google Protobuf, it is not a %s",
+                                                      clazz.getName(),
+                                                      Message.class.getName()));
         }
         return clazz;
     }
-
 }

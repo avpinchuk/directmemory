@@ -16,39 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.directmemory.memory.allocator;
 
 import java.lang.reflect.Field;
 
-@SuppressWarnings( "restriction" )
-public final class UnsafeUtils
-{
+@SuppressWarnings("restriction")
+public final class UnsafeUtils {
 
     private static final sun.misc.Unsafe UNSAFE;
 
-    static
-    {
+    static {
         sun.misc.Unsafe unsafe;
-        try
-        {
-            Field unsafeField = sun.misc.Unsafe.class.getDeclaredField( "theUnsafe" );
-            unsafeField.setAccessible( true );
-            unsafe = (sun.misc.Unsafe) unsafeField.get( null );
-        }
-        catch ( Exception e )
-        {
+        try {
+            Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+        } catch (Exception e) {
             unsafe = null;
         }
-
         UNSAFE = unsafe;
     }
 
-    private UnsafeUtils()
-    {
-    }
+    private UnsafeUtils() { }
 
-    public static sun.misc.Unsafe getUnsafe()
-    {
+    public static sun.misc.Unsafe getUnsafe() {
         return UNSAFE;
     }
+
 }

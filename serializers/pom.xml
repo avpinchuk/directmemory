@@ -17,39 +17,42 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <parent>
-    <groupId>org.apache.directmemory</groupId>
-    <artifactId>directmemory</artifactId>
-    <version>0.3-SNAPSHOT</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>directmemory-serializers</artifactId>
-  <packaging>pom</packaging>
-  <name>Apache DirectMemory :: Serializers</name>
-  <description>${project.name}</description>
+    <parent>
+        <groupId>org.apache.directmemory</groupId>
+        <artifactId>directmemory</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </parent>
 
-  <modules>
-    <module>protobuf</module>
-    <module>protostuff</module>
-    <module>msgpack</module>
-    <module>kryo</module>
-  </modules>
+    <artifactId>directmemory-serializers</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache DirectMemory :: Serializers</name>
+    <description>${project.name}</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>${project.parent.groupId}</groupId>
-      <artifactId>directmemory-cache</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <modules>
+        <module>protobuf</module>
+        <module>protostuff</module>
+        <module>msgpack</module>
+        <module>kryo</module>
+    </modules>
 
-    <dependency>
-      <groupId>${project.parent.groupId}</groupId>
-      <artifactId>directmemory-tests</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>directmemory-cache</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>directmemory-tests</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>

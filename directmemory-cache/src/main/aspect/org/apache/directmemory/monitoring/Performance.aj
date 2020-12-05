@@ -1,5 +1,3 @@
-package org.apache.directmemory.monitoring;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,9 @@ package org.apache.directmemory.monitoring;
  * under the License.
  */
 
+package org.apache.directmemory.monitoring;
+
+
 import static java.lang.String.format;
 
 import org.apache.directmemory.cache.Cache;
@@ -28,8 +29,7 @@ import org.apache.directmemory.memory.Pointer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public aspect Performance
-{
+public aspect Performance {
 
     public static final String cache_prefix = "cache";
 
@@ -51,25 +51,25 @@ public aspect Performance
 
     public static final String cache_deserialize = cache_prefix + ".serializer.deserialize";
 
-    private static Logger logger = LoggerFactory.getLogger( Cache.class );
+    private static Logger logger = LoggerFactory.getLogger(Cache.class);
 
-    pointcut putByteArrayPointcut( String key, byte[] payload ):
+    pointcut putByteArrayPointcut(String key, byte[] payload):
             execution(Pointer org.apache.directmemory.cache.Cache.putByteArray(java.lang.String, byte[])) &&
                     args(key, payload);
 
-    pointcut putObjectPointcut( String key, Object object, int expiresIn ):
+    pointcut putObjectPointcut(String key, Object object, int expiresIn):
             execution(Pointer org.apache.directmemory.cache.Cache.put(java.lang.String, java.lang.Object, int)) &&
                     args(key, object, expiresIn);
 
-    pointcut retrieveByteArrayPointcut( String key ):
+    pointcut retrieveByteArrayPointcut(String key):
             execution(byte[] org.apache.directmemory.cache.Cache.retrieveByteArray(java.lang.String)) &&
                     args(key);
 
-    pointcut retrieveObjectPointcut( String key ):
+    pointcut retrieveObjectPointcut(String key):
             execution(java.lang.Object org.apache.directmemory.cache.Cache.retrieve(java.lang.String)) &&
                     args(key);
 
-    pointcut getPointcut( String key ):
+    pointcut getPointcut(String key):
             execution(Pointer org.apache.directmemory.cache.Cache.getPointer(java.lang.String)) &&
                     args(key);
 
@@ -79,117 +79,108 @@ public aspect Performance
     pointcut collectExpiredPointcut():
             execution(void org.apache.directmemory.cache.Cache.collectExpired());
 
-    pointcut serializePointcut( Object obj, @SuppressWarnings( "rawtypes" ) Class clazz ):
+    pointcut serializePointcut(Object obj, @SuppressWarnings("rawtypes") Class clazz):
             execution(byte[] org.apache.directmemory.serialization.ProtoStuffSerializerV1.serialize(java.lang.Object, java.lang.Class)) &&
                     args(obj, clazz);
 
-    pointcut deserializePointcut( byte[] source, @SuppressWarnings( "rawtypes" ) Class clazz ):
+    pointcut deserializePointcut(byte[] source, @SuppressWarnings("rawtypes") Class clazz):
             execution(java.lang.Object org.apache.directmemory.serialization.ProtoStuffSerializerV1.deserialize(byte[], java.lang.Class)) &&
                     args(source, clazz);
 
-    Pointer around( String key, byte[] payload ): putByteArrayPointcut(key, payload) {
-        MonitorService mon = Monitor.get( cache_putByteArray );
+    Pointer around(String key, byte[] payload): putByteArrayPointcut(key, payload) {
+        MonitorService mon = Monitor.get(cache_putByteArray);
         final long startedAt = mon.start();
-        Pointer entry = proceed( key, payload );
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( format( "put: [%s] %d bytes", key, payload.length ) );
+        Pointer entry = proceed(key, payload);
+        if (logger.isDebugEnabled()) {
+            logger.debug(format("put: [%s] %d bytes", key, payload.length));
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
         return entry;
     }
 
-    Pointer around( String key, Object object, int expiresIn ): putObjectPointcut(key, object, expiresIn) {
-        MonitorService mon = Monitor.get( cache_putObject );
+    Pointer around(String key, Object object, int expiresIn): putObjectPointcut(key, object, expiresIn) {
+        MonitorService mon = Monitor.get(cache_putObject);
         final long startedAt = mon.start();
-        Pointer entry = proceed( key, object, expiresIn );
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( format( "put object: [%s]", key ) );
+        Pointer entry = proceed(key, object, expiresIn);
+        if (logger.isDebugEnabled()) {
+            logger.debug(format("put object: [%s]", key));
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
         return entry;
     }
 
-    byte[] around( String key ): retrieveByteArrayPointcut(key) {
-        MonitorService mon = Monitor.get( cache_retrieveByteArray );
+    byte[] around(String key): retrieveByteArrayPointcut(key) {
+        MonitorService mon = Monitor.get(cache_retrieveByteArray);
         final long startedAt = mon.start();
-        byte[] payload = proceed( key );
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( format( "retrieve: [%s]", key ) );
+        byte[] payload = proceed(key);
+        if (logger.isDebugEnabled()) {
+            logger.debug(format("retrieve: [%s]", key));
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
         return payload;
     }
 
-    Object around( String key ): retrieveObjectPointcut(key) {
-        MonitorService mon = Monitor.get( cache_retrieveObject );
+    Object around(String key): retrieveObjectPointcut(key) {
+        MonitorService mon = Monitor.get(cache_retrieveObject);
         final long startedAt = mon.start();
-        Object payload = proceed( key );
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( format( "retrieve object: [%s]", key ) );
+        Object payload = proceed(key);
+        if (logger.isDebugEnabled()) {
+            logger.debug(format("retrieve object: [%s]", key));
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
         return payload;
     }
 
-    Pointer around( String key ): getPointcut(key) {
-        MonitorService mon = Monitor.get( cache_getPointer );
+    Pointer around(String key): getPointcut(key) {
+        MonitorService mon = Monitor.get(cache_getPointer);
         final long startedAt = mon.start();
-        Pointer pointer = proceed( key );
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( format( "get: [%s]", key ) );
+        Pointer pointer = proceed(key);
+        if (logger.isDebugEnabled()) {
+            logger.debug(format("get: [%s]", key));
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
         return pointer;
     }
 
     void around(): collectLFUPointcut() {
-        MonitorService mon = Monitor.get( cache_collectLFU );
+        MonitorService mon = Monitor.get(cache_collectLFU);
         final long startedAt = mon.start();
         proceed();
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "collect LFU" );
+        if (logger.isDebugEnabled()) {
+            logger.debug("collect LFU");
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
     }
 
     void around(): collectExpiredPointcut() {
-        MonitorService mon = Monitor.get( cache_collectExpired );
+        MonitorService mon = Monitor.get(cache_collectExpired);
         final long startedAt = mon.start();
         proceed();
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "collect expired" );
+        if (logger.isDebugEnabled()) {
+            logger.debug("collect expired");
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
     }
 
-    byte[] around( Object obj, @SuppressWarnings( "rawtypes" ) Class clazz ): serializePointcut(obj, clazz) {
-        MonitorService mon = Monitor.get( cache_serialize );
+    byte[] around(Object obj, @SuppressWarnings("rawtypes") Class clazz): serializePointcut(obj, clazz) {
+        MonitorService mon = Monitor.get(cache_serialize);
         final long startedAt = mon.start();
-        byte[] payload = proceed( obj, clazz );
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( format( "serialize: [%s]", clazz.getSimpleName() ) );
+        byte[] payload = proceed(obj, clazz);
+        if (logger.isDebugEnabled()) {
+            logger.debug(format("serialize: [%s]", clazz.getSimpleName()));
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
         return payload;
     }
 
-    Object around( byte[] source, @SuppressWarnings( "rawtypes" ) Class clazz ): deserializePointcut(source, clazz) {
-        MonitorService mon = Monitor.get( cache_deserialize );
+    Object around(byte[] source, @SuppressWarnings("rawtypes") Class clazz): deserializePointcut(source, clazz) {
+        MonitorService mon = Monitor.get(cache_deserialize);
         final long startedAt = mon.start();
-        Object obj = proceed( source, clazz );
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( format( "deserialize: [%s]", clazz.getSimpleName() ) );
+        Object obj = proceed(source, clazz);
+        if (logger.isDebugEnabled()) {
+            logger.debug(format("deserialize: [%s]", clazz.getSimpleName()));
         }
-        mon.stop( startedAt );
+        mon.stop(startedAt);
         return obj;
     }
 

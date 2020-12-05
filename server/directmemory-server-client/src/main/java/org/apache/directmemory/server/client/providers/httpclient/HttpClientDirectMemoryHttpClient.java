@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client.providers.httpclient;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory.server.client.providers.httpclient;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.server.client.providers.httpclient;
 
 import org.apache.directmemory.server.client.AbstractDirectMemoryHttpClient;
 import org.apache.directmemory.server.client.DirectMemoryClientConfiguration;
@@ -48,194 +48,154 @@ import java.util.concurrent.Future;
 /**
  * @author Olivier Lamy
  */
-public class HttpClientDirectMemoryHttpClient
-    extends AbstractDirectMemoryHttpClient
-    implements DirectMemoryHttpClient
-{
-    private Logger log = LoggerFactory.getLogger( getClass() );
+public class HttpClientDirectMemoryHttpClient extends AbstractDirectMemoryHttpClient implements DirectMemoryHttpClient {
 
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private HttpClient httpClient;
 
 
-    public HttpClientDirectMemoryHttpClient( DirectMemoryClientConfiguration configuration )
-    {
-        super( configuration );
-        this.configure( configuration );
+    public HttpClientDirectMemoryHttpClient(DirectMemoryClientConfiguration configuration) {
+        super(configuration);
+        this.configure(configuration);
     }
 
-
-    public void configure( DirectMemoryClientConfiguration configuration )
-    {
+    public void configure(DirectMemoryClientConfiguration configuration) {
         this.configuration = configuration;
         ThreadSafeClientConnManager threadSafeClientConnManager = new ThreadSafeClientConnManager();
-        threadSafeClientConnManager.setDefaultMaxPerRoute( configuration.getMaxConcurentConnections() );
-        this.httpClient = new DefaultHttpClient( threadSafeClientConnManager );
+        threadSafeClientConnManager.setDefaultMaxPerRoute(configuration.getMaxConcurentConnections());
+        this.httpClient = new DefaultHttpClient(threadSafeClientConnManager);
     }
 
     @Override
-    public DirectMemoryResponse put( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        String uri = buildRequestWithKey( request );
-        log.debug( "put request to: {}", uri );
+    public DirectMemoryResponse put(DirectMemoryRequest request) throws DirectMemoryException {
+        String uri = buildRequestWithKey(request);
+        log.debug("put request to: {}", uri);
 
-        HttpPut httpPut = new HttpPut( uri );
-        httpPut.addHeader( "Content-Type", getRequestContentType( request ) );
+        HttpPut httpPut = new HttpPut(uri);
+        httpPut.addHeader("Content-Type", getRequestContentType(request));
 
-        if ( request.getExpiresIn() > 0 )
-        {
-            httpPut.addHeader( DirectMemoryHttpConstants.EXPIRES_IN_HTTP_HEADER,
-                               Integer.toString( request.getExpiresIn() ) );
+        if (request.getExpiresIn() > 0) {
+            httpPut.addHeader(DirectMemoryHttpConstants.EXPIRES_IN_HTTP_HEADER,
+                              Integer.toString(request.getExpiresIn()));
         }
 
-        if ( request.getExchangeType() == ExchangeType.TEXT_PLAIN )
-        {
-            httpPut.addHeader( DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
-                               request.getSerializer().getClass().getName() );
+        if (request.getExchangeType() == ExchangeType.TEXT_PLAIN) {
+            httpPut.addHeader(DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
+                              request.getSerializer().getClass().getName());
         }
 
-        httpPut.setEntity( new ByteArrayEntity( getPutContent( request ) ) );
+        httpPut.setEntity(new ByteArrayEntity(getPutContent(request)));
 
-        try
-        {
-            HttpResponse response = httpClient.execute( httpPut );
+        try {
+            HttpResponse response = httpClient.execute(httpPut);
             StatusLine statusLine = response.getStatusLine();
-            switch ( statusLine.getStatusCode() )
-            {
+            switch (statusLine.getStatusCode()) {
                 case 200:
-                    Header header = response.getFirstHeader( DirectMemoryHttpConstants.EXPIRES_SERIALIZE_SIZE );
-                    int storedSize = header == null ? -1 : Integer.valueOf( header.getValue() );
-                    return new DirectMemoryResponse().setStored( Boolean.TRUE ).setStoredSize( storedSize );
+                    Header header = response.getFirstHeader(DirectMemoryHttpConstants.EXPIRES_SERIALIZE_SIZE);
+                    int storedSize = header == null ? -1 : Integer.valueOf(header.getValue());
+                    return new DirectMemoryResponse().setStored(Boolean.TRUE).setStoredSize(storedSize);
                 case 204:
-                    return new DirectMemoryResponse().setStored( Boolean.FALSE );
+                    return new DirectMemoryResponse().setStored(Boolean.FALSE);
                 default:
                     throw new DirectMemoryException(
-                        "put cache content return http code:'" + statusLine.getStatusCode() + "', reasonPhrase:"
-                            + statusLine.getReasonPhrase() );
+                            "put cache content return http code:'" + statusLine.getStatusCode() + "', reasonPhrase:"
+                            + statusLine.getReasonPhrase());
 
             }
 
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
     }
 
     @Override
-    public Future<DirectMemoryResponse> asyncPut( final DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        return Executors.newSingleThreadExecutor().submit( new Callable<DirectMemoryResponse>()
-        {
+    public Future<DirectMemoryResponse> asyncPut(final DirectMemoryRequest request) {
+        return Executors.newSingleThreadExecutor().submit(new Callable<DirectMemoryResponse>() {
             @Override
             public DirectMemoryResponse call()
-                throws Exception
-            {
-                return put( request );
+                    throws Exception {
+                return put(request);
             }
-        } );
+        });
     }
 
     @Override
-    public DirectMemoryResponse get( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        String uri = buildRequestWithKey( request );
+    public DirectMemoryResponse get(DirectMemoryRequest request) throws DirectMemoryException {
+        String uri = buildRequestWithKey(request);
 
-        log.debug( "get request to: {}", uri );
+        log.debug("get request to: {}", uri);
 
-        HttpGet httpGet = new HttpGet( uri );
+        HttpGet httpGet = new HttpGet(uri);
 
-        httpGet.addHeader( "Accept", getAcceptContentType( request ) );
+        httpGet.addHeader("Accept", getAcceptContentType(request));
 
-        if ( request.getExchangeType() == ExchangeType.TEXT_PLAIN )
-        {
-            httpGet.addHeader( DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
-                               request.getSerializer().getClass().getName() );
+        if (request.getExchangeType() == ExchangeType.TEXT_PLAIN) {
+            httpGet.addHeader(DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
+                              request.getSerializer().getClass().getName());
         }
-        try
-        {
-            HttpResponse httpResponse = this.httpClient.execute( httpGet );
+        try {
+            HttpResponse httpResponse = this.httpClient.execute(httpGet);
 
             // handle no content response
             StatusLine statusLine = httpResponse.getStatusLine();
-            if ( statusLine.getStatusCode() == 204 )
-            {
-                return new DirectMemoryResponse().setFound( false );
+            if (statusLine.getStatusCode() == 204) {
+                return new DirectMemoryResponse().setFound(false);
             }
 
-            if ( request.isDeleteRequest() )
-            {
-                return new DirectMemoryResponse().setFound( true ).setDeleted( true );
+            if (request.isDeleteRequest()) {
+                return new DirectMemoryResponse().setFound(true).setDeleted(true);
             }
 
-            return buildResponse( httpResponse.getEntity().getContent(), request ).setFound( true );
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+            return buildResponse(httpResponse.getEntity().getContent(), request).setFound(true);
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
     }
 
     @Override
-    public Future<DirectMemoryResponse> asyncGet( final DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        return Executors.newSingleThreadExecutor().submit( new Callable<DirectMemoryResponse>()
-        {
+    public Future<DirectMemoryResponse> asyncGet(final DirectMemoryRequest request) {
+        return Executors.newSingleThreadExecutor().submit(new Callable<DirectMemoryResponse>() {
             @Override
             public DirectMemoryResponse call()
-                throws Exception
-            {
-                return get( request );
+                    throws Exception {
+                return get(request);
             }
-        } );
+        });
     }
 
     @Override
-    public DirectMemoryResponse delete( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        String uri = buildRequestWithKey( request );
+    public DirectMemoryResponse delete(DirectMemoryRequest request) throws DirectMemoryException {
+        String uri = buildRequestWithKey(request);
 
-        log.debug( "get request to: {}", uri );
+        log.debug("get request to: {}", uri);
 
-        HttpDelete httpDelete = new HttpDelete( uri );
+        HttpDelete httpDelete = new HttpDelete(uri);
 
-        try
-        {
-            HttpResponse httpResponse = this.httpClient.execute( httpDelete );
+        try {
+            HttpResponse httpResponse = this.httpClient.execute(httpDelete);
 
             // handle no content response
             StatusLine statusLine = httpResponse.getStatusLine();
-            if ( statusLine.getStatusCode() == 204 )
-            {
-                return new DirectMemoryResponse().setFound( false ).setDeleted( false );
+            if (statusLine.getStatusCode() == 204) {
+                return new DirectMemoryResponse().setFound(false).setDeleted(false);
             }
 
-            return new DirectMemoryResponse().setFound( true ).setDeleted( true );
+            return new DirectMemoryResponse().setFound(true).setDeleted(true);
 
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
     }
 
     @Override
-    public Future<DirectMemoryResponse> asyncDelete( final DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        return Executors.newSingleThreadExecutor().submit( new Callable<DirectMemoryResponse>()
-        {
+    public Future<DirectMemoryResponse> asyncDelete(final DirectMemoryRequest request) {
+        return Executors.newSingleThreadExecutor().submit(new Callable<DirectMemoryResponse>() {
             @Override
             public DirectMemoryResponse call()
-                throws Exception
-            {
-                return delete( request );
+                    throws Exception {
+                return delete(request);
             }
-        } );
+        });
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.cache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,20 +17,20 @@ package org.apache.directmemory.cache;
  * under the License.
  */
 
+package org.apache.directmemory.cache;
+
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.directmemory.memory.MemoryManagerService;
 import org.apache.directmemory.memory.Pointer;
 import org.apache.directmemory.serialization.Serializer;
 
-public interface MutableCacheService<K, V>
-    extends CacheService<K, V>
-{
+public interface MutableCacheService<K, V> extends CacheService<K, V> {
 
-    void setMap( ConcurrentMap<K, Pointer<V>> map );
+    void setMap(ConcurrentMap<K, Pointer<V>> map);
 
-    void setMemoryManager( MemoryManagerService<V> memoryManager );
+    void setMemoryManager(MemoryManagerService<V> memoryManager);
 
-    void setSerializer( Serializer serializer );
+    void setSerializer(Serializer serializer);
 
 }

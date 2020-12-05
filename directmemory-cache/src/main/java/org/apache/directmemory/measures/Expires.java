@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,22 +17,20 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
-public class Expires
-    extends In
-{
+package org.apache.directmemory.measures;
 
-    public Expires( double measure )
-    {
-        super( measure );
+public class Expires extends In {
+
+    public Expires(double measure) {
+        super(measure);
     }
 
-    public static In in( double measure )
-    {
-        return new In( measure );
+    public static In in(double measure) {
+        return new In(measure);
     }
 
-    public static long never()
-    {
+    public static long never() {
         return -1L;
     }
+
 }

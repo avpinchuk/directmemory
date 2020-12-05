@@ -1,7 +1,3 @@
-package org.apache.directmemory.memory;
-
-import org.junit.Test;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,22 +16,19 @@ import org.junit.Test;
  * specific language governing permissions and limitations
  * under the License.
  */
-public class UnsafeMemoryManagerTest
-    extends AbstractMemoryManagerServiceTest
-{
+
+package org.apache.directmemory.memory;
+
+public class UnsafeMemoryManagerTest extends AbstractMemoryManagerServiceTest {
 
     @Override
-    protected MemoryManagerService<Object> instanciateMemoryManagerService( int bufferSize )
-    {
+    protected MemoryManagerService<Object> instanciateMemoryManagerService(int bufferSize) {
         final MemoryManagerService<Object> mms = new UnsafeMemoryManagerServiceImpl<Object>();
-        mms.init( 1, bufferSize );
+        mms.init(1, bufferSize);
         return mms;
     }
-    
+
     @Override
-    public void testAllocate()
-    {
-        
-    }
+    public void testAllocate() { }
 
 }

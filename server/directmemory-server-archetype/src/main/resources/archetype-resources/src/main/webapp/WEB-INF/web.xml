@@ -2,7 +2,6 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ Copyright 2005-2006 The Apache Software Foundation.
   ~
@@ -18,23 +17,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" version="2.4"
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         version="2.4"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-  <display-name>Apache DirectMemory</display-name>
-  
-  <servlet>
-    <servlet-name>DirectMemoryServlet</servlet-name>
-    <servlet-class>org.apache.directmemory.server.services.DirectMemoryServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>DirectMemoryServlet</servlet-name>
-    <url-pattern>/cache/*</url-pattern>
-  </servlet-mapping>
+    <display-name>Apache DirectMemory</display-name>
 
-  
+    <servlet>
+        <servlet-name>DirectMemoryServlet</servlet-name>
+        <servlet-class>org.apache.directmemory.server.services.DirectMemoryServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DirectMemoryServlet</servlet-name>
+        <url-pattern>/cache/*</url-pattern>
+    </servlet-mapping>
+
 </web-app>  

@@ -17,39 +17,41 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.apache.directmemory</groupId>
-    <artifactId>directmemory</artifactId>
-    <version>0.3-SNAPSHOT</version>
-    <relativePath>../</relativePath>
-  </parent>
+    <parent>
+        <groupId>org.apache.directmemory</groupId>
+        <artifactId>directmemory</artifactId>
+        <version>0.3-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
 
-  <artifactId>directmemory-integrations</artifactId>
-  <packaging>pom</packaging>
-  <name>Apache DirectMemory :: Integrations</name>
-  <description>${project.name}</description>
+    <artifactId>directmemory-integrations</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache DirectMemory :: Integrations</name>
+    <description>${project.name}</description>
 
-  <modules>
-    <module>solr</module>
-    <module>ehcache</module>
-    <module>guava</module>
-    <!--
-    This integration is not yet ready for a release
-    <module>guice</module>
-    -->
-  </modules>
+    <modules>
+        <module>solr</module>
+        <module>ehcache</module>
+        <module>guava</module>
+        <!--
+        This integration is not yet ready for a release
+        <module>guice</module>
+        -->
+    </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${project.parent.groupId}</groupId>
-        <artifactId>directmemory-cache</artifactId>
-        <version>${project.parent.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.parent.groupId}</groupId>
+                <artifactId>directmemory-cache</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

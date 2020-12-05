@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client.providers.asynchttpclient;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory.server.client.providers.asynchttpclient;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.server.client.providers.asynchttpclient;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
@@ -43,200 +43,139 @@ import java.util.concurrent.TimeoutException;
 /**
  * @author Olivier Lamy
  */
-public class AsyncHttpClientDirectMemoryHttpClient
-    extends AbstractDirectMemoryHttpClient
-    implements DirectMemoryHttpClient
-{
-    private Logger log = LoggerFactory.getLogger( getClass() );
+public class AsyncHttpClientDirectMemoryHttpClient extends AbstractDirectMemoryHttpClient implements DirectMemoryHttpClient {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private AsyncHttpClient asyncHttpClient;
 
-    public AsyncHttpClientDirectMemoryHttpClient( DirectMemoryClientConfiguration configuration )
-    {
-        super( configuration );
+    public AsyncHttpClientDirectMemoryHttpClient(DirectMemoryClientConfiguration configuration) {
+        super(configuration);
         // String providerClass, AsyncHttpClientConfig config
         AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
-        builder.setConnectionTimeoutInMs( (int) configuration.getConnectionTimeOut() );
-        builder.setMaximumConnectionsTotal( configuration.getMaxConcurentConnections() );
+        builder.setConnectionTimeoutInMs((int) configuration.getConnectionTimeOut());
+        builder.setMaximumConnectionsTotal(configuration.getMaxConcurentConnections());
 
         String httpProviderClassName = configuration.getHttpProviderClassName();
 
         asyncHttpClient = new AsyncHttpClient(
-            httpProviderClassName != null ? httpProviderClassName : NettyAsyncHttpProvider.class.getName(),
-            configuration.getAsyncHttpClientConfig() == null
+                httpProviderClassName != null ? httpProviderClassName : NettyAsyncHttpProvider.class.getName(),
+                configuration.getAsyncHttpClientConfig() == null
                 ? builder.build()
-                : configuration.getAsyncHttpClientConfig() );
+                : configuration.getAsyncHttpClientConfig());
     }
 
     @Override
-    public DirectMemoryResponse put( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-
-        try
-        {
-            return internalPut( request ).get( configuration.getReadTimeOut(), TimeUnit.MILLISECONDS );
-        }
-        catch ( InterruptedException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-        catch ( TimeoutException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-        catch ( ExecutionException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-
-    }
-
-    @Override
-    public Future<DirectMemoryResponse> asyncPut( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        return internalPut( request );
-
-    }
-
-    public ListenableFuture<DirectMemoryResponse> internalPut( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        String uri = buildRequestWithKey( request );
-        log.debug( "put request to: {}", uri );
-        AsyncHttpClient.BoundRequestBuilder requestBuilder = this.asyncHttpClient.preparePut( uri );
-        requestBuilder.addHeader( "Content-Type", getRequestContentType( request ) );
-
-        if ( request.getExpiresIn() > 0 )
-        {
-            requestBuilder.addHeader( DirectMemoryHttpConstants.EXPIRES_IN_HTTP_HEADER,
-                                      Integer.toString( request.getExpiresIn() ) );
-        }
-
-        if ( request.getExchangeType() == ExchangeType.TEXT_PLAIN )
-        {
-            requestBuilder.addHeader( DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
-                                      request.getSerializer().getClass().getName() );
-        }
-
-        requestBuilder.setBody( getPutContent( request ) );
-        try
-        {
-            return asyncHttpClient.executeRequest( requestBuilder.build(), new DirectMemoryPutHandler( request ) );
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-
-    }
-
-    @Override
-    public DirectMemoryResponse get( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        try
-        {
-            return internalGet( request ).get( configuration.getReadTimeOut(), TimeUnit.MILLISECONDS );
-        }
-        catch ( InterruptedException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-        catch ( TimeoutException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-        catch ( ExecutionException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+    public DirectMemoryResponse put(DirectMemoryRequest request) throws DirectMemoryException {
+        try {
+            return internalPut(request).get(configuration.getReadTimeOut(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        } catch (TimeoutException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        } catch (ExecutionException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
     }
 
     @Override
-    public Future<DirectMemoryResponse> asyncGet( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        return internalGet( request );
+    public Future<DirectMemoryResponse> asyncPut(DirectMemoryRequest request) throws DirectMemoryException {
+        return internalPut(request);
     }
 
-    public ListenableFuture<DirectMemoryResponse> internalGet( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        String uri = buildRequestWithKey( request );
-        log.debug( "get request to: {}", uri );
+    public ListenableFuture<DirectMemoryResponse> internalPut(DirectMemoryRequest request) throws DirectMemoryException {
+        String uri = buildRequestWithKey(request);
+        log.debug("put request to: {}", uri);
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = this.asyncHttpClient.preparePut(uri);
+        requestBuilder.addHeader("Content-Type", getRequestContentType(request));
 
-        AsyncHttpClient.BoundRequestBuilder requestBuilder = this.asyncHttpClient.prepareGet( uri );
-        requestBuilder.addHeader( "Accept", getAcceptContentType( request ) );
+        if (request.getExpiresIn() > 0) {
+            requestBuilder.addHeader(DirectMemoryHttpConstants.EXPIRES_IN_HTTP_HEADER,
+                                     Integer.toString(request.getExpiresIn()));
+        }
 
-        if ( request.getExchangeType() == ExchangeType.TEXT_PLAIN )
-        {
-            requestBuilder.addHeader( DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
-                                      request.getSerializer().getClass().getName() );
+        if (request.getExchangeType() == ExchangeType.TEXT_PLAIN) {
+            requestBuilder.addHeader(DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
+                                     request.getSerializer().getClass().getName());
         }
-        try
-        {
-            return asyncHttpClient.executeRequest( requestBuilder.build(), new DirectMemoryGetHandler( request ) );
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-    }
 
-    @Override
-    public DirectMemoryResponse delete( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        try
-        {
-            return internalDelete( request ).get( this.configuration.getReadTimeOut(), TimeUnit.MILLISECONDS );
-        }
-        catch ( InterruptedException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-        catch ( TimeoutException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
-        }
-        catch ( ExecutionException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+        requestBuilder.setBody(getPutContent(request));
+        try {
+            return asyncHttpClient.executeRequest(requestBuilder.build(), new DirectMemoryPutHandler(request));
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
     }
 
     @Override
-    public Future<DirectMemoryResponse> asyncDelete( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        return internalDelete( request );
-    }
-
-    public ListenableFuture<DirectMemoryResponse> internalDelete( DirectMemoryRequest request )
-        throws DirectMemoryException
-    {
-        String uri = buildRequestWithKey( request );
-        log.debug( "get request to: {}", uri );
-
-        AsyncHttpClient.BoundRequestBuilder requestBuilder = this.asyncHttpClient.prepareGet( uri );
-        requestBuilder.addHeader( "Accept", getAcceptContentType( request ) );
-
-        if ( request.getExchangeType() == ExchangeType.TEXT_PLAIN )
-        {
-            requestBuilder.addHeader( DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
-                                      request.getSerializer().getClass().getName() );
-        }
-        try
-        {
-            return asyncHttpClient.executeRequest( requestBuilder.build(), new DirectMemoryGetHandler( request ) );
-        }
-        catch ( IOException e )
-        {
-            throw new DirectMemoryException( e.getMessage(), e );
+    public DirectMemoryResponse get(DirectMemoryRequest request) throws DirectMemoryException {
+        try {
+            return internalGet(request).get(configuration.getReadTimeOut(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        } catch (TimeoutException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        } catch (ExecutionException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
         }
     }
 
+    @Override
+    public Future<DirectMemoryResponse> asyncGet(DirectMemoryRequest request) throws DirectMemoryException {
+        return internalGet(request);
+    }
 
+    public ListenableFuture<DirectMemoryResponse> internalGet(DirectMemoryRequest request) throws DirectMemoryException {
+        String uri = buildRequestWithKey(request);
+        log.debug("get request to: {}", uri);
+
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = this.asyncHttpClient.prepareGet(uri);
+        requestBuilder.addHeader("Accept", getAcceptContentType(request));
+
+        if (request.getExchangeType() == ExchangeType.TEXT_PLAIN) {
+            requestBuilder.addHeader(DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
+                                     request.getSerializer().getClass().getName());
+        }
+        try {
+            return asyncHttpClient.executeRequest(requestBuilder.build(), new DirectMemoryGetHandler(request));
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public DirectMemoryResponse delete(DirectMemoryRequest request) throws DirectMemoryException {
+        try {
+            return internalDelete(request).get(this.configuration.getReadTimeOut(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        } catch (TimeoutException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        } catch (ExecutionException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Future<DirectMemoryResponse> asyncDelete(DirectMemoryRequest request) throws DirectMemoryException {
+        return internalDelete(request);
+    }
+
+    public ListenableFuture<DirectMemoryResponse> internalDelete(DirectMemoryRequest request) throws DirectMemoryException {
+        String uri = buildRequestWithKey(request);
+        log.debug("get request to: {}", uri);
+
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = this.asyncHttpClient.prepareGet(uri);
+        requestBuilder.addHeader("Accept", getAcceptContentType(request));
+
+        if (request.getExchangeType() == ExchangeType.TEXT_PLAIN) {
+            requestBuilder.addHeader(DirectMemoryHttpConstants.SERIALIZER_HTTP_HEADER,
+                                     request.getSerializer().getClass().getName());
+        }
+        try {
+            return asyncHttpClient.executeRequest(requestBuilder.build(), new DirectMemoryGetHandler(request));
+        } catch (IOException e) {
+            throw new DirectMemoryException(e.getMessage(), e);
+        }
+    }
 }

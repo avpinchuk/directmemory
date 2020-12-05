@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.services;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.services;
  * under the License.
  */
 
+package org.apache.directmemory.server.services;
+
 import org.apache.directmemory.server.commons.DirectMemoryException;
 import org.apache.directmemory.server.commons.DirectMemoryRequest;
 
@@ -29,12 +29,13 @@ import java.io.IOException;
 /**
  * @author Olivier Lamy
  */
-public interface ContentTypeHandler
-{
-    byte[] handleGet( DirectMemoryRequest request, byte[] cacheResponseContent, HttpServletResponse response,
-                      HttpServletRequest req )
-        throws DirectMemoryException, IOException;
+public interface ContentTypeHandler {
 
-    DirectMemoryRequest handlePut( HttpServletRequest request, HttpServletResponse response )
-        throws DirectMemoryException, IOException;
+    byte[] handleGet(DirectMemoryRequest request,
+                     byte[] cacheResponseContent,
+                     HttpServletResponse response,
+                     HttpServletRequest req) throws DirectMemoryException, IOException;
+
+    DirectMemoryRequest handlePut(HttpServletRequest request,
+                                  HttpServletResponse response) throws DirectMemoryException, IOException;
 }

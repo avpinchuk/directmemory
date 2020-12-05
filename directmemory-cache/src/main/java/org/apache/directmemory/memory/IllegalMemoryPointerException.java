@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,30 +17,26 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
-public class IllegalMemoryPointerException
-    extends RuntimeException
-{
+package org.apache.directmemory.memory;
+
+public class IllegalMemoryPointerException extends RuntimeException {
 
     private static final long serialVersionUID = -273700198424032755L;
 
-    public IllegalMemoryPointerException()
-    {
+    public IllegalMemoryPointerException() {
         super();
     }
 
-    public IllegalMemoryPointerException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public IllegalMemoryPointerException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public IllegalMemoryPointerException( String message )
-    {
-        super( message );
+    public IllegalMemoryPointerException(String message) {
+        super(message);
     }
 
-    public IllegalMemoryPointerException( Throwable cause )
-    {
-        super( cause );
+    public IllegalMemoryPointerException(Throwable cause) {
+        super(cause);
     }
 
 }

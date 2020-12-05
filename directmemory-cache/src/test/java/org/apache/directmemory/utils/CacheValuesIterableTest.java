@@ -1,5 +1,3 @@
-package org.apache.directmemory.utils;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.utils;
  * under the License.
  */
 
+package org.apache.directmemory.utils;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -36,15 +36,19 @@ import static org.junit.Assert.assertTrue;
 /**
  * Testcase for {@link CacheValuesIterable}
  */
-public class CacheValuesIterableTest
-{
+public class CacheValuesIterableTest {
     private CacheService<String, Long> cache;
 
     @Before
     public void setUp() {
-        cache = new DirectMemory<String, Long>().setNumberOfBuffers( 10 ).setSize( 1000 ).setInitialCapacity( 10000 ).setConcurrencyLevel( 4 ).newCacheService(); 
+        cache = new DirectMemory<String, Long>()
+                .setNumberOfBuffers(10)
+                .setSize(1000)
+                .setInitialCapacity(10000)
+                .setConcurrencyLevel(4)
+            .newCacheService();
     }
-    
+
     @After
     public void cleanUp() throws IOException {
         cache.clear();
@@ -52,90 +56,80 @@ public class CacheValuesIterableTest
     }
 
     @Test
-    public void simpleStrictCacheValuesIteratorTest()
-        throws Exception
-    {
-        assertNull( cache.retrieve( "a" ) );
-        assertNotNull( cache.put( "a", 1L ) );
-        assertNotNull( cache.put( "b", 2L ) );
-        assertNotNull( cache.put( "c", 3L ) );
-        assertNotNull( cache.retrieve( "a" ) );
-        assertNotNull( cache.retrieve( "b" ) );
-        assertNotNull( cache.retrieve( "c" ) );
-        assertEquals( 1L, cache.retrieve( "a" ).longValue() );
+    public void simpleStrictCacheValuesIteratorTest() {
+        assertNull(cache.retrieve("a"));
+        assertNotNull(cache.put("a", 1L));
+        assertNotNull(cache.put("b", 2L));
+        assertNotNull(cache.put("c", 3L));
+        assertNotNull(cache.retrieve("a"));
+        assertNotNull(cache.retrieve("b"));
+        assertNotNull(cache.retrieve("c"));
+        assertEquals(1L, cache.retrieve("a").longValue());
 
-        CacheValuesIterable<String, Long> cacheValuesIterable = new CacheValuesIterable<String, Long>( cache );
-        for ( Long longVal : cacheValuesIterable )
-        {
-            assertNotNull( longVal );
-            assertTrue( longVal > 0 );
+        CacheValuesIterable<String, Long> cacheValuesIterable = new CacheValuesIterable<String, Long>(cache);
+        for (Long longVal : cacheValuesIterable) {
+            assertNotNull(longVal);
+            assertTrue(longVal > 0);
         }
     }
 
     @Test
-    public void simpleNonStrictCacheValuesIteratorTest()
-        throws Exception
-    {
-        assertNull( cache.retrieve( "a" ) );
-        assertNotNull( cache.put( "a", 1L ) );
-        assertNotNull( cache.put( "b", 2L ) );
-        assertNotNull( cache.put( "c", 3L ) );
-        assertNotNull( cache.retrieve( "a" ) );
-        assertNotNull( cache.retrieve( "b" ) );
-        assertNotNull( cache.retrieve( "c" ) );
-        assertEquals( 1L, cache.retrieve( "a" ).longValue() );
+    public void simpleNonStrictCacheValuesIteratorTest() {
+        assertNull(cache.retrieve("a"));
+        assertNotNull(cache.put("a", 1L));
+        assertNotNull(cache.put("b", 2L));
+        assertNotNull(cache.put("c", 3L));
+        assertNotNull(cache.retrieve("a"));
+        assertNotNull(cache.retrieve("b"));
+        assertNotNull(cache.retrieve("c"));
+        assertEquals(1L, cache.retrieve("a").longValue());
 
-        CacheValuesIterable<String, Long> cacheValuesIterable = new CacheValuesIterable<String, Long>( cache, false );
+        CacheValuesIterable<String, Long> cacheValuesIterable = new CacheValuesIterable<String, Long>(cache, false);
         int count = 0;
-        for ( Long longVal : cacheValuesIterable )
-        {
+        for (Long longVal : cacheValuesIterable) {
             count++;
-            assertNotNull( longVal );
-            assertTrue( longVal > 0 );
+            assertNotNull(longVal);
+            assertTrue(longVal > 0);
         }
-        assertEquals( 3, count );
+        assertEquals(3, count);
     }
 
     @Test
-    public void nonStrictCacheValuesIteratorShouldSkipExpiredItemsTest() throws Exception
-    {
-        assertNotNull( cache.put( "a", 1L ) );
-        assertNotNull( cache.put( "b", 2L, 1 ) );
-        assertNotNull( cache.put( "c", 3L ) );
+    public void nonStrictCacheValuesIteratorShouldSkipExpiredItemsTest() throws Exception {
+        assertNotNull(cache.put("a", 1L));
+        assertNotNull(cache.put("b", 2L, 1));
+        assertNotNull(cache.put("c", 3L));
 
-        Thread.sleep( 10 );
-        CacheValuesIterable<String, Long> cacheValuesIterable = new CacheValuesIterable<String, Long>( cache, false );
+        Thread.sleep(10);
+        CacheValuesIterable<String, Long> cacheValuesIterable = new CacheValuesIterable<String, Long>(cache, false);
         int count = 0;
-        for ( Long longVal : cacheValuesIterable )
-        {
+        for (Long longVal : cacheValuesIterable) {
             count++;
-            assertNotNull( longVal );
-            assertTrue( longVal > 0 );
+            assertNotNull(longVal);
+            assertTrue(longVal > 0);
         }
-        assertEquals( 2, count );
+        assertEquals(2, count);
     }
-    
-    @Test
-    public void nonStrictCacheValuesIteratorRemoveTest() throws Exception {
-        assertNotNull( cache.put( "a", 1L ) );
-        assertNotNull( cache.put( "b", 2L ) );
-        assertNotNull( cache.put( "c", 3L ) );
 
-        Iterator<Long> iterator = new CacheValuesIterable<String, Long>( cache, false ).iterator();
-        while ( iterator.hasNext() )
-        {
+    @Test
+    public void nonStrictCacheValuesIteratorRemoveTest() {
+        assertNotNull(cache.put("a", 1L));
+        assertNotNull(cache.put("b", 2L));
+        assertNotNull(cache.put("c", 3L));
+
+        Iterator<Long> iterator = new CacheValuesIterable<String, Long>(cache, false).iterator();
+        while (iterator.hasNext()) {
             long longVal = iterator.next();
             if (longVal == 2) {
                 iterator.remove();
             }
         }
         int count = 0;
-        iterator = new CacheValuesIterable<String, Long>( cache, false ).iterator();
+        iterator = new CacheValuesIterable<String, Long>(cache, false).iterator();
         while (iterator.hasNext()) {
             iterator.next();
             count++;
         }
-        assertEquals( 2, count);
-
+        assertEquals(2, count);
     }
 }

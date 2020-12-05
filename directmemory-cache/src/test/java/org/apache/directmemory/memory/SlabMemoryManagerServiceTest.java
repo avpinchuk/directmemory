@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -27,55 +27,41 @@ import org.apache.directmemory.memory.allocator.FixedSizeByteBufferAllocatorImpl
 import org.apache.directmemory.memory.allocator.SlabByteBufferAllocator;
 import org.junit.Test;
 
-public class SlabMemoryManagerServiceTest
-    extends AbstractMemoryManagerServiceTest
-{
+public class SlabMemoryManagerServiceTest extends AbstractMemoryManagerServiceTest {
 
     @Override
-    protected MemoryManagerService<Object> instanciateMemoryManagerService( int bufferSize )
-    {
-        final MemoryManagerService<Object> mms = new MemoryManagerServiceImpl<Object>()
-        {
+    protected MemoryManagerService<Object> instanciateMemoryManagerService(int bufferSize) {
+        final MemoryManagerService<Object> mms = new MemoryManagerServiceImpl<Object>() {
 
             @Override
-            protected Allocator instanciateByteBufferAllocator( int allocatorNumber, int size )
-            {
+            protected Allocator instanciateByteBufferAllocator(int allocatorNumber, int size) {
                 Collection<FixedSizeByteBufferAllocatorImpl> slabs = new HashSet<FixedSizeByteBufferAllocatorImpl>();
 
-                slabs.add( new FixedSizeByteBufferAllocatorImpl( 0, size, SMALL_PAYLOAD_LENGTH / 2, 1 ) );
-                slabs.add( new FixedSizeByteBufferAllocatorImpl( 1, size, SMALL_PAYLOAD_LENGTH, 1 ) );
-                slabs.add( new FixedSizeByteBufferAllocatorImpl( 2, size, SMALL_PAYLOAD_LENGTH * 2, 1 ) );
+                slabs.add(new FixedSizeByteBufferAllocatorImpl(0, size, SMALL_PAYLOAD_LENGTH / 2, 1));
+                slabs.add(new FixedSizeByteBufferAllocatorImpl(1, size, SMALL_PAYLOAD_LENGTH, 1));
+                slabs.add(new FixedSizeByteBufferAllocatorImpl(2, size, SMALL_PAYLOAD_LENGTH * 2, 1));
 
                 final SlabByteBufferAllocator allocator =
-                    new SlabByteBufferAllocator( allocatorNumber, slabs, false );
+                        new SlabByteBufferAllocator(allocatorNumber, slabs, false);
 
                 return allocator;
             }
 
         };
-        mms.init( 1, bufferSize );
+        mms.init(1, bufferSize);
         return mms;
     }
 
     @Override
     @Test
-    public void testFullFillAndFreeAndClearBuffer()
-    {
-
-    }
+    public void testFullFillAndFreeAndClearBuffer() { }
 
     @Override
     @Test
-    public void testStoreAllocAndFree()
-    {
-
-    }
+    public void testStoreAllocAndFree() { }
 
     @Override
     @Test
-    public void testAllocate()
-    {
-
-    }
+    public void testAllocate() { }
 
 }

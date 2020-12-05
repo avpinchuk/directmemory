@@ -17,80 +17,82 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
-  <packaging>war</packaging>
-  <name>Apache DirectMemory :: Server Instance</name>
-  <description>${project.name}</description>
-  <version>${version}</version>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <packaging>war</packaging>
+    <name>Apache DirectMemory :: Server Instance</name>
+    <description>${project.name}</description>
+    <version>${version}</version>
 
-  <properties>
-    <tomcatRunPort>9091</tomcatRunPort>
-    <tomcatRunPath>/dm</tomcatRunPath>
-    <directMemoryVersion>${directMemoryVersion}</directMemoryVersion>
-  </properties>
+    <properties>
+        <tomcatRunPort>9091</tomcatRunPort>
+        <tomcatRunPath>/dm</tomcatRunPath>
+        <directMemoryVersion>${directMemoryVersion}</directMemoryVersion>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.directmemory.server</groupId>
-      <artifactId>directmemory-server</artifactId>
-      <version>${directMemoryVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directmemory</groupId>
-      <artifactId>directmemory-protostuff</artifactId>
-      <version>${directMemoryVersion}</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.directmemory.server</groupId>
+            <artifactId>directmemory-server</artifactId>
+            <version>${directMemoryVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directmemory</groupId>
+            <artifactId>directmemory-protostuff</artifactId>
+            <version>${directMemoryVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+    </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
-        <configuration>
-          <port>${tomcatRunPort}</port>
-          <path>${tomcatRunPath}</path>
-          <systemProperties>
-            <directMemory.size>1000</directMemory.size>
-          </systemProperties>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.0-beta-1</version>
+                <configuration>
+                    <port>${tomcatRunPort}</port>
+                    <path>${tomcatRunPath}</path>
+                    <systemProperties>
+                        <directMemory.size>1000</directMemory.size>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <url>https://repository.apache.org/content/groups/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>apache.snapshots</id>
+            <url>https://repository.apache.org/content/groups/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

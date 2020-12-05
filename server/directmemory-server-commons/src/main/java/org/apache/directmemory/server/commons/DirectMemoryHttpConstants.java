@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,11 +17,13 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryHttpConstants
-{
+public class DirectMemoryHttpConstants {
+
     public static final String JAVA_SERIALIZED_OBJECT_CONTENT_TYPE_HEADER = "application/x-java-serialized-object";
 
     public static final String SERIALIZER_HTTP_HEADER = "X-DirectMemory-Serializer";
@@ -32,8 +32,7 @@ public class DirectMemoryHttpConstants
 
     public static final String EXPIRES_SERIALIZE_SIZE = "X-DirectMemory-SerializeSize";
 
-    private DirectMemoryHttpConstants()
-    {
+    private DirectMemoryHttpConstants() {
         // no op only a constants class
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,13 +17,15 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 import org.apache.directmemory.serialization.Serializer;
 
 /**
  * @author Olivier Lamy
  */
-public abstract class AbstractDirectMemoryExchange<V>
-{
+public abstract class AbstractDirectMemoryExchange<V> {
+
     private String key;
 
     private V object;
@@ -34,46 +34,38 @@ public abstract class AbstractDirectMemoryExchange<V>
 
     protected byte[] cacheContent;
 
-    public String getKey()
-    {
+    public String getKey() {
         return key;
     }
 
-    public AbstractDirectMemoryExchange setKey( String key )
-    {
+    public AbstractDirectMemoryExchange setKey(String key) {
         this.key = key;
         return this;
     }
 
-    public V getObject()
-    {
+    public V getObject() {
         return object;
     }
 
-    public AbstractDirectMemoryExchange setObject( V object )
-    {
+    public AbstractDirectMemoryExchange setObject(V object) {
         this.object = object;
         return this;
     }
 
-    public Serializer getSerializer()
-    {
+    public Serializer getSerializer() {
         return serializer;
     }
 
-    public AbstractDirectMemoryExchange setSerializer( Serializer serializer )
-    {
+    public AbstractDirectMemoryExchange setSerializer(Serializer serializer) {
         this.serializer = serializer;
         return this;
     }
 
-    public byte[] getCacheContent()
-    {
+    public byte[] getCacheContent() {
         return cacheContent;
     }
 
-    public AbstractDirectMemoryExchange setCacheContent( byte[] cacheContent )
-    {
+    public AbstractDirectMemoryExchange setCacheContent(byte[] cacheContent) {
         this.cacheContent = cacheContent;
         return this;
     }

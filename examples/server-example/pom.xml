@@ -18,66 +18,68 @@
   ~ under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <groupId>org.apache.directmemory</groupId>
-    <artifactId>examples</artifactId>
-    <version>0.3-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.apache.directmemory</groupId>
+        <artifactId>examples</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>server-example</artifactId>
-  <packaging>war</packaging>
-  <name>Apache DirectMemory :: Examples :: Server Javascript</name>
-  <description>${project.name}</description>
+    <artifactId>server-example</artifactId>
+    <packaging>war</packaging>
+    <name>Apache DirectMemory :: Examples :: Server Javascript</name>
+    <description>${project.name}</description>
 
-  <properties>
-    <tomcatRunPort>9091</tomcatRunPort>
-    <tomcatRunPath>/dm</tomcatRunPath>
-  </properties>
+    <properties>
+        <tomcatRunPort>9091</tomcatRunPort>
+        <tomcatRunPath>/dm</tomcatRunPath>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.directmemory.server</groupId>
-      <artifactId>directmemory-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directmemory</groupId>
-      <artifactId>directmemory-protostuff</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.directmemory.server</groupId>
+            <artifactId>directmemory-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directmemory</groupId>
+            <artifactId>directmemory-protostuff</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+    </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
-        <configuration>
-          <port>${tomcatRunPort}</port>
-          <path>${tomcatRunPath}</path>
-          <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
-          <systemProperties>
-            <directMemory.size>1000</directMemory.size>
-          </systemProperties>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <configuration>
+                    <port>${tomcatRunPort}</port>
+                    <path>${tomcatRunPath}</path>
+                    <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
+                    <systemProperties>
+                        <directMemory.size>1000</directMemory.size>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

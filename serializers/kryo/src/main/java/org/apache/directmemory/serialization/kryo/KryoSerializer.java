@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization.kryo;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,31 +17,29 @@ package org.apache.directmemory.serialization.kryo;
  * under the License.
  */
 
-import org.apache.directmemory.serialization.Serializer;
+package org.apache.directmemory.serialization.kryo;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import org.apache.directmemory.serialization.Serializer;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public final class KryoSerializer
-    implements Serializer, Closeable
-{
+public final class KryoSerializer implements Serializer, Closeable {
+
     /* buffer size */
     private static final int BUFFER_SIZE = 1024;
 
     private final KryoPool pool;
 
-    public KryoSerializer(KryoPool pool)
-    {
+    public KryoSerializer(KryoPool pool) {
         this.pool = pool;
     }
 
-    public KryoSerializer()
-    {
+    public KryoSerializer() {
         this(new KryoPool());
     }
 
@@ -51,25 +47,19 @@ public final class KryoSerializer
      * {@inheritDoc}
      */
     @Override
-    public <T> byte[] serialize(T obj)
-            throws IOException
-    {
+    public <T> byte[] serialize(T obj) {
         Class<?> clazz = obj.getClass();
 
         KryoHolder kh = null;
-        try
-        {
+        try {
             kh = pool.get();
             kh.reset();
             checkRegiterNeeded(kh.kryo, clazz);
 
             kh.kryo.writeObject(kh.output, obj);
             return kh.output.toBytes();
-        }
-        finally
-        {
-            if (kh != null)
-            {
+        } finally {
+            if (kh != null) {
                 pool.done(kh);
             }
         }
@@ -79,22 +69,16 @@ public final class KryoSerializer
      * {@inheritDoc}
      */
     @Override
-    public <T> T deserialize( byte[] source, Class<T> clazz )
-        throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
+    public <T> T deserialize(byte[] source, Class<T> clazz) {
         KryoHolder kh = null;
-        try
-        {
+        try {
             kh = pool.get();
             checkRegiterNeeded(kh.kryo, clazz);
 
             Input input = new Input(source);
             return kh.kryo.readObject(input, clazz);
-        }
-        finally
-        {
-            if (kh != null)
-            {
+        } finally {
+            if (kh != null) {
                 pool.done(kh);
             }
         }
@@ -102,58 +86,47 @@ public final class KryoSerializer
 
     /**
      * Closes the pool releasing any associated Kryo instance with it
-     * @throws IOException
+     *
      */
     @Override
-    public void close() throws IOException
-    {
+    public void close() {
         pool.close();
     }
 
-    private static void checkRegiterNeeded(Kryo kryo, Class<?> clazz)
-    {
-        kryo.register( clazz );
+    private static void checkRegiterNeeded(Kryo kryo, Class<?> clazz) {
+        kryo.register(clazz);
     }
 
 
-
-    private static class KryoHolder
-    {
+    private static class KryoHolder {
         final Kryo kryo;
         final Output output = new Output(BUFFER_SIZE, -1);
 
-        KryoHolder(Kryo kryo)
-        {
+        KryoHolder(Kryo kryo) {
             this.kryo = kryo;
         }
 
-        private void reset()
-        {
+        private void reset() {
             output.clear();
         }
     }
 
-    public static class KryoPool
-    {
+    public static class KryoPool {
         private final Queue<KryoHolder> objects = new ConcurrentLinkedQueue<KryoHolder>();
 
-        public KryoHolder get()
-        {
+        public KryoHolder get() {
             KryoHolder kh;
-            if ((kh = objects.poll()) == null)
-            {
+            if ((kh = objects.poll()) == null) {
                 kh = new KryoHolder(createInstance());
             }
             return kh;
         }
 
-        public void done(KryoHolder kh)
-        {
+        public void done(KryoHolder kh) {
             objects.offer(kh);
         }
 
-        public void close()
-        {
+        public void close() {
             objects.clear();
         }
 
@@ -162,13 +135,10 @@ public final class KryoSerializer
          *
          * @return create Kryo instance
          */
-        protected Kryo createInstance()
-        {
+        protected Kryo createInstance() {
             Kryo kryo = new Kryo();
             kryo.setReferences(false);
             return kryo;
         }
-
     }
-
 }

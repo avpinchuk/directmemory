@@ -1,5 +1,3 @@
-package org.apache.directmemory.preliminary;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory.preliminary;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.preliminary;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -39,103 +39,86 @@ import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 
-@AxisRange( min = 0, max = 1 )
-@BenchmarkMethodChart( filePrefix = "latest-microbench" )
-@BenchmarkOptions( benchmarkRounds = 1, warmupRounds = 0 )
-@BenchmarkHistoryChart( labelWith = LabelType.CUSTOM_KEY, maxRuns = 5 )
+@AxisRange(min = 0, max = 1)
+@BenchmarkMethodChart(filePrefix = "latest-microbench")
+@BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)
+@BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
 @Ignore
-public class MicroBenchmark
-    extends AbstractBenchmark
-{
+public class MicroBenchmark extends AbstractBenchmark {
 
-    private static Logger logger = LoggerFactory.getLogger( MicroBenchmark.class );
+    private static Logger logger = LoggerFactory.getLogger(MicroBenchmark.class);
 
     private final int many = 3000000;
 
     private final int less = 300000;
 
     @Before
-    public void cleanup()
-    {
-        dump( "Before cleanup" );
+    public void cleanup() {
+        dump("Before cleanup");
         // Runtime.getRuntime().gc();
         // dump("After cleanup");
-        logger.info( "************************************************" );
+        logger.info("************************************************");
     }
 
-    private void dump( String message )
-    {
-        logger.info( message );
-        logger.info( "Memory - max: " + Ram.inMb( Runtime.getRuntime().maxMemory() ) );
-        logger.info( "Memory - allocated: " + Ram.inMb( Runtime.getRuntime().totalMemory() ) );
-        logger.info( "Memory - free : " + Ram.inMb( Runtime.getRuntime().freeMemory() ) );
+    private void dump(String message) {
+        logger.info(message);
+        logger.info("Memory - max: " + Ram.inMb(Runtime.getRuntime().maxMemory()));
+        logger.info("Memory - allocated: " + Ram.inMb(Runtime.getRuntime().totalMemory()));
+        logger.info("Memory - free : " + Ram.inMb(Runtime.getRuntime().freeMemory()));
     }
 
     @Test
-    public void manySmallInHeapWithHashmap()
-    {
+    public void manySmallInHeapWithHashmap() {
         final Map<String, byte[]> test = Maps.newHashMap();
         final byte payload[] = new byte[450];
         long ops = many;
-        for ( int i = 0; i < ops; i++ )
-        {
+        for (int i = 0; i < ops; i++) {
             final String key = "test-" + i;
-            test.put( key, payload.clone() );
+            test.put(key, payload.clone());
         }
-        logger.info( "many=" + ops );
-        logger.info( "payload.length=" + payload.length );
-        logger.info( "stored " + Ram.inMb( payload.length * ops ) );
+        logger.info("many=" + ops);
+        logger.info("payload.length=" + payload.length);
+        logger.info("stored " + Ram.inMb(payload.length * ops));
     }
 
     @Test
-    public void manySmallInHeapWithMapMaker()
-    {
+    public void manySmallInHeapWithMapMaker() {
         final byte payload[] = new byte[450];
         int ops = many;
 
-        logger.info( "many=" + ops );
-        logger.info( "payload.length=" + payload.length );
-        pumpTheHeap( ops, payload );
-
+        logger.info("many=" + ops);
+        logger.info("payload.length=" + payload.length);
+        pumpTheHeap(ops, payload);
     }
 
     @Test
-    public void manySmallOffHeap()
-    {
-
+    public void manySmallOffHeap() {
         final byte payload[] = new byte[450];
         int ops = many;
 
-        logger.info( "many=" + ops );
-        logger.info( "payload.length=" + payload.length );
-        pumpOffHeap( ops, payload );
-
+        logger.info("many=" + ops);
+        logger.info("payload.length=" + payload.length);
+        pumpOffHeap(ops, payload);
     }
 
     @Test
-    public void lessButLargerOffHeap()
-    {
-
+    public void lessButLargerOffHeap() {
         final byte payload[] = new byte[5120];
         int ops = less;
 
-        logger.info( "less=" + ops );
-        logger.info( "payload.length=" + payload.length );
-        pumpOffHeap( ops, payload );
-
+        logger.info("less=" + ops);
+        logger.info("payload.length=" + payload.length);
+        pumpOffHeap(ops, payload);
     }
 
     @Test
-    public void lessButLargerInHeap()
-    {
-
+    public void lessButLargerInHeap() {
         final byte payload[] = new byte[5120];
         int ops = less;
 
-        logger.info( "less=" + ops );
-        logger.info( "payload.length=" + payload.length );
-        pumpTheHeap( ops, payload );
-
+        logger.info("less=" + ops);
+        logger.info("payload.length=" + payload.length);
+        pumpTheHeap(ops, payload);
     }
 
     /*
@@ -145,52 +128,44 @@ public class MicroBenchmark
      * finally { future.cancel(); // may or may not desire this }
      */
 
-    private void pumpOffHeap( int ops, byte[] payload )
-    {
+    private void pumpOffHeap(int ops, byte[] payload) {
+        ConcurrentMap<String, ByteBuffer> test = new MapMaker().concurrencyLevel(4).makeMap();
 
-        ConcurrentMap<String, ByteBuffer> test = new MapMaker().concurrencyLevel( 4 ).makeMap();
+        logger.info(Ram.inMb(ops * payload.length) + " in " + ops + " slices to store");
 
-        logger.info( Ram.inMb( ops * payload.length ) + " in " + ops + " slices to store" );
-
-        ByteBuffer bulk = ByteBuffer.allocateDirect( ops * payload.length );
+        ByteBuffer bulk = ByteBuffer.allocateDirect(ops * payload.length);
 
         double started = System.currentTimeMillis();
 
-        for ( int i = 0; i < ops; i++ )
-        {
-            bulk.position( i * payload.length );
+        for (int i = 0; i < ops; i++) {
+            bulk.position(i * payload.length);
             final ByteBuffer buf = bulk.duplicate();
-            buf.put( payload );
-            test.put( "test-" + i, buf );
+            buf.put(payload);
+            test.put("test-" + i, buf);
         }
 
         double finished = System.currentTimeMillis();
 
-        logger.info( "done in " + ( finished - started ) / 1000 + " seconds" );
+        logger.info("done in " + (finished - started) / 1000 + " seconds");
 
-        for ( ByteBuffer buf : test.values() )
-        {
+        for (ByteBuffer buf : test.values()) {
             buf.clear();
         }
     }
 
-    private void pumpTheHeap( int ops, byte[] payload )
-    {
+    private void pumpTheHeap(int ops, byte[] payload) {
+        ConcurrentMap<String, byte[]> test = new MapMaker().concurrencyLevel(4).makeMap();
 
-        ConcurrentMap<String, byte[]> test = new MapMaker().concurrencyLevel( 4 ).makeMap();
-
-        logger.info( Ram.inMb( ops * payload.length ) + " in " + ops + " slices to store" );
+        logger.info(Ram.inMb(ops * payload.length) + " in " + ops + " slices to store");
 
         double started = System.currentTimeMillis();
 
-        for ( int i = 0; i < ops; i++ )
-        {
-            test.put( "test-" + i, payload.clone() );
+        for (int i = 0; i < ops; i++) {
+            test.put("test-" + i, payload.clone());
         }
 
         double finished = System.currentTimeMillis();
 
-        logger.info( "done in " + ( finished - started ) / 1000 + " seconds" );
+        logger.info("done in " + (finished - started) / 1000 + " seconds");
     }
-
 }

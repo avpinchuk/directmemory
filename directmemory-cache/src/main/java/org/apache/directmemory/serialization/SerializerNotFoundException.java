@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,25 +17,23 @@ package org.apache.directmemory.serialization;
  * under the License.
  */
 
+package org.apache.directmemory.serialization;
+
 import static java.lang.String.format;
 
-public final class SerializerNotFoundException
-    extends Exception
-{
+public final class SerializerNotFoundException extends Exception {
 
     /**
      *
      */
     private static final long serialVersionUID = 5095679349348496962L;
 
-    public SerializerNotFoundException( String serializerClassName )
-    {
-        super( format( "Serializer of type '%s' has not been found in the current ClassLoader", serializerClassName ) );
+    public SerializerNotFoundException(String serializerClassName) {
+        super(format("Serializer of type '%s' has not been found in the current ClassLoader", serializerClassName));
     }
 
-    public SerializerNotFoundException( Class<?> serializerType )
-    {
-        this( serializerType.getName() );
+    public SerializerNotFoundException(Class<?> serializerType) {
+        this(serializerType.getName());
     }
 
 }

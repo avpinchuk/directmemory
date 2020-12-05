@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 import org.apache.directmemory.serialization.Serializer;
 
 /**
@@ -30,9 +30,8 @@ import org.apache.directmemory.serialization.Serializer;
  *
  * @author Olivier Lamy
  */
-public class DirectMemoryRequest<V>
-    extends AbstractDirectMemoryExchange<V>
-{
+public class DirectMemoryRequest<V> extends AbstractDirectMemoryExchange<V> {
+
     /**
      * to update/put content in the server
      */
@@ -49,106 +48,85 @@ public class DirectMemoryRequest<V>
      */
     private boolean deleteRequest = false;
 
-    public DirectMemoryRequest()
-    {
+    public DirectMemoryRequest() {
         // no op
     }
 
-    public DirectMemoryRequest( String key )
-    {
-        this.setKey( key );
+    public DirectMemoryRequest(String key) {
+        this.setKey(key);
     }
 
-    public DirectMemoryRequest( String key, Class<V> objectClass )
-    {
-        this.setKey( key );
-        this.setObjectClass( objectClass );
+    public DirectMemoryRequest(String key, Class<V> objectClass) {
+        this.setKey(key);
+        this.setObjectClass(objectClass);
     }
 
-    public DirectMemoryRequest( String key, V object )
-    {
-        this.setKey( key );
-        this.setObject( object );
+    public DirectMemoryRequest(String key, V object) {
+        this.setKey(key);
+        this.setObject(object);
     }
 
-    public boolean isUpdate()
-    {
+    public boolean isUpdate() {
         return update;
     }
 
-    public DirectMemoryRequest setUpdate( boolean update )
-    {
+    public DirectMemoryRequest setUpdate(boolean update) {
         this.update = update;
         return this;
     }
 
-    public int getExpiresIn()
-    {
+    public int getExpiresIn() {
         return expiresIn;
     }
 
-    public DirectMemoryRequest setExpiresIn( int expiresIn )
-    {
+    public DirectMemoryRequest setExpiresIn(int expiresIn) {
         this.expiresIn = expiresIn;
         return this;
     }
 
-    public DirectMemoryRequest setKey( String key )
-    {
-        super.setKey( key );
+    public DirectMemoryRequest setKey(String key) {
+        super.setKey(key);
         return this;
     }
 
-
-    public DirectMemoryRequest setObject( V object )
-    {
-        super.setObject( object );
+    public DirectMemoryRequest setObject(V object) {
+        super.setObject(object);
         return this;
     }
 
-
-    public DirectMemoryRequest setSerializer( Serializer serializer )
-    {
-        super.setSerializer( serializer );
+    public DirectMemoryRequest setSerializer(Serializer serializer) {
+        super.setSerializer(serializer);
         return this;
     }
 
-
-    public DirectMemoryRequest setCacheContent( byte[] cacheContent )
-    {
-        super.setCacheContent( cacheContent );
+    public DirectMemoryRequest setCacheContent(byte[] cacheContent) {
+        super.setCacheContent(cacheContent);
         return this;
     }
 
-    public boolean isDeleteRequest()
-    {
+    public boolean isDeleteRequest() {
         return deleteRequest;
     }
 
-    public DirectMemoryRequest setDeleteRequest( boolean deleteRequest )
-    {
+    public DirectMemoryRequest setDeleteRequest(boolean deleteRequest) {
         this.deleteRequest = deleteRequest;
         return this;
     }
 
-    public ExchangeType getExchangeType()
-    {
+    public ExchangeType getExchangeType() {
         return exchangeType;
     }
 
-    public DirectMemoryRequest setExchangeType( ExchangeType exchangeType )
-    {
+    public DirectMemoryRequest setExchangeType(ExchangeType exchangeType) {
         this.exchangeType = exchangeType;
         return this;
     }
 
-    public Class<V> getObjectClass()
-    {
+    public Class<V> getObjectClass() {
         return objectClass;
     }
 
-    public DirectMemoryRequest setObjectClass( Class<V> objectClass )
-    {
+    public DirectMemoryRequest setObjectClass(Class<V> objectClass) {
         this.objectClass = objectClass;
         return this;
     }

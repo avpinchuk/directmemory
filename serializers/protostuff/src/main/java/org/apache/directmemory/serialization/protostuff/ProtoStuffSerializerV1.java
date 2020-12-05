@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization.protostuff;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.serialization.protostuff;
  * under the License.
  */
 
+package org.apache.directmemory.serialization.protostuff;
+
 import static com.dyuproject.protostuff.LinkedBuffer.allocate;
 import static com.dyuproject.protostuff.ProtostuffIOUtil.mergeFrom;
 import static com.dyuproject.protostuff.ProtostuffIOUtil.toByteArray;
@@ -32,31 +32,24 @@ import org.apache.directmemory.serialization.Serializer;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 
-public final class ProtoStuffSerializerV1
-    implements Serializer
-{
+public final class ProtoStuffSerializerV1 implements Serializer {
 
-    static int serBufferSize = Ram.Kb( 3 );
+    static int serBufferSize = Ram.Kb(3);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> byte[] serialize( T obj )
-        throws IOException
-    {
-        @SuppressWarnings( "unchecked" ) // type should be safe since got directly from the obj
+    public <T> byte[] serialize(T obj) {
+        @SuppressWarnings("unchecked") // type should be safe since got directly from the obj
         final Class<T> clazz = (Class<T>) obj.getClass();
-        final Schema<T> schema = getSchema( clazz );
-        final LinkedBuffer buffer = allocate( serBufferSize );
+        final Schema<T> schema = getSchema(clazz);
+        final LinkedBuffer buffer = allocate(serBufferSize);
         byte[] protostuff = null;
 
-        try
-        {
-            protostuff = toByteArray( obj, schema, buffer );
-        }
-        finally
-        {
+        try {
+            protostuff = toByteArray(obj, schema, buffer);
+        } finally {
             buffer.clear();
         }
         return protostuff;
@@ -66,13 +59,10 @@ public final class ProtoStuffSerializerV1
      * {@inheritDoc}
      */
     @Override
-    public <T> T deserialize( byte[] source, Class<T> clazz )
-        throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
+    public <T> T deserialize(byte[] source, Class<T> clazz) throws InstantiationException, IllegalAccessException {
         final T object = clazz.newInstance();
-        final Schema<T> schema = getSchema( clazz );
-        mergeFrom( source, object, schema );
+        final Schema<T> schema = getSchema(clazz);
+        mergeFrom(source, object, schema);
         return object;
     }
-
 }

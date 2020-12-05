@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,46 +17,40 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
+package org.apache.directmemory.measures;
+
 import static java.lang.String.format;
 
-public class Sizing
-{
+public class Sizing {
 
     private static final int KILOBYTE_UNIT = 1024;
 
-    public static int Gb( double giga )
-    {
+    public static int Gb(double giga) {
         return (int) giga * KILOBYTE_UNIT * KILOBYTE_UNIT * KILOBYTE_UNIT;
     }
 
-    public static int Mb( double mega )
-    {
+    public static int Mb(double mega) {
         return (int) mega * KILOBYTE_UNIT * KILOBYTE_UNIT;
     }
 
-    public static int Kb( double kilo )
-    {
+    public static int Kb(double kilo) {
         return (int) kilo * KILOBYTE_UNIT;
     }
 
-    public static int unlimited()
-    {
+    public static int unlimited() {
         return -1;
     }
 
-    public static String inKb( long bytes )
-    {
-        return format( "%(,.1fKb", (double) bytes / KILOBYTE_UNIT );
+    public static String inKb(long bytes) {
+        return format("%(,.1fKb", (double) bytes / KILOBYTE_UNIT);
     }
 
-    public static String inMb( long bytes )
-    {
-        return format( "%(,.1fMb", (double) bytes / KILOBYTE_UNIT / KILOBYTE_UNIT );
+    public static String inMb(long bytes) {
+        return format("%(,.1fMb", (double) bytes / KILOBYTE_UNIT / KILOBYTE_UNIT);
     }
 
-    public static String inGb( long bytes )
-    {
-        return format( "%(,.1fGb", (double) bytes / KILOBYTE_UNIT / KILOBYTE_UNIT / KILOBYTE_UNIT );
+    public static String inGb(long bytes) {
+        return format("%(,.1fGb", (double) bytes / KILOBYTE_UNIT / KILOBYTE_UNIT / KILOBYTE_UNIT);
     }
 
 }

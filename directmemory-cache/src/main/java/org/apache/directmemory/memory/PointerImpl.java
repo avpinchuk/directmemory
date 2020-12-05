@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 
@@ -27,9 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.directmemory.memory.buffer.MemoryBuffer;
 
-public class PointerImpl<T>
-    implements Pointer<T>
-{
+public class PointerImpl<T> implements Pointer<T> {
 
     public final MemoryBuffer memoryBuffer;
 
@@ -43,48 +41,42 @@ public class PointerImpl<T>
 
     public long hits;
 
-    public final AtomicBoolean free = new AtomicBoolean( true );
+    public final AtomicBoolean free = new AtomicBoolean(true);
 
     public final AtomicLong lastHit = new AtomicLong();
 
     public Class<? extends T> clazz;
 
-    public PointerImpl( MemoryBuffer memoryBuffer, int bufferNumber )
-    {
+    public PointerImpl(MemoryBuffer memoryBuffer, int bufferNumber) {
         this.memoryBuffer = memoryBuffer;
         this.bufferNumber = bufferNumber;
     }
 
     @Override
-    public byte[] content()
-    {
+    public byte[] content() {
         return null;
     }
 
     @Override
-    public float getFrequency()
-    {
-        return (float) ( currentTimeMillis() - created ) / hits;
+    public float getFrequency() {
+        return (float) (currentTimeMillis() - created) / hits;
     }
 
     @Override
-    public long getCapacity()
-    {
+    public long getCapacity() {
         return memoryBuffer == null ? -1 : memoryBuffer.capacity();
     }
 
     @Override
-    public String toString()
-    {
-        return format( "%s[%s] %s free", getClass().getSimpleName(), getSize(), ( isFree() ? "" : "not" ) );
+    public String toString() {
+        return format("%s[%s] %s free", getClass().getSimpleName(), getSize(), (isFree() ? "" : "not"));
     }
 
     @Override
-    public void reset()
-    {
-        free.set( true );
+    public void reset() {
+        free.set(true);
         created = 0;
-        lastHit.set( 0 );
+        lastHit.set(0);
         hits = 0;
         expiresIn = 0;
         clazz = null;
@@ -92,86 +84,73 @@ public class PointerImpl<T>
     }
 
     @Override
-    public boolean isFree()
-    {
+    public boolean isFree() {
         return free.get();
     }
 
     @Override
-    public boolean isExpired()
-    {
-        if ( expires > 0 || expiresIn > 0 )
-        {
-            return ( expiresIn + created < currentTimeMillis() );
+    public boolean isExpired() {
+        if (expires > 0 || expiresIn > 0) {
+            return (expiresIn + created < currentTimeMillis());
         }
         return false;
     }
 
     @Override
-    public int getBufferNumber()
-    {
+    public int getBufferNumber() {
         return bufferNumber;
     }
 
     @Override
-    public long getSize()
-    {
+    public long getSize() {
         return memoryBuffer.capacity();
     }
 
     @Override
-    public void hit()
-    {
-        lastHit.set( System.currentTimeMillis() );
+    public void hit() {
+        lastHit.set(System.currentTimeMillis());
         hits++;
     }
 
     @Override
-    public Class<? extends T> getClazz()
-    {
+    public Class<? extends T> getClazz() {
         return clazz;
     }
 
     @Override
-    public MemoryBuffer getMemoryBuffer()
-    {
+    public MemoryBuffer getMemoryBuffer() {
         return memoryBuffer;
     }
 
     @Override
-    public void setFree( boolean free )
-    {
-        this.free.set( free );
+    public void setFree(boolean free) {
+        this.free.set(free);
     }
 
     @Override
-    public void setClazz( Class<? extends T> clazz )
-    {
+    public void setClazz(Class<? extends T> clazz) {
         this.clazz = clazz;
     }
 
     @Override
-    public void createdNow()
-    {
+    public void createdNow() {
         created = System.currentTimeMillis();
     }
 
     @Override
-    public void setExpiration( long expires, long expiresIn )
-    {
+    public void setExpiration(long expires, long expiresIn) {
         this.expires = expires;
         this.expiresIn = expiresIn;
     }
 
     @Override
-    public long getExpires()
-    {
+    public long getExpires() {
         return this.expires;
     }
 
     @Override
-    public long getExpiresIn()
-    {
+    public long getExpiresIn() {
         return this.expiresIn;
     }
+
 }

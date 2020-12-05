@@ -1,12 +1,3 @@
-package org.apache.directmemory.memory;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,38 +17,40 @@ import org.junit.runners.Parameterized.Parameters;
  * under the License.
  */
 
-@RunWith( Parameterized.class )
-public class DefaultMemoryManagerServiceTest
-    extends AbstractMemoryManagerServiceTest
-{
+package org.apache.directmemory.memory;
 
-    @Parameters
-    public static Collection<Object[]> data()
-    {
-        return Arrays.asList( new Object[][] { { MemoryManagerServiceImpl.class },
-            { UnsafeMemoryManagerServiceImpl.class } } );
-    }
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith(Parameterized.class)
+public class DefaultMemoryManagerServiceTest extends AbstractMemoryManagerServiceTest {
 
     private final Class<? extends MemoryManagerService<Object>> memoryManagerServiceClass;
 
-    public DefaultMemoryManagerServiceTest( Class<? extends MemoryManagerService<Object>> memoryManagerServiceClass )
-    {
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(
+                new Object[][]{
+                        {MemoryManagerServiceImpl.class},
+                        {UnsafeMemoryManagerServiceImpl.class}});
+    }
+
+    public DefaultMemoryManagerServiceTest(Class<? extends MemoryManagerService<Object>> memoryManagerServiceClass) {
         this.memoryManagerServiceClass = memoryManagerServiceClass;
     }
 
     @Override
-    protected MemoryManagerService<Object> instanciateMemoryManagerService( int bufferSize )
-    {
-        try
-        {
+    protected MemoryManagerService<Object> instanciateMemoryManagerService(int bufferSize) {
+        try {
             final MemoryManagerService<Object> mms = memoryManagerServiceClass.newInstance();
-            mms.init( 1, bufferSize );
+            mms.init(1, bufferSize);
             return mms;
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-
 }

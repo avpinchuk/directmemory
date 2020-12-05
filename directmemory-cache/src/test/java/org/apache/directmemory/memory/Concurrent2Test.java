@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.annotation.AxisRange;
@@ -27,8 +27,6 @@ import com.carrotsearch.junitbenchmarks.annotation.BenchmarkMethodChart;
 import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 import com.google.common.collect.MapMaker;
 import org.apache.directmemory.measures.Ram;
-import org.apache.directmemory.memory.MemoryManager;
-import org.apache.directmemory.memory.Pointer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -40,13 +38,13 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@AxisRange( min = 0, max = 1 )
+@AxisRange(min = 0, max = 1)
 @BenchmarkMethodChart()
-@BenchmarkHistoryChart( labelWith = LabelType.CUSTOM_KEY, maxRuns = 5 )
+@BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
 @Ignore
-public class Concurrent2Test
-    extends AbstractBenchmark
-{
+public class Concurrent2Test extends AbstractBenchmark {
+
+    private static Logger logger = LoggerFactory.getLogger(Concurrent2Test.class);
 
     private final static int entries = 100000;
 
@@ -63,178 +61,135 @@ public class Concurrent2Test
     private static AtomicInteger read = new AtomicInteger();
 
     public static ConcurrentMap<String, Pointer<Object>> map =
-        new MapMaker().concurrencyLevel( 4 ).initialCapacity( 100000 ).makeMap();
-
-
-    @BenchmarkOptions( benchmarkRounds = 100000, warmupRounds = 0, concurrency = 100 )
-    @Test
-    public void store()
-    {
-        final String key = "test-" + count.incrementAndGet();
-        put( key );
-    }
-
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100 )
-    @Test
-    public void retrieveCatchThemAll()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries ) + 1 );
-        Pointer<Object> p = map.get( key );
-        read.incrementAndGet();
-        if ( p != null )
-        {
-            got.incrementAndGet();
-            byte[] payload = MemoryManager.retrieve( p );
-            if ( key.equals( new String( payload ) ) )
-            {
-                good.incrementAndGet();
-            }
-            else
-            {
-                bad.incrementAndGet();
-            }
-        }
-        else
-        {
-            logger.info( "did not find key " + key );
-            missed.incrementAndGet();
-        }
-    }
-
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100 )
-    @Test
-    public void retrieveCatchHalfOfThem()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries * 2 ) + 1 );
-        Pointer<Object> p = map.get( key );
-        read.incrementAndGet();
-        if ( p != null )
-        {
-            got.incrementAndGet();
-            byte[] payload = MemoryManager.retrieve( p );
-            if ( key.equals( new String( payload ) ) )
-            {
-                good.incrementAndGet();
-            }
-            else
-            {
-                bad.incrementAndGet();
-            }
-        }
-        else
-        {
-            missed.incrementAndGet();
-        }
-    }
-
-    private void put( String key )
-    {
-        map.put( key, MemoryManager.store( key.getBytes() ) );
-    }
-
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10 )
-    @Test
-    public void write3Read7()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries * 2 ) + 1 );
-
-        int what = rndGen.nextInt( 10 );
-
-        switch ( what )
-        {
-            case 0:
-            case 1:
-            case 2:
-                put( key );
-                break;
-            default:
-                get( key );
-                break;
-
-        }
-
-    }
-
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10 )
-    @Test
-    public void write1Read9()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries * 2 ) + 1 );
-
-        int what = rndGen.nextInt( 10 );
-
-        switch ( what )
-        {
-            case 0:
-                put( key );
-                break;
-            default:
-                get( key );
-                break;
-
-        }
-
-    }
-
-    private void get( String key )
-    {
-        Pointer<Object> p = map.get( key );
-        read.incrementAndGet();
-        if ( p != null )
-        {
-            got.incrementAndGet();
-            byte[] payload = MemoryManager.retrieve( p );
-            if ( key.equals( new String( payload ) ) )
-            {
-                good.incrementAndGet();
-            }
-            else
-            {
-                bad.incrementAndGet();
-            }
-        }
-        else
-        {
-            missed.incrementAndGet();
-        }
-    }
+            new MapMaker().concurrencyLevel(4).initialCapacity(100000).makeMap();
 
     Random rndGen = new Random();
 
-    private static Logger logger = LoggerFactory.getLogger( Concurrent2Test.class );
+    @BenchmarkOptions(benchmarkRounds = 100000, warmupRounds = 0, concurrency = 100)
+    @Test
+    public void store() {
+        final String key = "test-" + count.incrementAndGet();
+        put(key);
+    }
 
-    private static void dump( MemoryManagerService<Object> mms )
-    {
-        logger.info( "off-heap - allocated: " + Ram.inMb( mms.capacity() ) );
-        logger.info( "off-heap - used:      " + Ram.inMb( mms.used() ) );
-        logger.info( "heap 	  - max: " + Ram.inMb( Runtime.getRuntime().maxMemory() ) );
-        logger.info( "heap     - allocated: " + Ram.inMb( Runtime.getRuntime().totalMemory() ) );
-        logger.info( "heap     - free : " + Ram.inMb( Runtime.getRuntime().freeMemory() ) );
-        logger.info( "************************************************" );
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100)
+    @Test
+    public void retrieveCatchThemAll() {
+        String key = "test-" + (rndGen.nextInt(entries) + 1);
+        Pointer<Object> p = map.get(key);
+        read.incrementAndGet();
+        if (p != null) {
+            got.incrementAndGet();
+            byte[] payload = MemoryManager.retrieve(p);
+            if (key.equals(new String(payload))) {
+                good.incrementAndGet();
+            } else {
+                bad.incrementAndGet();
+            }
+        } else {
+            logger.info("did not find key " + key);
+            missed.incrementAndGet();
+        }
+    }
+
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100)
+    @Test
+    public void retrieveCatchHalfOfThem() {
+        String key = "test-" + (rndGen.nextInt(entries * 2) + 1);
+        Pointer<Object> p = map.get(key);
+        read.incrementAndGet();
+        if (p != null) {
+            got.incrementAndGet();
+            byte[] payload = MemoryManager.retrieve(p);
+            if (key.equals(new String(payload))) {
+                good.incrementAndGet();
+            } else {
+                bad.incrementAndGet();
+            }
+        } else {
+            missed.incrementAndGet();
+        }
+    }
+
+    private void put(String key) {
+        map.put(key, MemoryManager.store(key.getBytes()));
+    }
+
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10)
+    @Test
+    public void write3Read7() {
+        String key = "test-" + (rndGen.nextInt(entries * 2) + 1);
+        int what = rndGen.nextInt(10);
+        switch (what) {
+            case 0:
+            case 1:
+            case 2:
+                put(key);
+                break;
+            default:
+                get(key);
+                break;
+        }
+    }
+
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10)
+    @Test
+    public void write1Read9() {
+        String key = "test-" + (rndGen.nextInt(entries * 2) + 1);
+        int what = rndGen.nextInt(10);
+        switch (what) {
+            case 0:
+                put(key);
+                break;
+            default:
+                get(key);
+                break;
+        }
+    }
+
+    private void get(String key) {
+        Pointer<Object> p = map.get(key);
+        read.incrementAndGet();
+        if (p != null) {
+            got.incrementAndGet();
+            byte[] payload = MemoryManager.retrieve(p);
+            if (key.equals(new String(payload))) {
+                good.incrementAndGet();
+            } else {
+                bad.incrementAndGet();
+            }
+        } else {
+            missed.incrementAndGet();
+        }
+    }
+
+    private static void dump(MemoryManagerService<Object> mms) {
+        logger.info("off-heap - allocated: " + Ram.inMb(mms.capacity()));
+        logger.info("off-heap - used:      " + Ram.inMb(mms.used()));
+        logger.info("heap 	  - max: " + Ram.inMb(Runtime.getRuntime().maxMemory()));
+        logger.info("heap     - allocated: " + Ram.inMb(Runtime.getRuntime().totalMemory()));
+        logger.info("heap     - free : " + Ram.inMb(Runtime.getRuntime().freeMemory()));
+        logger.info("************************************************");
     }
 
     @BeforeClass
-    public static void init()
-    {
-        MemoryManager.init( 1, Ram.Mb( 512 ) );
+    public static void init() {
+        MemoryManager.init(1, Ram.Mb(512));
     }
 
     @AfterClass
-    public static void dump()
-    {
+    public static void dump() {
+        dump(MemoryManager.getMemoryManager());
 
-        dump( MemoryManager.getMemoryManager() );
-
-        logger.info( "************************************************" );
-        logger.info( "entries: " + entries );
-        logger.info( "inserted: " + map.size() );
-        logger.info( "reads: " + read );
-        logger.info( "count: " + count );
-        logger.info( "got: " + got );
-        logger.info( "missed: " + missed );
-        logger.info( "good: " + good );
-        logger.info( "bad: " + bad );
-        logger.info( "************************************************" );
+        logger.info("************************************************");
+        logger.info("entries: " + entries);
+        logger.info("inserted: " + map.size());
+        logger.info("reads: " + read);
+        logger.info("count: " + count);
+        logger.info("got: " + got);
+        logger.info("missed: " + missed);
+        logger.info("good: " + good);
+        logger.info("bad: " + bad);
+        logger.info("************************************************");
     }
-
 }

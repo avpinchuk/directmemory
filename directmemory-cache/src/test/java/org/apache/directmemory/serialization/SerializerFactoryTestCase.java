@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,23 +17,21 @@ package org.apache.directmemory.serialization;
  * under the License.
  */
 
+package org.apache.directmemory.serialization;
+
 import static org.apache.directmemory.serialization.SerializerFactory.createNewSerializer;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public final class SerializerFactoryTestCase
-{
+public final class SerializerFactoryTestCase {
 
     /*
      * TODO please update the test once DM will be modularized!
      */
     @Test
-    public void verifySerializerInstantiation()
-    {
+    public void verifySerializerInstantiation() {
         Serializer serializer = createNewSerializer();
-
-        assertTrue( serializer instanceof StandardSerializer );
+        assertTrue(serializer instanceof StandardSerializer);
     }
-
 }

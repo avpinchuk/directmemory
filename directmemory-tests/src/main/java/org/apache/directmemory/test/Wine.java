@@ -1,5 +1,3 @@
-package org.apache.directmemory.test;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,46 +17,41 @@ package org.apache.directmemory.test;
  * under the License.
  */
 
+package org.apache.directmemory.test;
+
 import java.io.Serializable;
 
 /**
  * @author Olivier Lamy
  */
-public class Wine
-    implements Serializable
-{
+public class Wine implements Serializable {
+
     private String name;
 
     private String description;
 
-    public Wine()
-    {
+    public Wine() {
         // no op
     }
 
-    public Wine( String name, String description )
-    {
+    public Wine(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 }

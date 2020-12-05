@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client.providers.asynchttpclient;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.client.providers.asynchttpclient;
  * under the License.
  */
 
+package org.apache.directmemory.server.client.providers.asynchttpclient;
+
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import org.apache.directmemory.server.commons.DirectMemoryException;
@@ -29,33 +29,28 @@ import org.apache.directmemory.server.commons.DirectMemoryResponse;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryPutHandler
-    extends AsyncCompletionHandler<DirectMemoryResponse>
-{
+public class DirectMemoryPutHandler extends AsyncCompletionHandler<DirectMemoryResponse> {
+
     private DirectMemoryRequest request;
 
-    public DirectMemoryPutHandler( DirectMemoryRequest request )
-    {
+    public DirectMemoryPutHandler(DirectMemoryRequest request) {
         this.request = request;
     }
 
     @Override
-    public DirectMemoryResponse onCompleted( Response response )
-        throws Exception
-    {
+    public DirectMemoryResponse onCompleted(Response response) throws Exception {
         int statusCode = response.getStatusCode();
-        switch ( statusCode )
-        {
+        switch (statusCode) {
             case 200:
-                String headerValue = response.getHeader( DirectMemoryHttpConstants.EXPIRES_SERIALIZE_SIZE );
-                int storedSize = headerValue == null ? -1 : Integer.valueOf( headerValue );
-                return new DirectMemoryResponse().setStored( Boolean.TRUE ).setStoredSize( storedSize );
+                String headerValue = response.getHeader(DirectMemoryHttpConstants.EXPIRES_SERIALIZE_SIZE);
+                int storedSize = headerValue == null ? -1 : Integer.valueOf(headerValue);
+                return new DirectMemoryResponse().setStored(Boolean.TRUE).setStoredSize(storedSize);
             case 204:
-                return new DirectMemoryResponse().setStored( Boolean.FALSE );
+                return new DirectMemoryResponse().setStored(Boolean.FALSE);
             default:
                 throw new DirectMemoryException(
-                    "put cache content return http code:'" + statusCode + "', reasonPhrase:"
-                        + response.getStatusText() );
+                        "put cache content return http code:'" + statusCode + "', reasonPhrase:"
+                        + response.getStatusText());
         }
     }
 }

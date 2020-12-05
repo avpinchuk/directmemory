@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory.buffer;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,11 +17,11 @@ package org.apache.directmemory.memory.buffer;
  * under the License.
  */
 
+package org.apache.directmemory.memory.buffer;
+
 import java.nio.ByteOrder;
 
-public interface MemoryBuffer
-    extends ReadableMemoryBuffer, WritableMemoryBuffer
-{
+public interface MemoryBuffer extends ReadableMemoryBuffer, WritableMemoryBuffer {
 
     long capacity();
 
@@ -33,7 +31,7 @@ public interface MemoryBuffer
 
     ByteOrder byteOrder();
 
-    void byteOrder( ByteOrder byteOrder );
+    void byteOrder(ByteOrder byteOrder);
 
     void free();
 

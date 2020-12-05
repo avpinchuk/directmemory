@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
+package org.apache.directmemory.measures;
+
 import static java.lang.String.format;
 
 import java.text.DecimalFormat;
@@ -29,11 +29,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MonitorServiceImpl
-    implements MonitorService
-{
+public class MonitorServiceImpl implements MonitorService {
 
-    private final AtomicLong hits = new AtomicLong( 0 );
+    private final AtomicLong hits = new AtomicLong(0);
 
     private long totalTime = 0;
 
@@ -43,116 +41,94 @@ public class MonitorServiceImpl
 
     public final String name;
 
-    private static final Logger LOG = LoggerFactory.getLogger( MonitorServiceImpl.class );
+    private static final Logger LOG = LoggerFactory.getLogger(MonitorServiceImpl.class);
 
     //TODO: MONITORS looks like a good candidate to become a private field
     public static final Map<String, MonitorServiceImpl> MONITORS = new HashMap<String, MonitorServiceImpl>();
 
-    public MonitorServiceImpl( String name )
-    {
+    public MonitorServiceImpl(String name) {
         this.name = name;
     }
 
-    public long start()
-    {
+    public long start() {
         return System.nanoTime();
     }
 
-    public long stop( long begunAt )
-    {
+    public long stop(long begunAt) {
         hits.incrementAndGet();
         final long lastAccessed = System.nanoTime();
         final long elapsed = lastAccessed - begunAt;
         totalTime += elapsed;
-        if ( elapsed > max && hits.get() > 0 )
-        {
+        if (elapsed > max && hits.get() > 0) {
             max = elapsed;
         }
-        if ( elapsed < min && hits.get() > 0 )
-        {
+        if (elapsed < min && hits.get() > 0) {
             min = elapsed;
         }
         return elapsed;
     }
 
-    public long hits()
-    {
+    public long hits() {
         return hits.get();
     }
 
-    public long totalTime()
-    {
+    public long totalTime() {
         return totalTime;
     }
 
-    public long average()
-    {
+    public long average() {
         return hits.get() > 0 ? totalTime / hits.get() : 0;
     }
 
-    public String toString()
-    {
-        return format( "%1$s hits: %2$d, avg: %3$s ms, tot: %4$s seconds", name, hits.get(),
-                       new DecimalFormat( "####.###" ).format( (double) average() / 1000000 ),
-                       new DecimalFormat( "####.###" ).format( (double) totalTime / 1000000000 ) );
+    public String toString() {
+        return format("%1$s hits: %2$d, avg: %3$s ms, tot: %4$s seconds", name, hits.get(),
+                      new DecimalFormat("####.###").format((double) average() / 1000000),
+                      new DecimalFormat("####.###").format((double) totalTime / 1000000000));
     }
 
-    public void dump( String prefix )
-    {
-        for ( MonitorServiceImpl monitor : MonitorServiceImpl.MONITORS.values() )
-        {
-            if ( monitor.name.startsWith( prefix ) )
-            {
-                LOG.info( monitor.toString() );
+    public void dump(String prefix) {
+        for (MonitorServiceImpl monitor : MonitorServiceImpl.MONITORS.values()) {
+            if (monitor.name.startsWith(prefix)) {
+                LOG.info(monitor.toString());
             }
         }
     }
 
-    public void dump()
-    {
-        dump( "" );
+    public void dump() {
+        dump("");
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public AtomicLong getHits()
-    {
+    public AtomicLong getHits() {
         return hits;
     }
 
-    public long getTotalTime()
-    {
+    public long getTotalTime() {
         return totalTime;
     }
 
     @Override
-    public void addToTotalTime( long time )
-    {
+    public void addToTotalTime(long time) {
         totalTime += time;
     }
 
-    public long getMin()
-    {
+    public long getMin() {
         return min;
     }
 
-    public void setMin( long min )
-    {
+    public void setMin(long min) {
         this.min = min;
     }
 
-    public long getMax()
-    {
+    public long getMax() {
         return max;
     }
 
-    public void setMax( long max )
-    {
+    public void setMax(long max) {
         this.max = max;
     }
-
 
 }

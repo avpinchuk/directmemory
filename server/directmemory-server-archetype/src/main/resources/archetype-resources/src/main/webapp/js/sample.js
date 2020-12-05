@@ -16,134 +16,134 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-$(function() {
-  Wine=function(name,description){
-    this.name=name;
-    this.description=description;
-  }
-  clearResultContent=function(){
-    $("#result-content" ).html("");
-  }
-  displayInfo=function(msg){
-    //alert(msg);
-    clearResultContent();
-    $("#result-content" ).html($("#alert-message-info").tmpl({message:msg}));
-  }
+$(function () {
+    Wine = function (name, description) {
+        this.name = name;
+        this.description = description;
+    }
+    clearResultContent = function () {
+        $("#result-content").html("");
+    }
+    displayInfo = function (msg) {
+        //alert(msg);
+        clearResultContent();
+        $("#result-content").html($("#alert-message-info").tmpl({message: msg}));
+    }
 
-  displayError=function(msg){
-    //alert(msg);
-    clearResultContent();
-    $("#result-content" ).html($("#alert-message-error").tmpl({message:msg}));
-  }
+    displayError = function (msg) {
+        //alert(msg);
+        clearResultContent();
+        $("#result-content").html($("#alert-message-error").tmpl({message: msg}));
+    }
 
-  displayWarning=function(msg){
-    //alert(msg);
-    clearResultContent();
-    $("#result-content" ).html($("#alert-message-warning").tmpl({message:msg}));
-  }
+    displayWarning = function (msg) {
+        //alert(msg);
+        clearResultContent();
+        $("#result-content").html($("#alert-message-warning").tmpl({message: msg}));
+    }
 
-  // X-DirectMemory-ExpiresIn
-  putWineInCache=function(wine,expiresIn,serializer){
-    $.ajax({
-      url: 'cache/'+encodeURIComponent(wine.name),
-      data:$.toJSON( wine ),
-      cache: false,
-      type: 'PUT',
-      headers:{'X-DirectMemory-ExpiresIn':expiresIn,'X-DirectMemory-Serializer':serializer},
-      contentType: "text/plain",
-      statusCode: {
-        204: function() {
-          displayWarning("not put in cache");
-        },
-        200:function( data, textStatus, jqXHR ) {
-          var size = jqXHR.getResponseHeader('X-DirectMemory-SerializeSize');
-          displayInfo('put in cache with key:'+wine.name+ " bytes stored:"+size);
+    // X-DirectMemory-ExpiresIn
+    putWineInCache = function (wine, expiresIn, serializer) {
+        $.ajax({
+            url: 'cache/' + encodeURIComponent(wine.name),
+            data: $.toJSON(wine),
+            cache: false,
+            type: 'PUT',
+            headers: {'X-DirectMemory-ExpiresIn': expiresIn, 'X-DirectMemory-Serializer': serializer},
+            contentType: "text/plain",
+            statusCode: {
+                204: function () {
+                    displayWarning("not put in cache");
+                },
+                200: function (data, textStatus, jqXHR) {
+                    var size = jqXHR.getResponseHeader('X-DirectMemory-SerializeSize');
+                    displayInfo('put in cache with key:' + wine.name + " bytes stored:" + size);
 
-        },
-        500:function(data){
-          displayError("error put in cache");
-        }
-      }
+                },
+                500: function (data) {
+                    displayError("error put in cache");
+                }
+            }
+        });
+    }
+
+    deleteFromCache = function (key) {
+        $.ajax({
+            url: 'cache/' + encodeURIComponent(key),
+            cache: false,
+            type: 'DELETE',
+            dataType: 'text',
+            statusCode: {
+                204: function () {
+                    displayWarning("not found in cache");
+                },
+                200: function (data) {
+                    displayInfo(' key ' + key + ' deleted from cache');
+                },
+                500: function (data) {
+                    displayError("error delete from cache");
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        $("#put-cache-btn").on('click', function () {
+            var wine = new Wine($("#wine_name").val(), $("#wine_description").val());
+            if ($.trim(wine.name).length < 1) {
+                displayError("name mandatory");
+                return;
+            }
+            var expiresIn = $("#expires-in").val() ? $("#expires-in").val() : 0;
+            if ($.trim(expiresIn).length > 0 && !$.isNumeric($.trim(expiresIn))) {
+                displayError("expiresIn must be a number");
+                return;
+            }
+            putWineInCache(wine, expiresIn, $("#serializer").val());
+
+        });
+
+        $("#get_cache_btn").on('click', function () {
+            var key = $("#wine_name_cache").val();
+            if ($.trim(key).length < 1) {
+                displayError("key mandatory");
+                return;
+            }
+
+            $.ajax({
+                url: 'cache/' + encodeURIComponent(key),
+                cache: false,
+                type: 'GET',
+                headers: {'X-DirectMemory-Serializer': $("#serializer").val()},
+                dataType: 'text',
+                statusCode: {
+                    204: function () {
+                        displayWarning("not found in cache");
+                    },
+                    200: function (data) {
+                        var wine = $.parseJSON(data);
+                        displayInfo('get from cache with key:' + wine.description);
+                    },
+                    500: function (data) {
+                        displayError("error get from cache");
+                    }
+                }
+            });
+
+        });
+
+        $("#delete_cache_btn").on('click', function () {
+            var key = $("#wine_key_cache").val();
+            if ($.trim(key).length < 1) {
+                displayError("key mandatory");
+                return;
+            }
+            deleteFromCache(key);
+        });
+
+
     });
-  }
-
-  deleteFromCache=function(key){
-    $.ajax({
-      url: 'cache/'+encodeURIComponent(key),
-      cache: false,
-      type: 'DELETE',
-      dataType: 'text',
-      statusCode: {
-        204: function() {
-          displayWarning("not found in cache");
-        },
-        200:function( data ) {
-          displayInfo(' key '+key+ ' deleted from cache');
-        },
-        500:function(data){
-          displayError("error delete from cache");
-        }
-      }
-    });
-  }
-
-  $(document).ready(function() {
-
-    $("#put-cache-btn").on('click',function(){
-      var wine = new Wine($("#wine_name" ).val(),$("#wine_description" ).val());
-      if ( $.trim(wine.name ).length<1){
-        displayError("name mandatory");
-        return;
-      }
-      var expiresIn=$("#expires-in").val()?$("#expires-in").val():0;
-      if( $.trim(expiresIn).length>0 && !$.isNumeric($.trim(expiresIn))){
-        displayError("expiresIn must be a number");
-        return;
-      }
-      putWineInCache(wine,expiresIn,$("#serializer" ).val());
-
-    });
-
-    $("#get_cache_btn").on('click',function(){
-      var key = $("#wine_name_cache" ).val();
-      if ( $.trim(key).length<1){
-        displayError("key mandatory");
-        return;
-      }
-
-      $.ajax({
-        url: 'cache/'+encodeURIComponent(key),
-        cache: false,
-        type: 'GET',
-        headers:{'X-DirectMemory-Serializer':$("#serializer" ).val()},
-        dataType: 'text',
-        statusCode: {
-          204: function() {
-            displayWarning("not found in cache");
-          },
-          200:function( data ) {
-            var wine = $.parseJSON(data);
-            displayInfo('get from cache with key:'+wine.description);
-          },
-          500:function(data){
-            displayError("error get from cache");
-          }
-        }
-      });
-
-    });
-
-    $("#delete_cache_btn").on('click',function(){
-      var key = $("#wine_key_cache" ).val();
-      if ( $.trim(key).length<1){
-        displayError("key mandatory");
-        return;
-      }
-      deleteFromCache(key);
-    });
-
-
-  });
 
 
 });

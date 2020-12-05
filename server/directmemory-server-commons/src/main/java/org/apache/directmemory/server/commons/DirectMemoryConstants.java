@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,11 +17,12 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryConstants
-{
+public class DirectMemoryConstants {
 
     public static final String CACHE_CONTENT_FIELD_NAME = "cacheContent";
 
@@ -37,8 +36,7 @@ public class DirectMemoryConstants
 
     public static final String SERIALIZER_FIELD_NAME = "serializer";
 
-    private DirectMemoryConstants()
-    {
+    private DirectMemoryConstants() {
         // no op
     }
 }

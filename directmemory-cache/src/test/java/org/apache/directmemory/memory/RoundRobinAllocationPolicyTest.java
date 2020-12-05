@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -35,11 +35,10 @@ import org.junit.Test;
 
 /**
  * Unit test of {@link RoundRobinAllocationPolicy} class.
- * 
+ *
  * @author benoit@noisette.ch
  */
-public class RoundRobinAllocationPolicyTest
-{
+public class RoundRobinAllocationPolicyTest {
 
     private static final int NUMBER_OF_BUFFERS = 4;
 
@@ -48,113 +47,89 @@ public class RoundRobinAllocationPolicyTest
     RoundRobinAllocationPolicy allocationPolicy;
 
     @Before
-    public void initAllocationPolicy()
-    {
-
+    public void initAllocationPolicy() {
         allocators = new ArrayList<Allocator>();
 
-        for ( int i = 0; i < NUMBER_OF_BUFFERS; i++ )
-        {
-            allocators.add( new DummyByteBufferAllocator() );
+        for (int i = 0; i < NUMBER_OF_BUFFERS; i++) {
+            allocators.add(new DummyByteBufferAllocator());
         }
 
         allocationPolicy = new RoundRobinAllocationPolicy();
-        allocationPolicy.init( allocators );
+        allocationPolicy.init(allocators);
     }
 
     @After
-    public void cleanup()
-        throws IOException
-    {
-        for ( Allocator allocator : allocators )
-        {
+    public void cleanup() throws IOException {
+        for (Allocator allocator : allocators) {
             allocator.close();
         }
     }
 
     @Test
-    public void testSequence()
-    {
+    public void testSequence() {
+        assertEquals(allocators.get(0), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(1), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(2), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(3), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(0), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(1), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(2), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(3), allocationPolicy.getActiveAllocator(null, 1));
 
-        assertEquals( allocators.get( 0 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 1 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 2 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 3 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 0 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 1 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 2 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 3 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-
-        assertNotNull( allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertNotNull( allocationPolicy.getActiveAllocator( null, 2 ) );
-        assertNull( allocationPolicy.getActiveAllocator( null, 3 ) );
+        assertNotNull(allocationPolicy.getActiveAllocator(null, 1));
+        assertNotNull(allocationPolicy.getActiveAllocator(null, 2));
+        assertNull(allocationPolicy.getActiveAllocator(null, 3));
 
         allocationPolicy.reset();
 
-        assertEquals( allocators.get( 0 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 1 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 2 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 3 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 0 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 1 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 2 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertEquals( allocators.get( 3 ), allocationPolicy.getActiveAllocator( null, 1 ) );
-
+        assertEquals(allocators.get(0), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(1), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(2), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(3), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(0), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(1), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(2), allocationPolicy.getActiveAllocator(null, 1));
+        assertEquals(allocators.get(3), allocationPolicy.getActiveAllocator(null, 1));
     }
 
     @Test
-    public void testMaxAllocation()
-    {
+    public void testMaxAllocation() {
+        allocationPolicy.setMaxAllocations(1);
 
-        allocationPolicy.setMaxAllocations( 1 );
-
-        assertNotNull( allocationPolicy.getActiveAllocator( null, 1 ) );
-        assertNull( allocationPolicy.getActiveAllocator( null, 2 ) );
-        assertNull( allocationPolicy.getActiveAllocator( null, 3 ) );
-
+        assertNotNull(allocationPolicy.getActiveAllocator(null, 1));
+        assertNull(allocationPolicy.getActiveAllocator(null, 2));
+        assertNull(allocationPolicy.getActiveAllocator(null, 3));
     }
 
     /**
      * Dummy {@link OffHeapMemoryBuffer} that do nothing.
      */
-    private static class DummyByteBufferAllocator
-        implements Allocator
-    {
+    private static class DummyByteBufferAllocator implements Allocator {
 
         @Override
-        public void free( MemoryBuffer buffer )
-        {
+        public void free(MemoryBuffer buffer) {
         }
 
         @Override
-        public MemoryBuffer allocate( int size )
-        {
+        public MemoryBuffer allocate(int size) {
             return null;
         }
 
         @Override
-        public void clear()
-        {
+        public void clear() {
         }
 
         @Override
-        public int getCapacity()
-        {
+        public int getCapacity() {
             return 0;
         }
 
         @Override
-        public int getNumber()
-        {
+        public int getNumber() {
             return 0;
         }
 
         @Override
-        public void close()
-            throws IOException
-        {
-
-        }
-
+        public void close() throws IOException { }
     }
 }

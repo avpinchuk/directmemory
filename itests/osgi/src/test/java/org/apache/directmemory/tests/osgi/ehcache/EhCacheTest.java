@@ -1,5 +1,3 @@
-package org.apache.directmemory.tests.osgi.ehcache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory.tests.osgi.ehcache;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.tests.osgi.ehcache;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,98 +50,96 @@ import static org.ops4j.pax.swissbox.tinybundles.core.TinyBundles.modifyBundle;
 @RunWith(JUnit4TestRunner.class)
 public class EhCacheTest extends DirectMemoryOsgiTestSupport {
 
-  @Test
-  public void testPutRetreive() {
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-    CacheManager cacheManager = CacheManager.getInstance();
-    Ehcache ehcache = cacheManager.getEhcache("testCache");
+    @Test
+    public void testPutRetreive() {
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        CacheManager cacheManager = CacheManager.getInstance();
+        Ehcache ehcache = cacheManager.getEhcache("testCache");
 
-    ehcache.put(new Element("testKey", "testValue"));
-    stats(ehcache);
-    Assert.assertEquals("testValue", ehcache.get("testKey").getObjectValue());
-  }
-
-  @Test
-  public void testSizing() {
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-    CacheManager cacheManager = CacheManager.getInstance();
-    Ehcache ehcache = cacheManager.getEhcache("testCache");
-    for (int i = 0; i < 30000; i++) {
-      if ((i % 1000) == 0) {
-        System.out.println("heatbeat " + i);
+        ehcache.put(new Element("testKey", "testValue"));
         stats(ehcache);
-      }
-      ehcache.put(new Element(i, new byte[1024]));
+        Assert.assertEquals("testValue", ehcache.get("testKey").getObjectValue());
     }
-    stats(ehcache);
-    Assert.assertTrue(true);
-  }
 
-  @Test
-  public void testOffHeapExceedMemory()
-          throws IOException {
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-    CacheManager cacheManager = CacheManager.getInstance();
-    Ehcache ehcache = cacheManager.getEhcache("testCache");
-    Element element = null;
-    try {
-      for (int i = 0; i < 3000000; i++) {
-        if ((i % 1000) == 0) {
-          System.out.println("heatbeat 2 " + i);
-          stats(ehcache);
+    @Test
+    public void testSizing() {
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        CacheManager cacheManager = CacheManager.getInstance();
+        Ehcache ehcache = cacheManager.getEhcache("testCache");
+        for (int i = 0; i < 30000; i++) {
+            if ((i % 1000) == 0) {
+                System.out.println("heatbeat " + i);
+                stats(ehcache);
+            }
+            ehcache.put(new Element(i, new byte[1024]));
         }
-        element = new Element(i, new byte[1024]);
-        ehcache.put(element);
-      }
-      Assert.fail("CacheException expected for DirectMemory OffHeap Memory Exceeded");
-    } catch (CacheException e) {
-      stats(ehcache);
-      Assert.assertTrue("CacheException expected for DirectMemory OffHeap Memory Exceeded", true);
+        stats(ehcache);
+        Assert.assertTrue(true);
     }
 
-  }
-
-  private void stats(Ehcache ehcache) {
-    System.out.println("OnHeapSize=" + ehcache.calculateInMemorySize() + ", OnHeapElements="
-            + ehcache.getMemoryStoreSize());
-    System.out.println("OffHeapSize=" + ehcache.calculateOffHeapSize() + ", OffHeapElements="
-            + ehcache.getOffHeapStoreSize());
-    System.out.println("DiskStoreSize=" + ehcache.calculateOnDiskSize() + ", DiskStoreElements="
-            + ehcache.getDiskStoreSize());
-  }
-
-  public static Option[] getDynamicMemoryEhCacheOptions() {
-    List<MavenArtifactProvisionOption> mavenOptions = Arrays.asList(
-            mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.ehcache").version(
-                    System.getProperty( "ehcache.bundle.version", "2.6.6_1" )),
-            mavenBundle().groupId("org.apache.directmemory").artifactId("directmemory-ehcache").version(
-                    System.getProperty("direct.memory.version")));
-
-    List<Option> options = new ArrayList<Option>();
-    options.addAll(Arrays.asList(DirectMemoryOsgiTestSupport.getDynamicMemoryOptions()));
-    options.addAll(mavenOptions);
-
-    if (Boolean.getBoolean("osgi.debug")) {
-      options.add(enabledDebuggingOnPort(Integer.getInteger("osgi.debug.port"),
-              Boolean.getBoolean("osgi.debug.suspend")));
+    @Test
+    public void testOffHeapExceedMemory() throws IOException {
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        CacheManager cacheManager = CacheManager.getInstance();
+        Ehcache ehcache = cacheManager.getEhcache("testCache");
+        Element element = null;
+        try {
+            for (int i = 0; i < 3000000; i++) {
+                if ((i % 1000) == 0) {
+                    System.out.println("heatbeat 2 " + i);
+                    stats(ehcache);
+                }
+                element = new Element(i, new byte[1024]);
+                ehcache.put(element);
+            }
+            Assert.fail("CacheException expected for DirectMemory OffHeap Memory Exceeded");
+        } catch (CacheException e) {
+            stats(ehcache);
+            Assert.assertTrue("CacheException expected for DirectMemory OffHeap Memory Exceeded", true);
+        }
     }
 
-    return options.toArray(new Option[options.size()]);
-  }
+    private void stats(Ehcache ehcache) {
+        System.out.println("OnHeapSize=" + ehcache.calculateInMemorySize() + ", OnHeapElements="
+                           + ehcache.getMemoryStoreSize());
+        System.out.println("OffHeapSize=" + ehcache.calculateOffHeapSize() + ", OffHeapElements="
+                           + ehcache.getOffHeapStoreSize());
+        System.out.println("DiskStoreSize=" + ehcache.calculateOnDiskSize() + ", DiskStoreElements="
+                           + ehcache.getDiskStoreSize());
+    }
 
-  @Configuration
-  public Option[] configure() {
-    return combine(getDynamicMemoryEhCacheOptions(), new Customizer() {
-      @Override
-      public InputStream customizeTestProbe(InputStream testProbe) {
-        return modifyBundle(testProbe)
-                .add(SimpleObject.class)
-                .add("/ehcache.xml", EhCacheTest.class.getResource("/ehcache.xml"))
-                .set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
-      }
-    },
-            //Uncomment the line below to debug test
-            //enabledDebuggingOnPort(5005,true),
-            felix(), equinox());
-  }
+    public static Option[] getDynamicMemoryEhCacheOptions() {
+        List<MavenArtifactProvisionOption> mavenOptions = Arrays.asList(
+                mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.ehcache").version(
+                        System.getProperty("ehcache.bundle.version", "2.6.6_1")),
+                mavenBundle().groupId("org.apache.directmemory").artifactId("directmemory-ehcache").version(
+                        System.getProperty("direct.memory.version")));
+
+        List<Option> options = new ArrayList<Option>();
+        options.addAll(Arrays.asList(DirectMemoryOsgiTestSupport.getDynamicMemoryOptions()));
+        options.addAll(mavenOptions);
+
+        if (Boolean.getBoolean("osgi.debug")) {
+            options.add(enabledDebuggingOnPort(Integer.getInteger("osgi.debug.port"),
+                                               Boolean.getBoolean("osgi.debug.suspend")));
+        }
+
+        return options.toArray(new Option[options.size()]);
+    }
+
+    @Configuration
+    public Option[] configure() {
+        return combine(getDynamicMemoryEhCacheOptions(), new Customizer() {
+                           @Override
+                           public InputStream customizeTestProbe(InputStream testProbe) {
+                               return modifyBundle(testProbe)
+                                       .add(SimpleObject.class)
+                                       .add("/ehcache.xml", EhCacheTest.class.getResource("/ehcache.xml"))
+                                       .set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
+                           }
+                       },
+                       //Uncomment the line below to debug test
+                       //enabledDebuggingOnPort(5005,true),
+                       felix(), equinox());
+    }
 }

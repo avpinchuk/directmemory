@@ -1,5 +1,3 @@
-package org.apache.directmemory.preliminary;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.preliminary;
  * under the License.
  */
 
+package org.apache.directmemory.preliminary;
+
 import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.google.common.collect.MapMaker;
@@ -35,70 +35,58 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertNotNull;
 
-public class PreliminarBenchmark
-    extends AbstractBenchmark
-{
+public class PreliminarBenchmark extends AbstractBenchmark {
 
-    private static Logger logger = LoggerFactory.getLogger( PreliminarBenchmark.class );
+    private static Logger logger = LoggerFactory.getLogger(PreliminarBenchmark.class);
 
     final static byte payload[] = new byte[1024];
 
     //	@Before
-//	@After
-    public void cleanup()
-    {
-        dump( "Before cleanup" );
+    //	@After
+    public void cleanup() {
+        dump("Before cleanup");
         Runtime.getRuntime().gc();
-        dump( "After cleanup" );
-        logger.info( "************************************************" );
+        dump("After cleanup");
+        logger.info("************************************************");
     }
 
-    private void dump( String message )
-    {
-        logger.info( message );
-        logger.info( "Memory - max: " + Ram.inMb( Runtime.getRuntime().maxMemory() ) );
-        logger.info( "Memory - allocated: " + Ram.inMb( Runtime.getRuntime().totalMemory() ) );
-        logger.info( "Memory - free : " + Ram.inMb( Runtime.getRuntime().freeMemory() ) );
+    private void dump(String message) {
+        logger.info(message);
+        logger.info("Memory - max: " + Ram.inMb(Runtime.getRuntime().maxMemory()));
+        logger.info("Memory - allocated: " + Ram.inMb(Runtime.getRuntime().totalMemory()));
+        logger.info("Memory - free : " + Ram.inMb(Runtime.getRuntime().freeMemory()));
     }
 
-    @BenchmarkOptions( benchmarkRounds = 5, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 5, warmupRounds = 0)
     @Test
-    public void justMap()
-    {
+    public void justMap() {
         final Map<String, byte[]> test = Maps.newHashMap();
         long ops = 100000;
-        for ( int i = 0; i < ops; i++ )
-        {
+        for (int i = 0; i < ops; i++) {
             final String key = "test-" + i;
-            test.put( key, payload.clone() );
+            test.put(key, payload.clone());
         }
-        logger.info( "stored " + Ram.inMb( payload.length * ops ) );
+        logger.info("stored " + Ram.inMb(payload.length * ops));
     }
 
-    @BenchmarkOptions( benchmarkRounds = 1, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)
     @Test
-    public void oneMillionSmallWithDirectBuffersOneAllocation()
-    {
+    public void oneMillionSmallWithDirectBuffersOneAllocation() {
+        logger.info("payload is " + payload.length + " bytes");
 
-        logger.info( "payload is " + payload.length + " bytes" );
         final byte payload[] = new byte[500];
         int ops = 1000000;
-
-        pumpWithOneAllocation( ops, payload );
-
+        pumpWithOneAllocation(ops, payload);
     }
 
-    @BenchmarkOptions( benchmarkRounds = 1, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)
     @Test
-    public void lessButLargerWithDirectBuffersOneAllocation()
-    {
+    public void lessButLargerWithDirectBuffersOneAllocation() {
+        logger.info("payload is " + payload.length + " bytes");
 
-        logger.info( "payload is " + payload.length + " bytes" );
         final byte payload[] = new byte[2048];
         int ops = 210000;
-
-        pumpWithOneAllocation( ops, payload );
-
+        pumpWithOneAllocation(ops, payload);
     }
 
     /*
@@ -120,117 +108,101 @@ public class PreliminarBenchmark
  }
       */
 
-    @BenchmarkOptions( benchmarkRounds = 5, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 5, warmupRounds = 0)
     @Test
-    public void withDirectBuffers150k()
-    {
+    public void withDirectBuffers150k() {
+        logger.info("payload is " + payload.length + " bytes");
 
-        logger.info( "payload is " + payload.length + " bytes" );
         int ops = 150000;
-
-        pump( ops );
+        pump(ops);
     }
 
-    @BenchmarkOptions( benchmarkRounds = 5, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 5, warmupRounds = 0)
     @Test
-    public void withDirectBuffers180k()
-    {
+    public void withDirectBuffers180k() {
+        logger.info("payload is " + payload.length + " bytes");
 
-        logger.info( "payload is " + payload.length + " bytes" );
         int ops = 180000;
-
-        pump( ops );
+        pump(ops);
     }
 
-    @BenchmarkOptions( benchmarkRounds = 5, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 5, warmupRounds = 0)
     @Test
-    public void withDirectBuffers150kAgain()
-    {
+    public void withDirectBuffers150kAgain() {
+        logger.info("payload is " + payload.length + " bytes");
 
-        logger.info( "payload is " + payload.length + " bytes" );
         int ops = 150000;
-
-        pump( ops );
+        pump(ops);
     }
 
-    @BenchmarkOptions( benchmarkRounds = 1, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)
     @Test
-    public void testAllocation()
-    {
+    public void testAllocation() {
+        logger.info("payload is " + payload.length + " bytes");
+        logger.info("allocating " + Ram.inMb(payload.length * 200000));
 
-        logger.info( "payload is " + payload.length + " bytes" );
-        logger.info( "allocating " + Ram.inMb( payload.length * 200000 ) );
-        ByteBuffer buf = ByteBuffer.allocateDirect( payload.length * 200000 );
-        assertNotNull( buf );
-        logger.info( "done" );
+        ByteBuffer buf = ByteBuffer.allocateDirect(payload.length * 200000);
+        assertNotNull(buf);
+
+        logger.info("done");
     }
 
 
-    private void pumpWithOneAllocation( int ops, byte[] payload )
-    {
-
+    private void pumpWithOneAllocation(int ops, byte[] payload) {
         ConcurrentMap<String, ByteBuffer> test =
-            new MapMaker().concurrencyLevel( 4 ).maximumSize( ops ).expireAfterWrite( 10, TimeUnit.MINUTES ).makeMap();
+                new MapMaker().concurrencyLevel(4).maximumSize(ops).expireAfterWrite(10, TimeUnit.MINUTES).makeMap();
 
-        logger.info( Ram.inMb( ops * payload.length ) + " in " + ops + " slices to store" );
+        logger.info(Ram.inMb(ops * payload.length) + " in " + ops + " slices to store");
 
-        ByteBuffer bulk = ByteBuffer.allocateDirect( ops * payload.length );
+        ByteBuffer bulk = ByteBuffer.allocateDirect(ops * payload.length);
 
         double started = System.currentTimeMillis();
 
-        for ( int i = 0; i < ops; i++ )
-        {
-            bulk.position( i * payload.length );
+        for (int i = 0; i < ops; i++) {
+            bulk.position(i * payload.length);
             final ByteBuffer buf = bulk.duplicate();
-            buf.put( payload );
-            test.put( "test-" + i, buf );
+            buf.put(payload);
+            test.put("test-" + i, buf);
         }
 
         double finished = System.currentTimeMillis();
 
-        logger.info( "done in " + ( finished - started ) / 1000 + " seconds" );
+        logger.info("done in " + (finished - started) / 1000 + " seconds");
 
-        for ( ByteBuffer buf : test.values() )
-        {
+        for (ByteBuffer buf : test.values()) {
             buf.clear();
         }
     }
 
-    @BenchmarkOptions( benchmarkRounds = 5, warmupRounds = 0 )
+    @BenchmarkOptions(benchmarkRounds = 5, warmupRounds = 0)
     @Test
-    public void withDirectBuffers100k()
-    {
+    public void withDirectBuffers100k() {
+        logger.info("payload is " + payload.length + " bytes");
 
-        logger.info( "payload is " + payload.length + " bytes" );
         int ops = 100000;
-
-        pump( ops );
+        pump(ops);
     }
 
-    private void pump( int ops )
-    {
+    private void pump(int ops) {
         ConcurrentMap<String, ByteBuffer> test =
-            new MapMaker().concurrencyLevel( 4 ).maximumSize( ops ).expireAfterWrite( 10, TimeUnit.MINUTES ).makeMap();
+                new MapMaker().concurrencyLevel(4).maximumSize(ops).expireAfterWrite(10, TimeUnit.MINUTES).makeMap();
 
-        logger.info( Ram.inMb( ops * payload.length ) + " to store" );
+        logger.info(Ram.inMb(ops * payload.length) + " to store");
 
         double started = System.currentTimeMillis();
 
-        for ( int i = 0; i < ops; i++ )
-        {
-            ByteBuffer buf = ByteBuffer.allocateDirect( payload.length );
-            buf.put( payload );
-            test.put( "test-" + i, buf );
+        for (int i = 0; i < ops; i++) {
+            ByteBuffer buf = ByteBuffer.allocateDirect(payload.length);
+            buf.put(payload);
+            test.put("test-" + i, buf);
         }
 
         double finished = System.currentTimeMillis();
 
-        logger.info( "done in " + ( finished - started ) / 1000 + " seconds" );
+        logger.info("done in " + (finished - started) / 1000 + " seconds");
 
-        for ( ByteBuffer buf : test.values() )
-        {
+        for (ByteBuffer buf : test.values()) {
             buf.clear();
         }
     }
-
 }

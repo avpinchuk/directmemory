@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory.buffer;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,53 +17,54 @@ package org.apache.directmemory.memory.buffer;
  * under the License.
  */
 
+package org.apache.directmemory.memory.buffer;
+
 import java.nio.ByteBuffer;
 
-public interface WritableMemoryBuffer
-{
+public interface WritableMemoryBuffer {
 
     boolean writable();
 
     long writableBytes();
 
-    void writeBytes( byte[] bytes );
+    void writeBytes(byte[] bytes);
 
-    void writeBytes( byte[] bytes, int offset, int length );
+    void writeBytes(byte[] bytes, int offset, int length);
 
-    void writeBuffer( ByteBuffer byteBuffer );
+    void writeBuffer(ByteBuffer byteBuffer);
 
-    void writeBuffer( ByteBuffer byteBuffer, int offset, int length );
+    void writeBuffer(ByteBuffer byteBuffer, int offset, int length);
 
-    void writeBuffer( ReadableMemoryBuffer memoryBuffer );
+    void writeBuffer(ReadableMemoryBuffer memoryBuffer);
 
-    void writeBuffer( ReadableMemoryBuffer memoryBuffer, long offset, long length );
+    void writeBuffer(ReadableMemoryBuffer memoryBuffer, long offset, long length);
 
-    void writeBoolean( boolean value );
+    void writeBoolean(boolean value);
 
-    void writeByte( byte value );
+    void writeByte(byte value);
 
-    void writeUnsignedByte( short value );
+    void writeUnsignedByte(short value);
 
-    void writeShort( short value );
+    void writeShort(short value);
 
-    void writeChar( char value );
+    void writeChar(char value);
 
-    void writeInt( int value );
+    void writeInt(int value);
 
-    void writeCompressedInt( int value );
+    void writeCompressedInt(int value);
 
-    void writeLong( long value );
+    void writeLong(long value);
 
-    void writeCompressedLong( long value );
+    void writeCompressedLong(long value);
 
-    void writeFloat( float value );
+    void writeFloat(float value);
 
-    void writeDouble( double value );
+    void writeDouble(double value);
 
-    void writeString( String value );
+    void writeString(String value);
 
     long writerIndex();
 
-    void writerIndex( long writerIndex );
+    void writerIndex(long writerIndex);
 
 }

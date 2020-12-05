@@ -1,5 +1,3 @@
-package org.apache.directmemory.tests.osgi.cache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.tests.osgi.cache;
  * under the License.
  */
 
+package org.apache.directmemory.tests.osgi.cache;
+
 import org.apache.directmemory.DirectMemory;
 import org.apache.directmemory.cache.CacheService;
 import org.apache.directmemory.measures.Ram;
@@ -31,24 +31,22 @@ import org.osgi.framework.BundleContext;
 
 import java.util.Properties;
 
-public class CacheServiceExportingActivator
-    implements BundleActivator
-{
+public class CacheServiceExportingActivator implements BundleActivator {
 
     CacheService<String, SimpleObject> cacheService;
 
     @Override
-    public void start( BundleContext context )
-        throws Exception
-    {
-        MemoryManagerService<SimpleObject> memoryManager =
-            new MemoryManagerServiceImpl<SimpleObject>();
+    public void start(BundleContext context) throws Exception {
+        MemoryManagerService<SimpleObject> memoryManager = new MemoryManagerServiceImpl<SimpleObject>();
         this.cacheService =
-            new DirectMemory<String, SimpleObject>().setNumberOfBuffers( 1 ).setSize( Ram.Mb( 1 ) ).setMemoryManager(
-                memoryManager ).setSerializer(
-                SerializerFactory.createNewSerializer( StandardSerializer.class ) ).newCacheService();
-        cacheService.put( "1", new SimpleObject( "1,", "Activator Object" ) );
-        context.registerService( CacheService.class.getCanonicalName(), cacheService, new Properties() );
+                new DirectMemory<String, SimpleObject>()
+                        .setNumberOfBuffers(1)
+                        .setSize(Ram.Mb(1))
+                        .setMemoryManager(memoryManager)
+                        .setSerializer(SerializerFactory.createNewSerializer(StandardSerializer.class))
+                        .newCacheService();
+        cacheService.put("1", new SimpleObject("1,", "Activator Object"));
+        context.registerService(CacheService.class.getCanonicalName(), cacheService, new Properties());
 
         /*CacheService<Integer, byte[]> cache = new DirectMemory<Integer, byte[]>()
         .setMemoryManager( memoryManager )
@@ -58,8 +56,7 @@ public class CacheServiceExportingActivator
     }
 
     @Override
-    public void stop( BundleContext context )
-        throws Exception
-    {
+    public void stop(BundleContext context) throws Exception {
+
     }
 }

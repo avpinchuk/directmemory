@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,9 +31,7 @@ import org.apache.directmemory.memory.allocator.Allocator;
  *
  * @author bperroud
  */
-public class RoundRobinAllocationPolicy
-    implements AllocationPolicy
-{
+public class RoundRobinAllocationPolicy implements AllocationPolicy {
 
     // Increment the counter and get the value. Need to start at -1 to have 0'index at first call.
     private static final int BUFFERS_INDEX_INITIAL_VALUE = -1;
@@ -42,7 +40,7 @@ public class RoundRobinAllocationPolicy
     private List<Allocator> allocators;
 
     // Cyclic counter
-    private final AtomicInteger buffersIndexCounter = new AtomicInteger( BUFFERS_INDEX_INITIAL_VALUE );
+    private final AtomicInteger buffersIndexCounter = new AtomicInteger(BUFFERS_INDEX_INITIAL_VALUE);
 
     // Default max number of allocations before returning null buffer.
     private static final int DEFAULT_MAX_ALLOCATIONS = 2;
@@ -50,37 +48,32 @@ public class RoundRobinAllocationPolicy
     // Current max number of allocations
     private int maxAllocations = DEFAULT_MAX_ALLOCATIONS;
 
-    public void setMaxAllocations( final int maxAllocations )
-    {
+    public void setMaxAllocations(final int maxAllocations) {
         this.maxAllocations = maxAllocations;
     }
 
     @Override
-    public void init( final List<Allocator> allocators )
-    {
+    public void init(final List<Allocator> allocators) {
         this.allocators = allocators;
     }
 
     @Override
-    public Allocator getActiveAllocator( final Allocator previousAllocator, final int allocationNumber )
-    {
+    public Allocator getActiveAllocator(final Allocator previousAllocator, final int allocationNumber) {
         // If current allocation is more than the limit, return a null buffer.
-        if ( allocationNumber > maxAllocations )
-        {
+        if (allocationNumber > maxAllocations) {
             return null;
         }
 
         // Thread safely increment and get the next buffer's index
         int i = incrementAndGetBufferIndex();
 
-        return allocators.get( i );
+        return allocators.get(i);
     }
 
     @Override
-    public void reset()
-    {
+    public void reset() {
         // Reinitialize the counter to it's initial value
-        buffersIndexCounter.set( BUFFERS_INDEX_INITIAL_VALUE );
+        buffersIndexCounter.set(BUFFERS_INDEX_INITIAL_VALUE);
     }
 
     /**
@@ -88,17 +81,14 @@ public class RoundRobinAllocationPolicy
      *
      * @return next index
      */
-    private int incrementAndGetBufferIndex()
-    {
-        int newIndex = 0;
-        boolean updateOk = false;
-        do
-        {
+    private int incrementAndGetBufferIndex() {
+        int newIndex;
+        boolean updateOk;
+        do {
             int currentIndex = buffersIndexCounter.get();
-            newIndex = ( currentIndex + 1 ) % allocators.size();
-            updateOk = buffersIndexCounter.compareAndSet( currentIndex, newIndex );
-        }
-        while ( !updateOk );
+            newIndex = (currentIndex + 1) % allocators.size();
+            updateOk = buffersIndexCounter.compareAndSet(currentIndex, newIndex);
+        } while (!updateOk);
         return newIndex;
     }
 

@@ -1,5 +1,3 @@
-package org.apache.directmemory.ehcache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.ehcache;
  * under the License.
  */
 
+package org.apache.directmemory.ehcache;
+
 import java.io.IOException;
 
 import net.sf.ehcache.CacheException;
@@ -29,75 +29,60 @@ import net.sf.ehcache.Element;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class EHCacheTest
-{
+public class EHCacheTest {
 
     @Test
-    public void testPutRetreive()
-    {
+    public void testPutRetreive() {
         CacheManager cacheManager = CacheManager.getInstance();
-        Ehcache ehcache = cacheManager.getEhcache( "testCache" );
+        Ehcache ehcache = cacheManager.getEhcache("testCache");
 
-        ehcache.put( new Element( "testKey", "testValue" ) );
-        stats( ehcache );
-        Assert.assertEquals( "testValue", ehcache.get( "testKey" ).getObjectValue() );
+        ehcache.put(new Element("testKey", "testValue"));
+        stats(ehcache);
+        Assert.assertEquals("testValue", ehcache.get("testKey").getObjectValue());
     }
 
     @Test
-    public void testSizing()
-    {
+    public void testSizing() {
         CacheManager cacheManager = CacheManager.getInstance();
-        Ehcache ehcache = cacheManager.getEhcache( "testCache" );
-        for ( int i = 0; i < 30000; i++ )
-        {
-            if ( ( i % 1000 ) == 0 )
-            {
-                System.out.println( "heatbeat " + i );
-                stats( ehcache );
+        Ehcache ehcache = cacheManager.getEhcache("testCache");
+        for (int i = 0; i < 30000; i++) {
+            if ((i % 1000) == 0) {
+                System.out.println("heatbeat " + i);
+                stats(ehcache);
             }
-            ehcache.put( new Element( i, new byte[1024] ) );
+            ehcache.put(new Element(i, new byte[1024]));
         }
-        stats( ehcache );
-        Assert.assertTrue( true );
+        stats(ehcache);
+        Assert.assertTrue(true);
     }
 
     @Test
-    public void testOffHeapExceedMemory()
-        throws IOException
-    {
+    public void testOffHeapExceedMemory() throws IOException {
         CacheManager cacheManager = CacheManager.getInstance();
-        Ehcache ehcache = cacheManager.getEhcache( "testCache" );
+        Ehcache ehcache = cacheManager.getEhcache("testCache");
         Element element = null;
-        try
-        {
-            for ( int i = 0; i < 3000000; i++ )
-            {
-                if ( ( i % 1000 ) == 0 )
-                {
-                    System.out.println( "heatbeat 2 " + i );
-                    stats( ehcache );
+        try {
+            for (int i = 0; i < 3000000; i++) {
+                if ((i % 1000) == 0) {
+                    System.out.println("heatbeat 2 " + i);
+                    stats(ehcache);
                 }
-                element = new Element( i, new byte[1024] );
-                ehcache.put( element );
+                element = new Element(i, new byte[1024]);
+                ehcache.put(element);
             }
-            Assert.fail( "CacheException expected for DirectMemory OffHeap Memory Exceeded" );
+            Assert.fail("CacheException expected for DirectMemory OffHeap Memory Exceeded");
+        } catch (CacheException e) {
+            stats(ehcache);
+            Assert.assertTrue("CacheException expected for DirectMemory OffHeap Memory Exceeded", true);
         }
-        catch ( CacheException e )
-        {
-            stats( ehcache );
-            Assert.assertTrue( "CacheException expected for DirectMemory OffHeap Memory Exceeded", true );
-        }
-
     }
 
-    private void stats( Ehcache ehcache )
-    {
-        System.out.println( "OnHeapSize=" + ehcache.calculateInMemorySize() + ", OnHeapElements="
-            + ehcache.getMemoryStoreSize() );
-        System.out.println( "OffHeapSize=" + ehcache.calculateOffHeapSize() + ", OffHeapElements="
-            + ehcache.getOffHeapStoreSize() );
-        System.out.println( "DiskStoreSize=" + ehcache.calculateOnDiskSize() + ", DiskStoreElements="
-            + ehcache.getDiskStoreSize() );
+    private void stats(Ehcache ehcache) {
+        System.out.println("OnHeapSize=" + ehcache.calculateInMemorySize() + ", OnHeapElements="
+                           + ehcache.getMemoryStoreSize());
+        System.out.println("OffHeapSize=" + ehcache.calculateOffHeapSize() + ", OffHeapElements="
+                           + ehcache.getOffHeapStoreSize());
+        System.out.println("DiskStoreSize=" + ehcache.calculateOnDiskSize() + ", DiskStoreElements="
+                           + ehcache.getDiskStoreSize());
     }
-
 }

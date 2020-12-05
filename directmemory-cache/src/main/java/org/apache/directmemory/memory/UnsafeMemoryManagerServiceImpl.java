@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.util.Collections;
@@ -31,14 +31,11 @@ import org.apache.directmemory.memory.buffer.MemoryBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UnsafeMemoryManagerServiceImpl<V>
-    extends AbstractMemoryManager<V>
-    implements MemoryManagerService<V>
-{
+public class UnsafeMemoryManagerServiceImpl<V> extends AbstractMemoryManager<V> implements MemoryManagerService<V> {
 
     protected static final long NEVER_EXPIRES = 0L;
 
-    protected static Logger logger = LoggerFactory.getLogger( MemoryManager.class );
+    protected static Logger logger = LoggerFactory.getLogger(MemoryManager.class);
 
     private final Set<Pointer<V>> pointers = Collections.newSetFromMap( new ConcurrentHashMap<Pointer<V>, Boolean>() );
 
@@ -47,96 +44,79 @@ public class UnsafeMemoryManagerServiceImpl<V>
     private long capacity;
 
     @Override
-    public void init( int numberOfBuffers, int size )
-    {
+    public void init(int numberOfBuffers, int size) {
         this.capacity = numberOfBuffers * size;
-        this.allocator = new LazyUnsafeAllocator( numberOfBuffers, capacity );
+        this.allocator = new LazyUnsafeAllocator(numberOfBuffers, capacity);
     }
 
     @Override
-    public void close()
-        throws IOException
-    {
+    public void close() throws IOException {
         allocator.close();
-        used.set( 0 );
+        used.set(0);
     }
 
-    protected Pointer<V> instanciatePointer( int size, long expiresIn, long expires )
-    {
-        Pointer<V> p = new PointerImpl<V>( allocator.allocate( size ), 1 );
-
-        p.setExpiration( expires, expiresIn );
-        p.setFree( false );
+    protected Pointer<V> instanciatePointer(int size, long expiresIn, long expires) {
+        Pointer<V> p = new PointerImpl<V>(allocator.allocate(size), 1);
+        p.setExpiration(expires, expiresIn);
+        p.setFree(false);
         p.createdNow();
-
-        pointers.add( p );
-
+        pointers.add(p);
         return p;
     }
 
     @Override
-    public Pointer<V> store( byte[] payload, long expiresIn )
-    {
-        if ( capacity - used.get() - payload.length < 0 )
-        {
-            if ( returnsNullWhenFull() )
-            {
+    public Pointer<V> store(byte[] payload, long expiresIn) {
+        if (capacity - used.get() - payload.length < 0) {
+            if (returnsNullWhenFull()) {
                 return null;
-            }
-            else
-            {
+            } else {
                 throw new BufferOverflowException();
             }
         }
 
-        Pointer<V> p = instanciatePointer( payload.length, expiresIn, NEVER_EXPIRES );
-        p.getMemoryBuffer().writeBytes( payload );
+        Pointer<V> p = instanciatePointer(payload.length, expiresIn, NEVER_EXPIRES);
+        p.getMemoryBuffer().writeBytes(payload);
 
-        used.addAndGet( payload.length );
+        used.addAndGet(payload.length);
         // 2nd version
         // unsafe.copyMemory( srcAddress, address, payload.length );
         return p;
     }
 
     @Override
-    public byte[] retrieve( Pointer<V> pointer )
-    {
+    public byte[] retrieve(Pointer<V> pointer) {
         final byte[] swp = new byte[(int) pointer.getSize()];
 
         MemoryBuffer memoryBuffer = pointer.getMemoryBuffer();
-        memoryBuffer.readerIndex( 0 );
-        memoryBuffer.readBytes( swp );
+        memoryBuffer.readerIndex(0);
+        memoryBuffer.readBytes(swp);
 
         return swp;
     }
 
     @Override
-    public Pointer<V> free( Pointer<V> pointer )
-    {
-        used.addAndGet( -pointer.getSize() );
-        allocator.free( pointer.getMemoryBuffer() );
-        pointers.remove( pointer );
-        pointer.setFree( true );
+    public Pointer<V> free(Pointer<V> pointer) {
+        used.addAndGet(-pointer.getSize());
+        allocator.free(pointer.getMemoryBuffer());
+        pointers.remove(pointer);
+        pointer.setFree(true);
         return pointer;
     }
 
     @Override
-    public void clear()
-    {
+    public void clear() {
         for (Pointer<V> pointer : pointers) {
             free(pointer);
         }
     }
 
     @Override
-    public long capacity()
-    {
+    public long capacity() {
         return capacity;
     }
 
     @Override
-    public long used()
-    {
+    public long used() {
         return used.get();
     }
 

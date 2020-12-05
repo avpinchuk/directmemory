@@ -1,4 +1,3 @@
-package org.apache.directmemory.serialization.protostuff;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,18 +17,16 @@ package org.apache.directmemory.serialization.protostuff;
  * under the License.
  */
 
+package org.apache.directmemory.serialization.protostuff;
+
 import org.apache.directmemory.test.AbstractSerializerTest;
 
 /**
  * @author Olivier Lamy
  */
-public class ProtostufSerializerTest
-    extends AbstractSerializerTest
-{
+public class ProtostufSerializerTest extends AbstractSerializerTest {
 
-
-    public String getSerializerClassName()
-    {
+    public String getSerializerClassName() {
         return ProtoStuffWithLinkedBufferSerializer.class.getName();
     }
 }

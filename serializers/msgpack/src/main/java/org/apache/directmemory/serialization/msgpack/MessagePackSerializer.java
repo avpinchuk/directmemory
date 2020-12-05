@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization.msgpack;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.directmemory.serialization.msgpack;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.directmemory.serialization.msgpack;
 
 import org.apache.directmemory.serialization.Serializer;
 import org.msgpack.MessagePack;
@@ -26,9 +25,7 @@ import org.msgpack.annotation.Message;
 
 import java.io.IOException;
 
-public final class MessagePackSerializer
-    implements Serializer
-{
+public final class MessagePackSerializer implements Serializer {
 
     private final MessagePack msgpack = new MessagePack();
 
@@ -36,45 +33,32 @@ public final class MessagePackSerializer
      * {@inheritDoc}
      */
     @Override
-    public <T> byte[] serialize( T obj )
-        throws IOException
-    {
+    public <T> byte[] serialize(T obj) throws IOException {
         Class<?> clazz = obj.getClass();
-
-        checkRegiterNeeded( clazz );
-
-        return msgpack.write( obj );
+        checkRegiterNeeded(clazz);
+        return msgpack.write(obj);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> T deserialize( byte[] source, Class<T> clazz )
-        throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
-        checkRegiterNeeded( clazz );
-        return msgpack.read( source, clazz );
+    public <T> T deserialize(byte[] source, Class<T> clazz) throws IOException {
+        checkRegiterNeeded(clazz);
+        return msgpack.read(source, clazz);
     }
 
-    private void checkRegiterNeeded( Class<?> clazz )
-    {
-        if ( clazz.isAnnotationPresent( Message.class ) )
-        {
+    private void checkRegiterNeeded(Class<?> clazz) {
+        if (clazz.isAnnotationPresent(Message.class)) {
             return;
         }
-        try
-        {
-            if ( msgpack.lookup( clazz ) != null )
-            {
+        try {
+            if (msgpack.lookup(clazz) != null) {
                 return;
             }
-        }
-        catch ( MessageTypeException e )
-        {
+        } catch (MessageTypeException e) {
             // ignore as register needed
         }
-        msgpack.register( clazz );
+        msgpack.register(clazz);
     }
-
 }

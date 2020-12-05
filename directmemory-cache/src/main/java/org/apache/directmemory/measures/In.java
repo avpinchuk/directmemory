@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,8 +17,9 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
-public class In
-{
+package org.apache.directmemory.measures;
+
+public class In {
 
     private static final int MILLISECONDS_IN_SECOND = 1000;
 
@@ -30,63 +29,52 @@ public class In
 
     private final double measure;
 
-    public In( double measure )
-    {
+    public In(double measure) {
         this.measure = measure;
     }
 
-    public long seconds()
-    {
-        return seconds( measure );
+    public long seconds() {
+        return seconds(measure);
     }
 
-    public long minutes()
-    {
-        return minutes( measure );
+    public long minutes() {
+        return minutes(measure);
     }
 
-    public long hours()
-    {
-        return hours( measure );
+    public long hours() {
+        return hours(measure);
     }
 
-    public long days()
-    {
-        return days( measure );
+    public long days() {
+        return days(measure);
     }
 
-    public static long seconds( double seconds )
-    {
+    public static long seconds(double seconds) {
         return (long) seconds * MILLISECONDS_IN_SECOND;
     }
 
-    public static long minutes( double minutes )
-    {
-        return seconds( minutes * SECONDS_IN_MINUTE_OR_MINUTES_IN_HOUR );
+    public static long minutes(double minutes) {
+        return seconds(minutes * SECONDS_IN_MINUTE_OR_MINUTES_IN_HOUR);
     }
 
-    public static long hours( double hours )
-    {
-        return minutes( hours * SECONDS_IN_MINUTE_OR_MINUTES_IN_HOUR );
+    public static long hours(double hours) {
+        return minutes(hours * SECONDS_IN_MINUTE_OR_MINUTES_IN_HOUR);
     }
 
-    public static long days( double days )
-    {
-        return hours( days * HOUR_IN_DAY );
+    public static long days(double days) {
+        return hours(days * HOUR_IN_DAY);
     }
 
-    public static In just( double measure )
-    {
-        return new In( measure );
+    public static In just(double measure) {
+        return new In(measure);
     }
 
-    public static In exactly( double measure )
-    {
-        return new In( measure );
+    public static In exactly(double measure) {
+        return new In(measure);
     }
 
-    public static In only( double measure )
-    {
-        return new In( measure );
+    public static In only(double measure) {
+        return new In(measure);
     }
+
 }

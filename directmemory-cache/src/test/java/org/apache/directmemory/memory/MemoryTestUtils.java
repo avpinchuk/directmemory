@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,23 +17,21 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import java.util.Random;
 
-public class MemoryTestUtils
-{
+public class MemoryTestUtils {
 
     private static final String PAYLOAD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private static final Random R = new Random();
 
-    public static byte[] generateRandomPayload( int sizeInByte )
-    {
-        final StringBuilder sb = new StringBuilder( sizeInByte );
-        for ( int i = 0; i < sizeInByte; i++ )
-        {
-            sb.append( PAYLOAD_CHARS.charAt( R.nextInt( PAYLOAD_CHARS.length() ) ) );
+    public static byte[] generateRandomPayload(int sizeInByte) {
+        final StringBuilder sb = new StringBuilder(sizeInByte);
+        for (int i = 0; i < sizeInByte; i++) {
+            sb.append(PAYLOAD_CHARS.charAt(R.nextInt(PAYLOAD_CHARS.length())));
         }
         return sb.toString().getBytes();
     }
-
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.client;
  * under the License.
  */
 
+package org.apache.directmemory.server.client;
+
 import org.apache.directmemory.server.commons.DirectMemoryException;
 import org.apache.directmemory.server.commons.DirectMemoryRequest;
 import org.apache.directmemory.server.commons.DirectMemoryResponse;
@@ -28,26 +28,17 @@ import java.util.concurrent.Future;
 /**
  * @author Olivier Lamy
  */
-public interface DirectMemoryHttpClient
-{
-    DirectMemoryResponse put( DirectMemoryRequest request )
-        throws DirectMemoryException;
+public interface DirectMemoryHttpClient {
 
-    Future<DirectMemoryResponse> asyncPut( DirectMemoryRequest request )
-        throws DirectMemoryException;
+    DirectMemoryResponse put(DirectMemoryRequest request) throws DirectMemoryException;
 
-    DirectMemoryResponse get( DirectMemoryRequest request )
-        throws DirectMemoryException;
+    Future<DirectMemoryResponse> asyncPut(DirectMemoryRequest request) throws DirectMemoryException;
 
-    Future<DirectMemoryResponse> asyncGet( DirectMemoryRequest request )
-        throws DirectMemoryException;
+    DirectMemoryResponse get(DirectMemoryRequest request) throws DirectMemoryException;
 
+    Future<DirectMemoryResponse> asyncGet(DirectMemoryRequest request) throws DirectMemoryException;
 
-    DirectMemoryResponse delete( DirectMemoryRequest request )
-        throws DirectMemoryException;
+    DirectMemoryResponse delete(DirectMemoryRequest request) throws DirectMemoryException;
 
-    Future<DirectMemoryResponse> asyncDelete( DirectMemoryRequest request )
-        throws DirectMemoryException;
-
-
+    Future<DirectMemoryResponse> asyncDelete(DirectMemoryRequest request) throws DirectMemoryException;
 }

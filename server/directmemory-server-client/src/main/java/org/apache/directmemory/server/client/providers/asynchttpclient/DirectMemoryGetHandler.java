@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client.providers.asynchttpclient;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.client.providers.asynchttpclient;
  * under the License.
  */
 
+package org.apache.directmemory.server.client.providers.asynchttpclient;
+
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import org.apache.directmemory.server.client.AbstractDirectMemoryHttpClient;
@@ -28,37 +28,24 @@ import org.apache.directmemory.server.commons.DirectMemoryResponse;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryGetHandler
-    extends AsyncCompletionHandler<DirectMemoryResponse>
-{
+public class DirectMemoryGetHandler extends AsyncCompletionHandler<DirectMemoryResponse> {
 
     private DirectMemoryRequest request;
 
-    public DirectMemoryGetHandler( DirectMemoryRequest request )
-    {
+    public DirectMemoryGetHandler(DirectMemoryRequest request) {
         this.request = request;
     }
 
     @Override
-    public DirectMemoryResponse onCompleted( Response response )
-        throws Exception
-    {
+    public DirectMemoryResponse onCompleted(Response response) throws Exception {
         int statusCode = response.getStatusCode();
-
         // handle no content response
-
-        if ( statusCode == 204 )
-        {
-            return new DirectMemoryResponse().setFound( false );
+        if (statusCode == 204) {
+            return new DirectMemoryResponse().setFound(false);
         }
-
-        if ( request.isDeleteRequest() )
-        {
-            return new DirectMemoryResponse().setFound( true ).setDeleted( true );
+        if (request.isDeleteRequest()) {
+            return new DirectMemoryResponse().setFound(true).setDeleted(true);
         }
-
-        return AbstractDirectMemoryHttpClient.
-            buildResponse( response.getResponseBodyAsStream(), request ).setFound( true );
-
+        return AbstractDirectMemoryHttpClient.buildResponse(response.getResponseBodyAsStream(), request).setFound(true);
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.conf;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,12 +17,13 @@ package org.apache.directmemory.conf;
  * under the License.
  */
 
+package org.apache.directmemory.conf;
+
 /**
  * @since 0.2
  */
-public abstract class DefaultConfiguration
-    implements ConfigurationService
-{
+public abstract class DefaultConfiguration implements ConfigurationService {
+
     private int numberOfBuffers = 1;
 
     private int initialCapacity = 100000;
@@ -36,63 +35,52 @@ public abstract class DefaultConfiguration
     private long disposalTime = 10L;
 
     @Override
-    public int getNumberOfBuffers()
-    {
+    public int getNumberOfBuffers() {
         return numberOfBuffers;
     }
 
     @Override
-    public int getInitialCapacity()
-    {
+    public int getInitialCapacity() {
         return initialCapacity;
     }
 
     @Override
-    public int getRamMegaBytes()
-    {
+    public int getRamMegaBytes() {
         return ramMegaBytes;
     }
 
     @Override
-    public int getConcurrencyLevel()
-    {
+    public int getConcurrencyLevel() {
         return concurrencyLevel;
     }
 
     @Override
-    public long getDisposalTime()
-    {
+    public long getDisposalTime() {
         return disposalTime;
     }
 
     @Override
-    public void setNumberOfBuffers( int numberOfBuffers )
-    {
+    public void setNumberOfBuffers(int numberOfBuffers) {
         this.numberOfBuffers = numberOfBuffers;
     }
 
     @Override
-    public void setInitialCapacity( int initialCapacity )
-    {
+    public void setInitialCapacity(int initialCapacity) {
         this.initialCapacity = initialCapacity;
     }
 
     @Override
-    public void setRamMegaBytes( int ramMegaBytes )
-    {
+    public void setRamMegaBytes(int ramMegaBytes) {
         this.ramMegaBytes = ramMegaBytes;
     }
 
     @Override
-    public void setConcurrencyLevel( int concurrencyLevel )
-    {
+    public void setConcurrencyLevel(int concurrencyLevel) {
         this.concurrencyLevel = concurrencyLevel;
     }
 
     @Override
-    public void setDisposalTime( long disposalTime )
-    {
+    public void setDisposalTime(long disposalTime) {
         this.disposalTime = disposalTime;
     }
-
 }

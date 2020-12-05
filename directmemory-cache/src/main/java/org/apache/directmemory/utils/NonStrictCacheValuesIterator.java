@@ -1,5 +1,3 @@
-package org.apache.directmemory.utils;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.utils;
  * under the License.
  */
 
+package org.apache.directmemory.utils;
+
 import java.util.Iterator;
 
 import org.apache.directmemory.cache.CacheService;
@@ -26,13 +26,11 @@ import org.apache.directmemory.cache.CacheService;
 /**
  * The relaxed iterator, it guarantees that if hasNext() returns true, the subsequent calling next() always returns a value.
  * This value might be stalled or expired.
- * 
+ *
  * @param <K>
  * @param <V>
  */
-public class NonStrictCacheValuesIterator<K, V>
-    implements Iterator<V>
-{
+public class NonStrictCacheValuesIterator<K, V> implements Iterator<V> {
     private Iterator<K> keysIterator;
 
     private CacheService<K, V> cacheService;
@@ -43,22 +41,19 @@ public class NonStrictCacheValuesIterator<K, V>
 
     private V nextValue;
 
-    public NonStrictCacheValuesIterator( Iterator<K> keysIterator, CacheService<K, V> cacheService )
-    {
+    public NonStrictCacheValuesIterator(Iterator<K> keysIterator, CacheService<K, V> cacheService) {
         this.keysIterator = keysIterator;
         this.cacheService = cacheService;
         findNext();
     }
 
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         return nextValue != null;
     }
 
     @Override
-    public V next()
-    {
+    public V next() {
         V currentValue = nextValue;
         currentKey = nextKey;
         findNext();
@@ -66,19 +61,15 @@ public class NonStrictCacheValuesIterator<K, V>
     }
 
     @Override
-    public void remove()
-    {
-        cacheService.free( currentKey );
+    public void remove() {
+        cacheService.free(currentKey);
     }
 
-    private void findNext()
-    {
-        while ( keysIterator.hasNext() )
-        {
+    private void findNext() {
+        while (keysIterator.hasNext()) {
             K key = keysIterator.next();
-            V value = cacheService.retrieve( key );
-            if ( value != null )
-            {
+            V value = cacheService.retrieve(key);
+            if (value != null) {
                 nextKey = key;
                 nextValue = value;
                 return;
@@ -87,4 +78,5 @@ public class NonStrictCacheValuesIterator<K, V>
         nextKey = null;
         nextValue = null;
     }
+
 }

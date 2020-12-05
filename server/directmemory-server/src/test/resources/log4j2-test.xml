@@ -17,26 +17,20 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
-
 <configuration status="debug">
-
-  <properties>
-    <property name="logsDirectory">${sys:appserver.base}/logs</property>
-  </properties>
-
-  <appenders>
-    <Console name="console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
-  </appenders>
-  <loggers>
-
-    <logger name="org.apache.directmemory.server" level="INFO"/>
-    <logger name="com.ning.http" level="DEBUG"/>
-
-    <root level="info">
-      <appender-ref ref="console"/>
-    </root>
-  </loggers>
+    <properties>
+        <property name="logsDirectory">${sys:appserver.base}/logs</property>
+    </properties>
+    <appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </appenders>
+    <loggers>
+        <logger name="org.apache.directmemory.server" level="INFO"/>
+        <logger name="com.ning.http" level="DEBUG"/>
+        <root level="info">
+            <appender-ref ref="console"/>
+        </root>
+    </loggers>
 </configuration>

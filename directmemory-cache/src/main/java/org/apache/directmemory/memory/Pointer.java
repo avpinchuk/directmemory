@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,16 +17,17 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import org.apache.directmemory.memory.buffer.MemoryBuffer;
 
-public interface Pointer<T>
-{
+public interface Pointer<T> {
 
     byte[] content();
 
     boolean isFree();
 
-    void setFree( boolean free );
+    void setFree(boolean free);
 
     boolean isExpired();
 
@@ -46,13 +45,13 @@ public interface Pointer<T>
 
     Class<? extends T> getClazz();
 
-    void setClazz( Class<? extends T> clazz );
+    void setClazz(Class<? extends T> clazz);
 
     MemoryBuffer getMemoryBuffer();
 
     void createdNow();
 
-    void setExpiration( long expires, long expiresIn );
+    void setExpiration(long expires, long expiresIn);
 
     long getExpires();
 

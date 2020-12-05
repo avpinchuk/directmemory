@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
+package org.apache.directmemory.measures;
+
 import static java.lang.String.format;
 
 import java.text.DecimalFormat;
@@ -28,91 +28,76 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Monitor
-{
+public class Monitor {
 
-    private static final Logger LOG = LoggerFactory.getLogger( Monitor.class );
+    private static final Logger LOG = LoggerFactory.getLogger(Monitor.class);
 
     //TODO: MONITORS looks like a good candidate to become a private field
     public static final Map<String, MonitorService> MONITORS = new HashMap<String, MonitorService>();
 
     private final MonitorService monitorService;
 
-    public static MonitorService get( String key )
-    {
-        MonitorService mon = MONITORS.get( key );
-        if ( mon == null )
-        {
-            mon = new MonitorServiceImpl( key );
-            MONITORS.put( key, mon );
+    public static MonitorService get(String key) {
+        MonitorService mon = MONITORS.get(key);
+        if (mon == null) {
+            mon = new MonitorServiceImpl(key);
+            MONITORS.put(key, mon);
         }
         return mon;
     }
 
-    public Monitor( String name )
-    {
-        this.monitorService = new MonitorServiceImpl( name );
-        MONITORS.put( name, monitorService );
+    public Monitor(String name) {
+        this.monitorService = new MonitorServiceImpl(name);
+        MONITORS.put(name, monitorService);
     }
 
-    public long start()
-    {
+    public long start() {
         return System.nanoTime();
     }
 
-    public long stop( long begunAt )
-    {
+    public long stop(long begunAt) {
         monitorService.getHits().incrementAndGet();
         final long lastAccessed = System.nanoTime();
         final long elapsed = lastAccessed - begunAt;
-        monitorService.addToTotalTime( elapsed );
-        if ( elapsed > monitorService.getMax() && monitorService.getHits().get() > 0 )
-        {
-            monitorService.setMax( elapsed );
+        monitorService.addToTotalTime(elapsed);
+        if (elapsed > monitorService.getMax() && monitorService.getHits().get() > 0) {
+            monitorService.setMax(elapsed);
         }
-        if ( elapsed < monitorService.getMin() && monitorService.getHits().get() > 0 )
-        {
-            monitorService.setMin( elapsed );
+        if (elapsed < monitorService.getMin() && monitorService.getHits().get() > 0) {
+            monitorService.setMin(elapsed);
         }
         return elapsed;
     }
 
-    public long hits()
-    {
+    public long hits() {
         return monitorService.getHits().get();
     }
 
-    public long totalTime()
-    {
+    public long totalTime() {
         return monitorService.totalTime();
     }
 
-    public long average()
-    {
+    public long average() {
         return monitorService.getHits().get() > 0 ? monitorService.getTotalTime() / monitorService.getHits().get() : 0;
     }
 
-    public String toString()
-    {
-        return format( "%1$s hits: %2$d, avg: %3$s ms, tot: %4$s seconds", monitorService.getName(),
-                       monitorService.getHits().get(),
-                       new DecimalFormat( "####.###" ).format( (double) average() / 1000000 ),
-                       new DecimalFormat( "####.###" ).format( (double) monitorService.getTotalTime() / 1000000000 ) );
+    public String toString() {
+        return format("%1$s hits: %2$d, avg: %3$s ms, tot: %4$s seconds", monitorService.getName(),
+                      monitorService.getHits().get(),
+                      new DecimalFormat("####.###").format((double) average() / 1000000),
+                      new DecimalFormat("####.###").format((double) monitorService.getTotalTime() / 1000000000));
     }
 
-    public static void dump( String prefix )
-    {
-        for ( MonitorService monitor : MONITORS.values() )
-        {
-            if ( monitor.getName().startsWith( prefix ) )
-            {
-                LOG.info( monitor.toString() );
+    public static void dump(String prefix) {
+        for (MonitorService monitor : MONITORS.values()) {
+            if (monitor.getName().startsWith(prefix)) {
+                LOG.info(monitor.toString());
             }
         }
     }
 
-    public static void dump()
-    {
-        dump( "" );
+    public static void dump() {
+        dump("");
     }
+
 }

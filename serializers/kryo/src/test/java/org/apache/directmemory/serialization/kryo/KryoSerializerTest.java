@@ -1,4 +1,3 @@
-package org.apache.directmemory.serialization.kryo;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,19 +17,17 @@ package org.apache.directmemory.serialization.kryo;
  * under the License.
  */
 
+package org.apache.directmemory.serialization.kryo;
+
 import org.apache.directmemory.test.AbstractSerializerTest;
 
 /**
  *
  */
-public class KryoSerializerTest
-    extends AbstractSerializerTest
-{
+public class KryoSerializerTest extends AbstractSerializerTest {
 
     @Override
-    public String getSerializerClassName()
-    {
+    public String getSerializerClassName() {
         return KryoSerializer.class.getName();
     }
-
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import java.util.List;
 
 import org.apache.directmemory.memory.allocator.Allocator;
@@ -30,26 +30,24 @@ import org.apache.directmemory.memory.allocator.Allocator;
  * passing the previously (possibly null) buffer that failed to allocate and the number of the current allocation
  *
  * @author bperroud
- *
  */
-public interface AllocationPolicy
-{
+public interface AllocationPolicy {
 
     /**
      * Initialization function.
      *
      * @param buffers
      */
-    void init( List<Allocator> allocators );
+    void init(List<Allocator> allocators);
 
     /**
      * Returns the {@link Allocator} to use to allocate.
      *
      * @param previousAllocator : the previously used {@link Allocator}, or null if it's the first allocation
-     * @param allocationNumber : the number of time the allocation has already failed.
+     * @param allocationNumber  : the number of time the allocation has already failed.
      * @return the {@link Allocator} to use, or null if allocation has failed.
      */
-    Allocator getActiveAllocator( Allocator previousAllocator, int allocationNumber );
+    Allocator getActiveAllocator(Allocator previousAllocator, int allocationNumber);
 
     /**
      * Reset internal state

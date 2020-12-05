@@ -18,30 +18,22 @@
   ~ under the License.
   -->
 
-
 <configuration status="debug">
-
-  <properties>
-    <property name="logsDirectory">${sys:appserver.base}/logs</property>
-  </properties>
-
-  <appenders>
-    <Console name="console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
-  </appenders>
-  <loggers>
-
-    <logger name="org.apache.directmemory.serialization" level="warn"/>
-
-    <logger name="org.apache.directmemory.measures" level="info"/>
-
-    <logger name="org.apache.directmemory.memory" level="info"/>
-
-    <logger name="org.apache.directmemory.cache" level="info"/>
-
-    <root level="info">
-      <appender-ref ref="console"/>
-    </root>
-  </loggers>
+    <properties>
+        <property name="logsDirectory">${sys:appserver.base}/logs</property>
+    </properties>
+    <appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </appenders>
+    <loggers>
+        <logger name="org.apache.directmemory.serialization" level="warn"/>
+        <logger name="org.apache.directmemory.measures" level="info"/>
+        <logger name="org.apache.directmemory.memory" level="info"/>
+        <logger name="org.apache.directmemory.cache" level="info"/>
+        <root level="info">
+            <appender-ref ref="console"/>
+        </root>
+    </loggers>
 </configuration>

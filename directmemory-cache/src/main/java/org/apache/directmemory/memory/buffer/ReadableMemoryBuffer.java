@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory.buffer;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,26 +17,27 @@ package org.apache.directmemory.memory.buffer;
  * under the License.
  */
 
+package org.apache.directmemory.memory.buffer;
+
 import java.nio.ByteBuffer;
 
-public interface ReadableMemoryBuffer
-{
+public interface ReadableMemoryBuffer {
 
     boolean readable();
 
     long readableBytes();
 
-    int readBytes( byte[] bytes );
+    int readBytes(byte[] bytes);
 
-    int readBytes( byte[] bytes, int offset, int length );
+    int readBytes(byte[] bytes, int offset, int length);
 
-    int readBuffer( ByteBuffer byteBuffer );
+    int readBuffer(ByteBuffer byteBuffer);
 
-    int readBuffer( ByteBuffer byteBuffer, int offset, int length );
+    int readBuffer(ByteBuffer byteBuffer, int offset, int length);
 
-    long readBuffer( WritableMemoryBuffer memoryBuffer );
+    long readBuffer(WritableMemoryBuffer memoryBuffer);
 
-    long readBuffer( WritableMemoryBuffer memoryBuffer, long offset, long length );
+    long readBuffer(WritableMemoryBuffer memoryBuffer, long offset, long length);
 
     boolean readBoolean();
 
@@ -66,6 +65,6 @@ public interface ReadableMemoryBuffer
 
     long readerIndex();
 
-    void readerIndex( long readerIndex );
+    void readerIndex(long readerIndex);
 
 }

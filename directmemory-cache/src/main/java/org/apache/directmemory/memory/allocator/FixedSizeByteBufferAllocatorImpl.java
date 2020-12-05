@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory.allocator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory.memory.allocator;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.memory.allocator;
 
 import org.apache.directmemory.memory.buffer.MemoryBuffer;
 
@@ -38,9 +38,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @since 0.6
  */
-public class FixedSizeByteBufferAllocatorImpl
-    extends AbstractByteBufferAllocator
-{
+public class FixedSizeByteBufferAllocatorImpl extends AbstractByteBufferAllocator {
 
     // Collection that keeps track of the parent buffers (segments) where slices are allocated
     private final List<ByteBuffer> segmentsBuffers;
@@ -72,57 +70,49 @@ public class FixedSizeByteBufferAllocatorImpl
      * @param sliceSize        : arbitrary number of the buffer.
      * @param numberOfSegments : number of parent {@link ByteBuffer} to allocate.
      */
-    public FixedSizeByteBufferAllocatorImpl( final int number, final int totalSize, final int sliceSize,
-                                             final int numberOfSegments )
-    {
-        super( number );
+    public FixedSizeByteBufferAllocatorImpl(final int number,
+                                            final int totalSize,
+                                            final int sliceSize,
+                                            final int numberOfSegments) {
+        super(number);
 
         this.totalSize = totalSize;
         this.sliceSize = sliceSize;
 
         this.segmentsBuffers = new ArrayList<ByteBuffer>( numberOfSegments );
 
-        init( numberOfSegments );
-
+        init(numberOfSegments);
     }
 
-    protected void init( final int numberOfSegments )
-    {
-        checkArgument( numberOfSegments > 0 );
+    protected void init(final int numberOfSegments) {
+        checkArgument(numberOfSegments > 0);
 
         // Compute the size of each segments
         int segmentSize = totalSize / numberOfSegments;
         // size is rounded down to a multiple of the slice size
         segmentSize -= segmentSize % sliceSize;
 
-        for ( int i = 0; i < numberOfSegments; i++ )
-        {
-            final ByteBuffer segment = ByteBuffer.allocateDirect( segmentSize );
-            segmentsBuffers.add( segment );
+        for (int i = 0; i < numberOfSegments; i++) {
+            final ByteBuffer segment = ByteBuffer.allocateDirect(segmentSize);
+            segmentsBuffers.add(segment);
 
-            for ( int j = 0; j < segment.capacity(); j += sliceSize )
-            {
+            for (int j = 0; j < segment.capacity(); j += sliceSize) {
                 segment.clear();
-                segment.position( j );
-                segment.limit( j + sliceSize );
+                segment.position(j);
+                segment.limit(j + sliceSize);
                 final ByteBuffer slice = segment.slice();
-                freeBuffers.add( slice );
+                freeBuffers.add(slice);
             }
         }
     }
 
 
-    protected ByteBuffer findFreeBuffer( int capacity )
-    {
+    protected ByteBuffer findFreeBuffer(int capacity) {
         // ensure the requested size is not bigger than the slices' size
-        if ( capacity > sliceSize )
-        {
-            if ( returnNullWhenOversizingSliceSize )
-            {
+        if (capacity > sliceSize) {
+            if (returnNullWhenOversizingSliceSize) {
                 return null;
-            }
-            else
-            {
+            } else {
                 throw new BufferOverflowException();
             }
         }
@@ -131,80 +121,63 @@ public class FixedSizeByteBufferAllocatorImpl
     }
 
     @Override
-    public void free( final MemoryBuffer buffer )
-    {
+    public void free(final MemoryBuffer buffer) {
         buffer.free();
     }
 
     @Override
-    public MemoryBuffer allocate( int size )
-    {
+    public MemoryBuffer allocate(int size) {
+        checkState(!isClosed());
 
-        checkState( !isClosed() );
+        ByteBuffer allocatedByteBuffer = findFreeBuffer(size);
 
-        ByteBuffer allocatedByteBuffer = findFreeBuffer( size );
-
-        if ( allocatedByteBuffer == null )
-        {
-            if ( returnNullWhenNoBufferAvailable )
-            {
+        if (allocatedByteBuffer == null) {
+            if (returnNullWhenNoBufferAvailable) {
                 return null;
-            }
-            else
-            {
+            } else {
                 throw new BufferOverflowException();
             }
         }
 
         // Reset buffer's state
         allocatedByteBuffer.clear();
-        allocatedByteBuffer.limit( size );
+        allocatedByteBuffer.limit(size);
 
-        usedSliceBuffers.put( getHash( allocatedByteBuffer ), allocatedByteBuffer );
+        usedSliceBuffers.put(getHash(allocatedByteBuffer), allocatedByteBuffer);
 
-        return new FixedSizeNioMemoryBuffer( allocatedByteBuffer );
-
+        return new FixedSizeNioMemoryBuffer(allocatedByteBuffer);
     }
 
-    public int getSliceSize()
-    {
+    public int getSliceSize() {
         return sliceSize;
     }
 
     @Override
-    public void clear()
-    {
-        for ( final Map.Entry<Integer, ByteBuffer> entry : usedSliceBuffers.entrySet() )
-        {
-            freeBuffers.offer( entry.getValue() );
+    public void clear() {
+        for (final Map.Entry<Integer, ByteBuffer> entry : usedSliceBuffers.entrySet()) {
+            freeBuffers.offer(entry.getValue());
         }
         usedSliceBuffers.clear();
     }
 
     @Override
-    public int getCapacity()
-    {
+    public int getCapacity() {
         return totalSize;
     }
 
     @Override
-    public void close()
-    {
-        checkState( !isClosed() );
+    public void close() {
+        checkState(!isClosed());
 
-        setClosed( true );
+        setClosed(true);
 
         clear();
 
-        for ( final ByteBuffer buffer : segmentsBuffers )
-        {
-            try
-            {
-                DirectByteBufferUtils.destroyDirectByteBuffer( buffer );
-            }
-            catch ( Exception e )
-            {
-                getLogger().warn( "Exception thrown while closing the allocator", e );
+        for (final ByteBuffer buffer : segmentsBuffers) {
+            try {
+                DirectByteBufferUtils.destroyDirectByteBuffer(buffer);
+            } catch (Exception e) {
+                getLogger().warn("Exception thrown while closing the allocator", e);
             }
         }
     }
@@ -222,17 +195,16 @@ public class FixedSizeByteBufferAllocatorImpl
 
         @Override
         public void free() {
-            checkState( !isClosed() );
+            checkState(!isClosed());
 
-            if ( usedSliceBuffers.remove( getHash( getByteBuffer() ) ) == null )
-            {
+            if (usedSliceBuffers.remove(getHash(getByteBuffer())) == null) {
                 return;
             }
 
             // Ensure the buffer belongs to this slab
-            checkArgument( getByteBuffer().capacity() == sliceSize );
+            checkArgument(getByteBuffer().capacity() == sliceSize);
 
-            freeBuffers.offer( getByteBuffer() );
+            freeBuffers.offer(getByteBuffer());
         }
     }
 

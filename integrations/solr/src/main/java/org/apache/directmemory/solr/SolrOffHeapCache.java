@@ -1,5 +1,3 @@
-package org.apache.directmemory.solr;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory.solr;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.solr;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,12 +41,9 @@ import org.apache.solr.search.SolrIndexSearcher;
 /**
  * A {@link SolrCache} based on Apache DirectMemory
  */
-public class SolrOffHeapCache<K, V>
-    implements SolrCache<K, V>
-{
+public class SolrOffHeapCache<K, V> implements SolrCache<K, V> {
 
-    private static class CumulativeStats
-    {
+    private static class CumulativeStats {
         AtomicLong lookups = new AtomicLong();
 
         AtomicLong hits = new AtomicLong();
@@ -80,59 +77,50 @@ public class SolrOffHeapCache<K, V>
 
     private CacheService<K, V> cacheService;
 
-    public CacheService<K, V> getCacheService()
-    {
+    public CacheService<K, V> getCacheService() {
         return cacheService;
     }
 
     @Override
-    public Object init( Map args, Object persistence, CacheRegenerator regenerator )
-    {
-
-        Object buffers = args.get( "buffers" );
-        String sizeStr = String.valueOf( args.get( "size" ) );
-        final int limit = sizeStr == null ? 1024 : Integer.parseInt( sizeStr );
-        String initialSizeValue = (String) args.get( "initialSize" );
-        final int initialSize = Math.min( initialSizeValue == null ? 1024 : Integer.parseInt( initialSizeValue ), limit );
+    public Object init(Map args, Object persistence, CacheRegenerator regenerator) {
+        Object buffers = args.get("buffers");
+        String sizeStr = String.valueOf(args.get("size"));
+        final int limit = sizeStr == null ? 1024 : Integer.parseInt(sizeStr);
+        String initialSizeValue = (String) args.get("initialSize");
+        final int initialSize = Math.min(initialSizeValue == null ? 1024 : Integer.parseInt(initialSizeValue), limit);
 
         Serializer serializer = null;
-        String serializerClassName = (String) args.get( "serializerClassName" );
-        if ( serializerClassName != null )
-        {
-            try
-            {
-                serializer = SerializerFactory.createNewSerializer( serializerClassName );
-            }
-            catch ( SerializerNotFoundException e )
-            {
-                log.warn( "Serializer not found for class " + serializerClassName +
-                        ", falling back to the default serializer", e);
+        String serializerClassName = (String) args.get("serializerClassName");
+        if (serializerClassName != null) {
+            try {
+                serializer = SerializerFactory.createNewSerializer(serializerClassName);
+            } catch (SerializerNotFoundException e) {
+                log.warn("Serializer not found for class " + serializerClassName +
+                         ", falling back to the default serializer", e);
                 serializer = SerializerFactory.createNewSerializer();
             }
         }
 
         cacheService = new DirectMemory<K, V>()
-                        .setNumberOfBuffers( buffers != null ? Integer.valueOf( String.valueOf( buffers ) ) : 1 )
-                        .setInitialCapacity( Ram.Mb( Double.valueOf( initialSize ) / 512 ) )
-                        .setSize( Ram.Mb( limit / 512 ) )
-                        .setSerializer( serializer )
-                        .newCacheService();
-        
+                .setNumberOfBuffers(buffers != null ? Integer.valueOf(String.valueOf(buffers)) : 1)
+                .setInitialCapacity(Ram.Mb(Double.valueOf(initialSize) / 512))
+                .setSize(Ram.Mb(limit / 512))
+                .setSerializer(serializer)
+                .newCacheService();
+
         state = State.CREATED;
         this.regenerator = regenerator;
-        name = (String) args.get( "name" );
-        String autoWarmCount = (String) args.get( "autowarmCount" );
-        autowarmCount = autoWarmCount == null ? 0 : Integer.parseInt( autoWarmCount );
+        name = (String) args.get("name");
+        String autoWarmCount = (String) args.get("autowarmCount");
+        autowarmCount = autoWarmCount == null ? 0 : Integer.parseInt(autoWarmCount);
 
         description = "Solr OffHeap Cache(maxSize=" + limit + ", initialSize=" + initialSize;
-        if ( autowarmCount > 0 )
-        {
+        if (autowarmCount > 0) {
             description += ", autowarmCount=" + autowarmCount + ", regenerator=" + regenerator;
         }
         description += ')';
 
-        if ( persistence == null )
-        {
+        if (persistence == null) {
             // must be the first time a cache of this type is being created
             persistence = new CumulativeStats();
         }
@@ -143,46 +131,37 @@ public class SolrOffHeapCache<K, V>
     }
 
     @Override
-    public String name()
-    {
+    public String name() {
         return name;
     }
 
     @Override
-    public int size()
-    {
-        return Long.valueOf( cacheService.entries() ).intValue();
+    public int size() {
+        return Long.valueOf(cacheService.entries()).intValue();
     }
 
     @Override
-    public V put( K key, V value )
-    {
-        synchronized ( this )
-        {
-            if ( state == State.LIVE )
-            {
+    public V put(K key, V value) {
+        synchronized (this) {
+            if (state == State.LIVE) {
                 stats.inserts.incrementAndGet();
             }
 
             inserts++;
-            cacheService.put( key, value );
+            cacheService.put(key, value);
             return value;
         }
     }
 
     @Override
-    public V get( K key )
-    {
-        synchronized ( this )
-        {
-            V val = cacheService.retrieve( key );
-            if ( state == State.LIVE )
-            {
+    public V get(K key) {
+        synchronized (this) {
+            V val = cacheService.retrieve(key);
+            if (state == State.LIVE) {
                 // only increment lookups and hits if we are live.
                 lookups++;
                 stats.lookups.incrementAndGet();
-                if ( val != null )
-                {
+                if (val != null) {
                     hits++;
                     stats.hits.incrementAndGet();
                 }
@@ -192,127 +171,106 @@ public class SolrOffHeapCache<K, V>
     }
 
     @Override
-    public void clear()
-    {
-        synchronized ( this )
-        {
+    public void clear() {
+        synchronized (this) {
             cacheService.clear();
         }
     }
 
     @Override
-    public void setState( State state )
-    {
+    public void setState(State state) {
         this.state = state;
     }
 
     @Override
-    public State getState()
-    {
+    public State getState() {
         return state;
     }
 
     @Override
-    public void warm( SolrIndexSearcher searcher, SolrCache<K, V> old )
-        throws IOException
-    {
+    public void warm(SolrIndexSearcher searcher, SolrCache<K, V> old) throws IOException {
         // it looks like there is no point in warming an off heap item
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
         cacheService.dump();
         Monitor.dump();
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return SolrOffHeapCache.class.getName();
     }
 
     @Override
-    public String getVersion()
-    {
+    public String getVersion() {
         return SolrCore.version;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public Category getCategory()
-    {
+    public Category getCategory() {
         return Category.CACHE;
     }
 
     @Override
-    public String getSourceId()
-    {
+    public String getSourceId() {
         return null;
     }
 
     @Override
-    public String getSource()
-    {
+    public String getSource() {
         return null;
     }
 
     @Override
-    public URL[] getDocs()
-    {
+    public URL[] getDocs() {
         return new URL[0];
     }
 
-    public NamedList getStatistics()
-    {
+    public NamedList getStatistics() {
         NamedList lst = new SimpleOrderedMap();
-        synchronized ( this )
-        {
-            lst.add( "lookups", lookups );
-            lst.add( "hits", hits );
-            lst.add( "hitratio", calcHitRatio( lookups, hits ) );
-            lst.add( "inserts", inserts );
-            lst.add( "evictions", evictions );
-            lst.add( "size", cacheService.entries() );
+        synchronized (this) {
+            lst.add("lookups", lookups);
+            lst.add("hits", hits);
+            lst.add("hitratio", calcHitRatio(lookups, hits));
+            lst.add("inserts", inserts);
+            lst.add("evictions", evictions);
+            lst.add("size", cacheService.entries());
         }
 
-        lst.add( "warmupTime", warmupTime );
+        lst.add("warmupTime", warmupTime);
 
         long clookups = stats.lookups.get();
         long chits = stats.hits.get();
-        lst.add( "cumulative_lookups", clookups );
-        lst.add( "cumulative_hits", chits );
-        lst.add( "cumulative_hitratio", calcHitRatio( clookups, chits ) );
-        lst.add( "cumulative_inserts", stats.inserts.get() );
-        lst.add( "cumulative_evictions", stats.evictions.get() );
+        lst.add("cumulative_lookups", clookups);
+        lst.add("cumulative_hits", chits);
+        lst.add("cumulative_hitratio", calcHitRatio(clookups, chits));
+        lst.add("cumulative_inserts", stats.inserts.get());
+        lst.add("cumulative_evictions", stats.evictions.get());
 
         return lst;
     }
 
-    private Object calcHitRatio( long clookups, long chits )
-    {
-        if ( lookups == 0 )
-        {
+    private Object calcHitRatio(long clookups, long chits) {
+        if (lookups == 0) {
             return "0.00";
         }
-        if ( lookups == hits )
-        {
+        if (lookups == hits) {
             return "1.00";
         }
-        int hundredths = (int) ( hits * 100 / lookups );   // rounded down
-        if ( hundredths < 10 )
-        {
+        int hundredths = (int) (hits * 100 / lookups);   // rounded down
+        if (hundredths < 10) {
             return "0.0" + hundredths;
         }
         return "0." + hundredths;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name + getStatistics().toString();
     }
 }

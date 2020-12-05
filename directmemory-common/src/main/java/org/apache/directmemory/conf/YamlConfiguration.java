@@ -1,5 +1,3 @@
-package org.apache.directmemory.conf;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,21 +17,18 @@ package org.apache.directmemory.conf;
  * under the License.
  */
 
+package org.apache.directmemory.conf;
+
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
  * @since 0.2
  */
-public class YamlConfiguration
-    extends DefaultConfiguration
-{
+public class YamlConfiguration extends DefaultConfiguration {
 
-    public static ConfigurationService load()
-    {
-        Yaml yaml = new Yaml( new Constructor( YamlConfiguration.class ) );
-        return (YamlConfiguration) yaml.load(
-            Configuration.class.getClassLoader().getResourceAsStream( "directmemory.yaml" ) );
+    public static ConfigurationService load() {
+        Yaml yaml = new Yaml(new Constructor(YamlConfiguration.class));
+        return (YamlConfiguration) yaml.load(Configuration.class.getClassLoader().getResourceAsStream("directmemory.yaml"));
     }
-
 }

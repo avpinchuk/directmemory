@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.serialization;
  * under the License.
  */
 
+package org.apache.directmemory.serialization;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,20 +26,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 
-public final class StandardSerializer
-    implements Serializer
-{
+public final class StandardSerializer implements Serializer {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> byte[] serialize( T obj )
-        throws IOException
-    {
+    public <T> byte[] serialize(T obj) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( baos );
-        oos.writeObject( obj );
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(obj);
         oos.flush();
         oos.close();
         return baos.toByteArray();
@@ -49,25 +45,20 @@ public final class StandardSerializer
      * {@inheritDoc}
      */
     @Override
-    public <T> T deserialize( byte[] source, final Class<T> clazz )
-        throws IOException, ClassNotFoundException
-    {
-        ByteArrayInputStream bis = new ByteArrayInputStream( source );
-        ObjectInputStream ois = new ObjectInputStream( bis )
-        {
+    public <T> T deserialize(byte[] source, final Class<T> clazz) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream bis = new ByteArrayInputStream(source);
+        ObjectInputStream ois = new ObjectInputStream(bis) {
 
             @Override
-            protected Class<?> resolveClass( ObjectStreamClass objectStreamClass )
-                throws IOException, ClassNotFoundException
-            {
+            protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
                 ClassLoader classLoader = clazz.getClassLoader();
                 return classLoader != null
-                    ? classLoader.loadClass( objectStreamClass.getName() )
-                    : Class.forName( objectStreamClass.getName() );
+                       ? classLoader.loadClass(objectStreamClass.getName())
+                       : Class.forName(objectStreamClass.getName());
             }
 
         };
-        T obj = clazz.cast( ois.readObject() );
+        T obj = clazz.cast(ois.readObject());
         ois.close();
         return obj;
     }

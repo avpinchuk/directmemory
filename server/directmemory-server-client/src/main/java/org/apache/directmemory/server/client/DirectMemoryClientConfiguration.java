@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.client;
  * under the License.
  */
 
+package org.apache.directmemory.server.client;
+
 import com.ning.http.client.AsyncHttpClientConfig;
 import org.apache.directmemory.serialization.Serializer;
 import org.apache.directmemory.server.commons.ExchangeType;
@@ -26,9 +26,7 @@ import org.apache.directmemory.server.commons.ExchangeType;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryClientConfiguration
-{
-
+public class DirectMemoryClientConfiguration {
 
     public static final int DEFAULT_MAX_CONCURRENT_CONNECTION = 20;
 
@@ -57,166 +55,141 @@ public class DirectMemoryClientConfiguration
     private String httpClientClassName = DirectMemoryClientBuilder.DEFAULT_HTTP_CLIENT_INSTANCE;
 
     private AsyncHttpClientConfig asyncHttpClientConfig;
+
     /**
      * http provider class for async http client
      * default value is <code>NettyAsyncHttpProvider</code>
      */
     private String httpProviderClassName = null;
 
-    public DirectMemoryClientConfiguration()
-    {
+    public DirectMemoryClientConfiguration() {
         // no op
     }
 
-    public String getHost()
-    {
+    public String getHost() {
         return host;
     }
 
-    public DirectMemoryClientConfiguration setHost( String host )
-    {
+    public DirectMemoryClientConfiguration setHost(String host) {
         this.host = host;
         return this;
     }
 
-    public int getPort()
-    {
+    public int getPort() {
         return port;
     }
 
-    public DirectMemoryClientConfiguration setPort( int port )
-    {
+    public DirectMemoryClientConfiguration setPort(int port) {
         this.port = port;
         return this;
     }
 
-    public String getHttpPath()
-    {
+    public String getHttpPath() {
         return httpPath;
     }
 
-    public DirectMemoryClientConfiguration setHttpPath( String httpPath )
-    {
+    public DirectMemoryClientConfiguration setHttpPath(String httpPath) {
         this.httpPath = httpPath;
         return this;
     }
 
 
-    public int getMaxConcurentConnections()
-    {
+    public int getMaxConcurentConnections() {
         return maxConcurentConnections;
     }
 
-    public DirectMemoryClientConfiguration setMaxConcurentConnections( int maxConcurentConnections )
-    {
+    public DirectMemoryClientConfiguration setMaxConcurentConnections(int maxConcurentConnections) {
         this.maxConcurentConnections = maxConcurentConnections;
         return this;
     }
 
-    public long getConnectionTimeOut()
-    {
+    public long getConnectionTimeOut() {
         return connectionTimeOut;
     }
 
-    public DirectMemoryClientConfiguration setConnectionTimeOut( long connectionTimeOut )
-    {
+    public DirectMemoryClientConfiguration setConnectionTimeOut(long connectionTimeOut) {
         this.connectionTimeOut = connectionTimeOut;
         return this;
     }
 
-    public long getReadTimeOut()
-    {
+    public long getReadTimeOut() {
         return readTimeOut;
     }
 
-    public DirectMemoryClientConfiguration setReadTimeOut( long readTimeOut )
-    {
+    public DirectMemoryClientConfiguration setReadTimeOut(long readTimeOut) {
         this.readTimeOut = readTimeOut;
         return this;
     }
 
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return protocol;
     }
 
-    public DirectMemoryClientConfiguration setProtocol( String protocol )
-    {
+    public DirectMemoryClientConfiguration setProtocol(String protocol) {
         this.protocol = protocol;
         return this;
     }
 
-    public ExchangeType getExchangeType()
-    {
+    public ExchangeType getExchangeType() {
         return exchangeType;
     }
 
-    public DirectMemoryClientConfiguration setExchangeType( ExchangeType exchangeType )
-    {
+    public DirectMemoryClientConfiguration setExchangeType(ExchangeType exchangeType) {
         this.exchangeType = exchangeType;
         return this;
     }
 
-    public Serializer getSerializer()
-    {
+    public Serializer getSerializer() {
         return serializer;
     }
 
-    public DirectMemoryClientConfiguration setSerializer( Serializer serializer )
-    {
+    public DirectMemoryClientConfiguration setSerializer(Serializer serializer) {
         this.serializer = serializer;
         return this;
     }
 
-    public String getHttpClientClassName()
-    {
+    public String getHttpClientClassName() {
         return httpClientClassName;
     }
 
-    public DirectMemoryClientConfiguration setHttpClientClassName( String httpClientClassName )
-    {
+    public DirectMemoryClientConfiguration setHttpClientClassName(String httpClientClassName) {
         this.httpClientClassName = httpClientClassName;
         return this;
     }
 
-    public String getHttpProviderClassName()
-    {
+    public String getHttpProviderClassName() {
         return httpProviderClassName;
     }
 
-    public DirectMemoryClientConfiguration setHttpProviderClassName( String httpProviderClassName )
-    {
+    public DirectMemoryClientConfiguration setHttpProviderClassName(String httpProviderClassName) {
         this.httpProviderClassName = httpProviderClassName;
         return this;
     }
 
-    public AsyncHttpClientConfig getAsyncHttpClientConfig()
-    {
+    public AsyncHttpClientConfig getAsyncHttpClientConfig() {
         return asyncHttpClientConfig;
     }
 
-    public DirectMemoryClientConfiguration setAsyncHttpClientConfig( AsyncHttpClientConfig asyncHttpClientConfig )
-    {
+    public DirectMemoryClientConfiguration setAsyncHttpClientConfig(AsyncHttpClientConfig asyncHttpClientConfig) {
         this.asyncHttpClientConfig = asyncHttpClientConfig;
         return this;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( "DirectMemoryClientConfiguration" );
-        sb.append( "{protocol='" ).append( protocol ).append( '\'' );
-        sb.append( ", host='" ).append( host ).append( '\'' );
-        sb.append( ", port=" ).append( port );
-        sb.append( ", httpPath='" ).append( httpPath ).append( '\'' );
-        sb.append( ", maxConcurentConnections=" ).append( maxConcurentConnections );
-        sb.append( ", connectionTimeOut=" ).append( connectionTimeOut );
-        sb.append( ", readTimeOut=" ).append( readTimeOut );
-        sb.append( ", exchangeType=" ).append( exchangeType );
-        sb.append( ", serializer=" ).append( serializer );
-        sb.append( ", httpClientClassName='" ).append( httpClientClassName ).append( '\'' );
-        sb.append( '}' );
+        sb.append("DirectMemoryClientConfiguration");
+        sb.append("{protocol='").append(protocol).append('\'');
+        sb.append(", host='").append(host).append('\'');
+        sb.append(", port=").append(port);
+        sb.append(", httpPath='").append(httpPath).append('\'');
+        sb.append(", maxConcurentConnections=").append(maxConcurentConnections);
+        sb.append(", connectionTimeOut=").append(connectionTimeOut);
+        sb.append(", readTimeOut=").append(readTimeOut);
+        sb.append(", exchangeType=").append(exchangeType);
+        sb.append(", serializer=").append(serializer);
+        sb.append(", httpClientClassName='").append(httpClientClassName).append('\'');
+        sb.append('}');
         return sb.toString();
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory.buffer;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,107 +17,86 @@ package org.apache.directmemory.memory.buffer;
  * under the License.
  */
 
-public class ByteOrderUtils
-{
+package org.apache.directmemory.memory.buffer;
 
-    static void putShort( short value, MemoryBuffer memoryBuffer, boolean bigEndian )
-    {
-        if ( bigEndian )
-        {
-            memoryBuffer.writeByte( (byte) ( value >> 8 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 0 ) );
-        }
-        else
-        {
-            memoryBuffer.writeByte( (byte) ( value >> 0 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 8 ) );
+public class ByteOrderUtils {
+
+    static void putShort(short value, MemoryBuffer memoryBuffer, boolean bigEndian) {
+        if (bigEndian) {
+            memoryBuffer.writeByte((byte) (value >> 8));
+            memoryBuffer.writeByte((byte) (value >> 0));
+        } else {
+            memoryBuffer.writeByte((byte) (value >> 0));
+            memoryBuffer.writeByte((byte) (value >> 8));
         }
     }
 
-    static short getShort( MemoryBuffer memoryBuffer, boolean bigEndian )
-    {
-        if ( bigEndian )
-        {
+    static short getShort(MemoryBuffer memoryBuffer, boolean bigEndian) {
+        if (bigEndian) {
             byte b1 = memoryBuffer.readByte();
             byte b0 = memoryBuffer.readByte();
-            return buildShort( b1, b0 );
-        }
-        else
-        {
+            return buildShort(b1, b0);
+        } else {
             byte b0 = memoryBuffer.readByte();
             byte b1 = memoryBuffer.readByte();
-            return buildShort( b1, b0 );
+            return buildShort(b1, b0);
         }
     }
 
-    static void putInt( int value, MemoryBuffer memoryBuffer, boolean bigEndian )
-    {
-        if ( bigEndian )
-        {
-            memoryBuffer.writeByte( (byte) ( value >>> 24 ) );
-            memoryBuffer.writeByte( (byte) ( value >>> 16 ) );
-            memoryBuffer.writeByte( (byte) ( value >>> 8 ) );
-            memoryBuffer.writeByte( (byte) ( value >>> 0 ) );
-        }
-        else
-        {
-            memoryBuffer.writeByte( (byte) ( value >>> 0 ) );
-            memoryBuffer.writeByte( (byte) ( value >>> 8 ) );
-            memoryBuffer.writeByte( (byte) ( value >>> 16 ) );
-            memoryBuffer.writeByte( (byte) ( value >>> 24 ) );
+    static void putInt(int value, MemoryBuffer memoryBuffer, boolean bigEndian) {
+        if (bigEndian) {
+            memoryBuffer.writeByte((byte) (value >>> 24));
+            memoryBuffer.writeByte((byte) (value >>> 16));
+            memoryBuffer.writeByte((byte) (value >>> 8));
+            memoryBuffer.writeByte((byte) (value >>> 0));
+        } else {
+            memoryBuffer.writeByte((byte) (value >>> 0));
+            memoryBuffer.writeByte((byte) (value >>> 8));
+            memoryBuffer.writeByte((byte) (value >>> 16));
+            memoryBuffer.writeByte((byte) (value >>> 24));
         }
     }
 
-    static int getInt( MemoryBuffer memoryBuffer, boolean bigEndian )
-    {
-        if ( bigEndian )
-        {
+    static int getInt(MemoryBuffer memoryBuffer, boolean bigEndian) {
+        if (bigEndian) {
             byte b3 = memoryBuffer.readByte();
             byte b2 = memoryBuffer.readByte();
             byte b1 = memoryBuffer.readByte();
             byte b0 = memoryBuffer.readByte();
-            return buildInt( b3, b2, b1, b0 );
-        }
-        else
-        {
+            return buildInt(b3, b2, b1, b0);
+        } else {
             byte b0 = memoryBuffer.readByte();
             byte b1 = memoryBuffer.readByte();
             byte b2 = memoryBuffer.readByte();
             byte b3 = memoryBuffer.readByte();
-            return buildInt( b3, b2, b1, b0 );
+            return buildInt(b3, b2, b1, b0);
         }
     }
 
-    static void putLong( long value, MemoryBuffer memoryBuffer, boolean bigEndian )
-    {
-        if ( bigEndian )
-        {
-            memoryBuffer.writeByte( (byte) ( value >> 56 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 48 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 40 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 32 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 24 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 16 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 8 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 0 ) );
-        }
-        else
-        {
-            memoryBuffer.writeByte( (byte) ( value >> 0 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 8 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 16 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 24 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 32 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 40 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 48 ) );
-            memoryBuffer.writeByte( (byte) ( value >> 56 ) );
+    static void putLong(long value, MemoryBuffer memoryBuffer, boolean bigEndian) {
+        if (bigEndian) {
+            memoryBuffer.writeByte((byte) (value >> 56));
+            memoryBuffer.writeByte((byte) (value >> 48));
+            memoryBuffer.writeByte((byte) (value >> 40));
+            memoryBuffer.writeByte((byte) (value >> 32));
+            memoryBuffer.writeByte((byte) (value >> 24));
+            memoryBuffer.writeByte((byte) (value >> 16));
+            memoryBuffer.writeByte((byte) (value >> 8));
+            memoryBuffer.writeByte((byte) (value >> 0));
+        } else {
+            memoryBuffer.writeByte((byte) (value >> 0));
+            memoryBuffer.writeByte((byte) (value >> 8));
+            memoryBuffer.writeByte((byte) (value >> 16));
+            memoryBuffer.writeByte((byte) (value >> 24));
+            memoryBuffer.writeByte((byte) (value >> 32));
+            memoryBuffer.writeByte((byte) (value >> 40));
+            memoryBuffer.writeByte((byte) (value >> 48));
+            memoryBuffer.writeByte((byte) (value >> 56));
         }
     }
 
-    static long getLong( MemoryBuffer memoryBuffer, boolean bigEndian )
-    {
-        if ( bigEndian )
-        {
+    static long getLong(MemoryBuffer memoryBuffer, boolean bigEndian) {
+        if (bigEndian) {
             byte b7 = memoryBuffer.readByte();
             byte b6 = memoryBuffer.readByte();
             byte b5 = memoryBuffer.readByte();
@@ -128,10 +105,8 @@ public class ByteOrderUtils
             byte b2 = memoryBuffer.readByte();
             byte b1 = memoryBuffer.readByte();
             byte b0 = memoryBuffer.readByte();
-            return buildLong( b7, b6, b5, b4, b3, b2, b1, b0 );
-        }
-        else
-        {
+            return buildLong(b7, b6, b5, b4, b3, b2, b1, b0);
+        } else {
             byte b0 = memoryBuffer.readByte();
             byte b1 = memoryBuffer.readByte();
             byte b2 = memoryBuffer.readByte();
@@ -140,24 +115,21 @@ public class ByteOrderUtils
             byte b5 = memoryBuffer.readByte();
             byte b6 = memoryBuffer.readByte();
             byte b7 = memoryBuffer.readByte();
-            return buildLong( b7, b6, b5, b4, b3, b2, b1, b0 );
+            return buildLong(b7, b6, b5, b4, b3, b2, b1, b0);
         }
     }
 
-    private static short buildShort( byte b1, byte b0 )
-    {
-        return (short) ( ( ( ( b1 & 0xFF ) << 8 ) | ( ( b0 & 0xFF ) << 0 ) ) );
+    private static short buildShort(byte b1, byte b0) {
+        return (short) ((((b1 & 0xFF) << 8) | ((b0 & 0xFF) << 0)));
     }
 
-    private static int buildInt( byte b3, byte b2, byte b1, byte b0 )
-    {
-        return ( ( ( ( b3 & 0xFF ) << 24 ) | ( ( b2 & 0xFF ) << 16 ) | ( ( b1 & 0xFF ) << 8 ) | ( ( b0 & 0xFF ) << 0 ) ) );
+    private static int buildInt(byte b3, byte b2, byte b1, byte b0) {
+        return ((((b3 & 0xFF) << 24) | ((b2 & 0xFF) << 16) | ((b1 & 0xFF) << 8) | ((b0 & 0xFF) << 0)));
     }
 
-    private static long buildLong( byte b7, byte b6, byte b5, byte b4, byte b3, byte b2, byte b1, byte b0 )
-    {
-        return ( ( ( ( b7 & 0xFFL ) << 56 ) | ( ( b6 & 0xFFL ) << 48 ) | ( ( b5 & 0xFFL ) << 40 )
-            | ( ( b4 & 0xFFL ) << 32 ) | ( ( b3 & 0xFFL ) << 24 ) | ( ( b2 & 0xFFL ) << 16 ) | ( ( b1 & 0xFFL ) << 8 ) | ( ( b0 & 0xFFL ) << 0 ) ) );
+    private static long buildLong(byte b7, byte b6, byte b5, byte b4, byte b3, byte b2, byte b1, byte b0) {
+        return ((((b7 & 0xFFL) << 56) | ((b6 & 0xFFL) << 48) | ((b5 & 0xFFL) << 40)
+                 | ((b4 & 0xFFL) << 32) | ((b3 & 0xFFL) << 24) | ((b2 & 0xFFL) << 16) | ((b1 & 0xFFL) << 8) | ((b0 & 0xFFL) << 0)));
     }
 
 }

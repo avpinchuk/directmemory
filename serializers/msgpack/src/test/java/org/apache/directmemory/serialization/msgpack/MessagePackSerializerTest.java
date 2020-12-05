@@ -1,4 +1,3 @@
-package org.apache.directmemory.serialization.msgpack;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +17,17 @@ package org.apache.directmemory.serialization.msgpack;
  * under the License.
  */
 
+package org.apache.directmemory.serialization.msgpack;
+
 import org.apache.directmemory.test.AbstractSerializerTest;
 
 /**
  * @author Olivier Lamy
  */
-public class MessagePackSerializerTest
-    extends AbstractSerializerTest
-{
+public class MessagePackSerializerTest extends AbstractSerializerTest {
+
     @Override
-    public String getSerializerClassName()
-    {
+    public String getSerializerClassName() {
         return MessagePackSerializer.class.getName();
     }
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.cache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.cache;
  * under the License.
  */
 
+package org.apache.directmemory.cache;
+
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -28,50 +28,51 @@ import org.apache.directmemory.memory.Pointer;
 import org.apache.directmemory.memory.UnsafeMemoryManagerServiceImpl;
 import org.junit.Test;
 
-public class BasicTest
-{
+public class BasicTest {
+
     @Test
-    public void putRetrieveAndUpdate()
-        throws IOException
-    {
+    public void putRetrieveAndUpdate() throws IOException {
         CacheService<String, Long> cache =
-            new DirectMemory<String, Long>().setNumberOfBuffers( 10 ).setSize( 1000 ).setInitialCapacity( 10000 ).setConcurrencyLevel( 4 ).newCacheService();
+                new DirectMemory<String, Long>().setNumberOfBuffers(10).setSize(1000).setInitialCapacity(10000).setConcurrencyLevel(4).newCacheService();
 
-        assertNull( cache.retrieve( "a" ) );
-        assertNotNull( cache.put( "a", 3L ) );
-        assertNotNull( cache.retrieve( "a" ) );
-        assertEquals( 3L, cache.retrieve( "a" ).longValue() );
+        assertNull(cache.retrieve("a"));
+        assertNotNull(cache.put("a", 3L));
+        assertNotNull(cache.retrieve("a"));
+        assertEquals(3L, cache.retrieve("a").longValue());
 
-        Pointer<Long> ptr = cache.put( "a", 5L );
-        assertNotNull( ptr );
-        assertFalse( ptr.isExpired() );
-        assertFalse( ptr.isFree() );
-        assertNotNull( "pointer should not be null", cache.retrieve( "a" ) );
-        assertEquals( 5L, cache.retrieve( "a" ).longValue() );
+        Pointer<Long> ptr = cache.put("a", 5L);
+        assertNotNull(ptr);
+        assertFalse(ptr.isExpired());
+        assertFalse(ptr.isFree());
+        assertNotNull("pointer should not be null", cache.retrieve("a"));
+        assertEquals(5L, cache.retrieve("a").longValue());
 
         cache.close();
     }
 
     @Test
-    public void putRetrieveAndUpdateWithUnsafe()
-        throws IOException
-    {
+    public void putRetrieveAndUpdateWithUnsafe() throws IOException {
         CacheService<String, Long> cache =
-            new DirectMemory<String, Long>().setNumberOfBuffers( 10 ).setSize( 1000 ).setInitialCapacity( 10000 ).setConcurrencyLevel( 4 ).setMemoryManager( new UnsafeMemoryManagerServiceImpl<Long>() ).newCacheService();
+                new DirectMemory<String, Long>()
+                        .setNumberOfBuffers(10)
+                        .setSize(1000)
+                        .setInitialCapacity(10000)
+                        .setConcurrencyLevel(4)
+                        .setMemoryManager(new UnsafeMemoryManagerServiceImpl<Long>())
+                        .newCacheService();
 
-        assertNull( cache.retrieve( "a" ) );
-        assertNotNull( cache.put( "a", 3L ) );
-        assertNotNull( cache.retrieve( "a" ) );
-        assertEquals( 3L, cache.retrieve( "a" ).longValue() );
+        assertNull(cache.retrieve("a"));
+        assertNotNull(cache.put("a", 3L));
+        assertNotNull(cache.retrieve("a"));
+        assertEquals(3L, cache.retrieve("a").longValue());
 
-        Pointer<Long> ptr = cache.put( "a", 5L );
-        assertNotNull( ptr );
-        assertFalse( ptr.isExpired() );
-        assertFalse( ptr.isFree() );
-        assertNotNull( "pointer should not be null", cache.retrieve( "a" ) );
-        assertEquals( 5L, cache.retrieve( "a" ).longValue() );
+        Pointer<Long> ptr = cache.put("a", 5L);
+        assertNotNull(ptr);
+        assertFalse(ptr.isExpired());
+        assertFalse(ptr.isFree());
+        assertNotNull("pointer should not be null", cache.retrieve("a"));
+        assertEquals(5L, cache.retrieve("a").longValue());
 
         cache.close();
     }
-
 }

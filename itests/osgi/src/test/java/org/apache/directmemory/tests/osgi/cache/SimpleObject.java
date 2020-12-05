@@ -1,5 +1,3 @@
-package org.apache.directmemory.tests.osgi.cache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,70 +17,58 @@ package org.apache.directmemory.tests.osgi.cache;
  * under the License.
  */
 
+package org.apache.directmemory.tests.osgi.cache;
+
 import java.io.Serializable;
 
-public class SimpleObject
-    implements Serializable
-{
+public class SimpleObject implements Serializable {
+
     private String id;
 
     private String name;
 
-    public SimpleObject()
-    {
-    }
+    public SimpleObject() { }
 
-    public SimpleObject( String id, String name )
-    {
+    public SimpleObject(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
-    public void setId( String id )
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() )
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         SimpleObject that = (SimpleObject) o;
 
-        if ( !id.equals( that.id ) )
-        {
+        if (!id.equals(that.id)) {
             return false;
         }
-
         return true;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return id.hashCode();
     }
 }

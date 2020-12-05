@@ -1,5 +1,3 @@
-package org.apache.directmemory.cache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,9 +17,10 @@ package org.apache.directmemory.cache;
  * under the License.
  */
 
+package org.apache.directmemory.cache;
+
 import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
-import org.apache.directmemory.cache.Cache;
 import org.apache.directmemory.measures.Monitor;
 import org.apache.directmemory.measures.Ram;
 import org.apache.directmemory.misc.DummyPojo;
@@ -37,44 +36,33 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
-
 @Ignore
-public class TestCachePlusSerialization
-    extends AbstractBenchmark
-{
+public class TestCachePlusSerialization extends AbstractBenchmark {
 
-    private static Logger logger = LoggerFactory.getLogger( TestCachePlusSerialization.class );
+    private static Logger logger = LoggerFactory.getLogger(TestCachePlusSerialization.class);
 
     Random rnd = new Random();
 
     @BeforeClass
-    public static void init()
-    {
-        logger.info( "test started" );
-        Cache.init( 1, Ram.Mb( 100 ) );
+    public static void init() {
+        logger.info("test started");
+        Cache.init(1, Ram.Mb(100));
     }
 
     @AfterClass
-    public static void end()
-        throws IOException
-    {
+    public static void end() throws IOException {
         Cache.dump();
         Monitor.dump();
         Cache.close();
-        logger.info( "test ended" );
+        logger.info("test ended");
     }
 
-    @BenchmarkOptions( benchmarkRounds = 50000, warmupRounds = 0, concurrency = 1 )
+    @BenchmarkOptions(benchmarkRounds = 50000, warmupRounds = 0, concurrency = 1)
     @Test
-    public void basicBench()
-    {
-
-        DummyPojo d = new DummyPojo( "test-" + rnd.nextInt( 100000 ), 1024 + rnd.nextInt( 1024 ) );
-        Cache.put( d.name, d );
-        DummyPojo d2 = (DummyPojo) Cache.retrieve( d.name );
-
-        assertEquals( d.name, d2.name );
-
+    public void basicBench() {
+        DummyPojo d = new DummyPojo("test-" + rnd.nextInt(100000), 1024 + rnd.nextInt(1024));
+        Cache.put(d.name, d);
+        DummyPojo d2 = (DummyPojo) Cache.retrieve(d.name);
+        assertEquals(d.name, d2.name);
     }
-
 }

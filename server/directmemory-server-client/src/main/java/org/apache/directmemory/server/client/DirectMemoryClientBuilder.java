@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.client;
  * under the License.
  */
 
+package org.apache.directmemory.server.client;
+
 import org.apache.directmemory.serialization.Serializer;
 import org.apache.directmemory.server.client.providers.httpclient.HttpClientDirectMemoryHttpClient;
 import org.apache.directmemory.server.commons.DirectMemoryException;
@@ -29,131 +29,105 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryClientBuilder
-{
+public class DirectMemoryClientBuilder {
 
     public static final String DEFAULT_HTTP_CLIENT_INSTANCE = HttpClientDirectMemoryHttpClient.class.getName();
 
-    private Logger log = LoggerFactory.getLogger( getClass() );
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private DirectMemoryClientConfiguration configuration;
 
-    protected DirectMemoryClientBuilder()
-    {
+    protected DirectMemoryClientBuilder() {
         this.configuration = new DirectMemoryClientConfiguration();
     }
 
-    protected DirectMemoryClientBuilder( DirectMemoryClientConfiguration configuration )
-    {
+    protected DirectMemoryClientBuilder(DirectMemoryClientConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    public static DirectMemoryClientBuilder newBuilder()
-    {
+    public static DirectMemoryClientBuilder newBuilder() {
         return new DirectMemoryClientBuilder();
     }
 
-    public static DirectMemoryClientBuilder newBuilder( DirectMemoryClientConfiguration configuration )
-    {
-        return new DirectMemoryClientBuilder( configuration );
+    public static DirectMemoryClientBuilder newBuilder(DirectMemoryClientConfiguration configuration) {
+        return new DirectMemoryClientBuilder(configuration);
     }
 
-    public DirectMemoryClientBuilder toHost( String host )
-    {
-        this.configuration.setHost( host );
+    public DirectMemoryClientBuilder toHost(String host) {
+        this.configuration.setHost(host);
         return this;
     }
 
-    public DirectMemoryClientBuilder onPort( int port )
-    {
-        this.configuration.setPort( port );
+    public DirectMemoryClientBuilder onPort(int port) {
+        this.configuration.setPort(port);
         return this;
     }
 
-    public DirectMemoryClientBuilder toHttpPath( String HttpPath )
-    {
-        this.configuration.setHttpPath( HttpPath );
+    public DirectMemoryClientBuilder toHttpPath(String HttpPath) {
+        this.configuration.setHttpPath(HttpPath);
         return this;
     }
 
-    public DirectMemoryClientBuilder withMaxConcurentConnections( int maxConcurentConnections )
-    {
-        this.configuration.setMaxConcurentConnections( maxConcurentConnections );
+    public DirectMemoryClientBuilder withMaxConcurentConnections(int maxConcurentConnections) {
+        this.configuration.setMaxConcurentConnections(maxConcurentConnections);
         return this;
     }
 
-    public DirectMemoryClientBuilder withConnectionTimeOut( long connectionTimeOut )
-    {
-        this.configuration.setConnectionTimeOut( connectionTimeOut );
+    public DirectMemoryClientBuilder withConnectionTimeOut(long connectionTimeOut) {
+        this.configuration.setConnectionTimeOut(connectionTimeOut);
         return this;
     }
 
-    public DirectMemoryClientBuilder withReadTimeOut( long readTimeOut )
-    {
-        this.configuration.setReadTimeOut( readTimeOut );
+    public DirectMemoryClientBuilder withReadTimeOut(long readTimeOut) {
+        this.configuration.setReadTimeOut(readTimeOut);
         return this;
     }
 
 
-    public DirectMemoryClientBuilder forExchangeType( ExchangeType exchangeType )
-    {
-        this.configuration.setExchangeType( exchangeType );
+    public DirectMemoryClientBuilder forExchangeType(ExchangeType exchangeType) {
+        this.configuration.setExchangeType(exchangeType);
         return this;
     }
 
-    public DirectMemoryClientBuilder withSerializer( Serializer serializer )
-    {
-        this.configuration.setSerializer( serializer );
+    public DirectMemoryClientBuilder withSerializer(Serializer serializer) {
+        this.configuration.setSerializer(serializer);
         return this;
     }
 
-    public DirectMemoryClientBuilder withHttpClientClassName( String HttpClientClassName )
-    {
-        this.configuration.setHttpClientClassName( HttpClientClassName );
+    public DirectMemoryClientBuilder withHttpClientClassName(String HttpClientClassName) {
+        this.configuration.setHttpClientClassName(HttpClientClassName);
         return this;
     }
 
-    public DirectMemoryClient buildClient()
-        throws DirectMemoryException
-    {
+    public DirectMemoryClient buildClient() throws DirectMemoryException {
         // TODO check here if the builder has received all necessary parameters !
-        return new DefaultDirectMemoryClient( this.configuration, buildDirectMemoryHttpClient() );
+        return new DefaultDirectMemoryClient(this.configuration, buildDirectMemoryHttpClient());
     }
 
 
-    protected DirectMemoryHttpClient buildDirectMemoryHttpClient()
-    {
-        try
-        {
+    protected DirectMemoryHttpClient buildDirectMemoryHttpClient() {
+        try {
             Class<DirectMemoryHttpClient> clientClass =
-                (Class<DirectMemoryHttpClient>) Thread.currentThread().getContextClassLoader().loadClass(
-                    this.configuration.getHttpClientClassName() );
+                    (Class<DirectMemoryHttpClient>) Thread.currentThread().getContextClassLoader().loadClass(
+                            this.configuration.getHttpClientClassName());
             return clientClass.getDeclaredConstructor(
-                new Class[]{ DirectMemoryClientConfiguration.class } ).newInstance(
-                new Object[]{ this.configuration } );
-        }
-        catch ( Throwable t1 )
-        {
-            log.warn( "fail to use configured http client: {} use defautl one", t1.getMessage() );
-            try
-            {
+                    new Class[]{DirectMemoryClientConfiguration.class}).newInstance(
+                    new Object[]{this.configuration});
+        } catch (Throwable t1) {
+            log.warn("fail to use configured http client: {} use defautl one", t1.getMessage());
+            try {
                 // we try with an other class
                 Class<DirectMemoryHttpClient> clientClass =
-                    (Class<DirectMemoryHttpClient>) DirectMemoryHttpClient.class.getClassLoader().loadClass(
-                        this.configuration.getHttpClientClassName() );
+                        (Class<DirectMemoryHttpClient>) DirectMemoryHttpClient.class.getClassLoader().loadClass(
+                                this.configuration.getHttpClientClassName());
                 return clientClass.getDeclaredConstructor(
-                    new Class[]{ DirectMemoryClientConfiguration.class } ).newInstance(
-                    new Object[]{ this.configuration } );
-            }
-            catch ( Throwable t2 )
-            {
+                        new Class[]{DirectMemoryClientConfiguration.class}).newInstance(
+                        new Object[]{this.configuration});
+            } catch (Throwable t2) {
                 // ignore that
             }
-
         }
         // if we are here dynamic stuff has sucks !! so we use default client
-        return new HttpClientDirectMemoryHttpClient( this.configuration );
+        return new HttpClientDirectMemoryHttpClient(this.configuration);
     }
-
-
 }

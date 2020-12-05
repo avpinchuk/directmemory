@@ -1,7 +1,3 @@
-package org.apache.directmemory.memory;
-
-import java.io.IOException;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,78 +17,69 @@ import java.io.IOException;
  * under the License.
  */
 
-public class MemoryManager
-{
+package org.apache.directmemory.memory;
+
+import java.io.IOException;
+
+
+public class MemoryManager {
+
     private static final MemoryManagerService<Object> memoryManager = new MemoryManagerServiceImpl<Object>();
 
-    private MemoryManager()
-    {
+    private MemoryManager() {
         // static class
     }
 
-    public static void init( int numberOfBuffers, int size )
-    {
-        memoryManager.init( numberOfBuffers, size );
+    public static void init(int numberOfBuffers, int size) {
+        memoryManager.init(numberOfBuffers, size);
     }
 
-    public static Pointer<Object> store( byte[] payload, int expiresIn )
-    {
-        return memoryManager.store( payload, expiresIn );
+    public static Pointer<Object> store(byte[] payload, int expiresIn) {
+        return memoryManager.store(payload, expiresIn);
     }
 
-    public static Pointer<Object> store( byte[] payload )
-    {
-        return store( payload, 0 );
+    public static Pointer<Object> store(byte[] payload) {
+        return store(payload, 0);
     }
 
-    public static Pointer<Object> update( Pointer<Object> pointer, byte[] payload )
-    {
-        return memoryManager.update( pointer, payload );
+    public static Pointer<Object> update(Pointer<Object> pointer, byte[] payload) {
+        return memoryManager.update(pointer, payload);
     }
 
-    public static byte[] retrieve( Pointer<Object> pointer )
-    {
-        return memoryManager.retrieve( pointer );
+    public static byte[] retrieve(Pointer<Object> pointer) {
+        return memoryManager.retrieve(pointer);
     }
 
-    public static void free( Pointer<Object> pointer )
-    {
-        memoryManager.free( pointer );
+    public static void free(Pointer<Object> pointer) {
+        memoryManager.free(pointer);
     }
 
-    public static void clear()
-    {
+    public static void clear() {
         memoryManager.clear();
     }
 
-    public static void close()
-        throws IOException
-    {
+    public static void close() throws IOException {
         memoryManager.close();
     }
 
-    public static long capacity()
-    {
+    public static long capacity() {
         return memoryManager.capacity();
     }
 
-    public static long collectExpired()
-    {
+    public static long collectExpired() {
         return memoryManager.collectExpired();
     }
 
-    public static void collectLFU()
-    {
+    public static void collectLFU() {
         memoryManager.collectLFU();
     }
 
-    public static MemoryManagerService<Object> getMemoryManager()
-    {
+    public static MemoryManagerService<Object> getMemoryManager() {
         return memoryManager;
     }
 
-    public static Pointer<Object> allocate( int size )
-    {
-        return memoryManager.allocate( Object.class, size, -1, -1 ); // add a version with expiration
+    public static Pointer<Object> allocate(int size) {
+        return memoryManager.allocate(Object.class, size, -1, -1); // add a version with expiration
     }
+
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 /**
  * json format response:
  * {"DirectMemoryRS":{"found":true,"updated":false,"key":"foo","cacheContent":""}}
@@ -27,9 +27,8 @@ package org.apache.directmemory.server.commons;
  *
  * @author Olivier Lamy
  */
-public class DirectMemoryResponse<V>
-    extends AbstractDirectMemoryExchange
-{
+public class DirectMemoryResponse<V> extends AbstractDirectMemoryExchange {
+
     private boolean found;
 
     private boolean stored;
@@ -44,68 +43,56 @@ public class DirectMemoryResponse<V>
      */
     private int storedSize = -1;
 
-    public boolean isFound()
-    {
+    public boolean isFound() {
         return found;
     }
 
-    public DirectMemoryResponse setFound( boolean found )
-    {
+    public DirectMemoryResponse setFound(boolean found) {
         this.found = found;
         return this;
     }
 
-    public boolean isStored()
-    {
+    public boolean isStored() {
         return stored;
     }
 
-    public DirectMemoryResponse setStored( boolean stored )
-    {
+    public DirectMemoryResponse setStored(boolean stored) {
         this.stored = stored;
         return this;
     }
 
-    public DirectMemoryResponse setCacheContent( byte[] cacheContent )
-    {
-        super.setCacheContent( cacheContent );
+    public DirectMemoryResponse setCacheContent(byte[] cacheContent) {
+        super.setCacheContent(cacheContent);
         return this;
     }
 
-    public DirectMemoryResponse setKey( String key )
-    {
-        super.setKey( key );
+    public DirectMemoryResponse setKey(String key) {
+        super.setKey(key);
         return this;
     }
 
-    public boolean isDeleted()
-    {
+    public boolean isDeleted() {
         return deleted;
     }
 
-    public DirectMemoryResponse setDeleted( boolean deleted )
-    {
+    public DirectMemoryResponse setDeleted(boolean deleted) {
         this.deleted = deleted;
         return this;
     }
 
-    public V getResponse()
-    {
+    public V getResponse() {
         return this.response;
     }
 
-    public void setResponse( V response )
-    {
+    public void setResponse(V response) {
         this.response = response;
     }
 
-    public int getStoredSize()
-    {
+    public int getStoredSize() {
         return storedSize;
     }
 
-    public DirectMemoryResponse setStoredSize( int storedSize )
-    {
+    public DirectMemoryResponse setStoredSize(int storedSize) {
         this.storedSize = storedSize;
         return this;
     }

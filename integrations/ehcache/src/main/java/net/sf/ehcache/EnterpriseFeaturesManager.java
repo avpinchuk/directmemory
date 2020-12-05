@@ -1,5 +1,3 @@
-package net.sf.ehcache;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package net.sf.ehcache;
  * under the License.
  */
 
+package net.sf.ehcache;
+
 import net.sf.ehcache.pool.Pool;
 import net.sf.ehcache.pool.PoolableStore;
 import net.sf.ehcache.store.Store;
@@ -31,59 +31,50 @@ import net.sf.ehcache.writer.writebehind.WriteBehind;
 
 /**
  * Class name is hardcoded in ehcache so we need this one!!
+ *
  * @author Olivier Lamy
  * @since 0.2
  */
-public class EnterpriseFeaturesManager
-    implements FeaturesManager
-{
+public class EnterpriseFeaturesManager implements FeaturesManager {
 
-    private  CacheManager cacheManager;
+    private CacheManager cacheManager;
 
-    public EnterpriseFeaturesManager( CacheManager cacheManager )
-    {
+    public EnterpriseFeaturesManager(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
 
     @Override
-    public WriteBehind createWriteBehind( Cache cache )
-    {
+    public WriteBehind createWriteBehind(Cache cache) {
         return null;
     }
 
     @Override
-    public Store createStore( Cache cache, Pool<PoolableStore> onHeapPool, Pool<PoolableStore> onDiskPool )
-    {
-        return OffHeapStore.createOffHeapStore( cache );
+    public Store createStore(Cache cache, Pool<PoolableStore> onHeapPool, Pool<PoolableStore> onDiskPool) {
+        return OffHeapStore.createOffHeapStore(cache);
     }
 
     @Override
-    public TransactionIDFactory createTransactionIDFactory()
-    {
+    public TransactionIDFactory createTransactionIDFactory() {
         return null;
     }
 
     @Override
-    public SoftLockManager createSoftLockManager( Ehcache cache, SoftLockFactory lockFactory )
-    {
+    public SoftLockManager createSoftLockManager(Ehcache cache, SoftLockFactory lockFactory) {
         return null;
     }
 
     @Override
-    public void startup()
-    {
+    public void startup() {
 
     }
 
     @Override
-    public void dispose()
-    {
+    public void dispose() {
 
     }
 
     @Override
-    public UpdateChecker createUpdateChecker()
-    {
+    public UpdateChecker createUpdateChecker() {
         return null;
     }
 }

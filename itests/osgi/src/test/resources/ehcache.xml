@@ -17,15 +17,12 @@
   ~ under the License.
   -->
 <ehcache>
-
-    <defaultCache />
-
+    <defaultCache/>
     <cache name="testCache"
-      eternal="false"
-      diskPersistent="false"
-      overflowToOffHeap="true"
-      maxElementsInMemory="30"
-      maxBytesLocalOffHeap="100M"
+           eternal="false"
+           diskPersistent="false"
+           overflowToOffHeap="true"
+           maxElementsInMemory="30"
+           maxBytesLocalOffHeap="100M"
     />
-
 </ehcache>

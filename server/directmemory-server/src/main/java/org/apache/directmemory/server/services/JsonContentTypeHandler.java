@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.services;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.services;
  * under the License.
  */
 
+package org.apache.directmemory.server.services;
+
 import org.apache.directmemory.server.commons.DirectMemoryException;
 import org.apache.directmemory.server.commons.DirectMemoryParser;
 import org.apache.directmemory.server.commons.DirectMemoryRequest;
@@ -33,34 +33,28 @@ import java.io.IOException;
 /**
  * @author Olivier Lamy
  */
-public class JsonContentTypeHandler
-    implements ContentTypeHandler
-{
+public class JsonContentTypeHandler implements ContentTypeHandler {
 
     private DirectMemoryParser parser = DirectMemoryParser.instance();
 
     private DirectMemoryWriter writer = DirectMemoryWriter.instance();
 
     @Override
-    public byte[] handleGet( DirectMemoryRequest request, byte[] cacheResponseContent, HttpServletResponse resp,
-                             HttpServletRequest req )
-        throws DirectMemoryException, IOException
-    {
+    public byte[] handleGet(DirectMemoryRequest request,
+                            byte[] cacheResponseContent,
+                            HttpServletResponse resp,
+                            HttpServletRequest req) throws DirectMemoryException {
         DirectMemoryResponse response =
-            new DirectMemoryResponse().setKey( request.getKey() ).setCacheContent( cacheResponseContent );
-        String json = writer.generateJsonResponse( response );
-        resp.setContentType( MediaType.APPLICATION_JSON );
+                new DirectMemoryResponse().setKey(request.getKey()).setCacheContent(cacheResponseContent);
+        String json = writer.generateJsonResponse(response);
+        resp.setContentType(MediaType.APPLICATION_JSON);
         return json.getBytes();
     }
 
     @Override
-    public DirectMemoryRequest handlePut( HttpServletRequest req, HttpServletResponse resp )
-        throws DirectMemoryException, IOException
-    {
+    public DirectMemoryRequest handlePut(HttpServletRequest req, HttpServletResponse resp) throws DirectMemoryException, IOException {
         // 	application/json
-
-        DirectMemoryRequest request = parser.buildRequest( req.getInputStream() );
+        DirectMemoryRequest request = parser.buildRequest(req.getInputStream());
         return request;
-
     }
 }

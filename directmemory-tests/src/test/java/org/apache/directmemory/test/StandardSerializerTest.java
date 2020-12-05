@@ -1,4 +1,3 @@
-package org.apache.directmemory.test;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +17,16 @@ package org.apache.directmemory.test;
  * under the License.
  */
 
+package org.apache.directmemory.test;
+
 import org.apache.directmemory.serialization.StandardSerializer;
 
 /**
  * @author Olivier Lamy
  */
-public class StandardSerializerTest
-    extends AbstractSerializerTest
-{
+public class StandardSerializerTest extends AbstractSerializerTest {
     @Override
-    public String getSerializerClassName()
-    {
+    public String getSerializerClassName() {
         return StandardSerializer.class.getName();
     }
 }

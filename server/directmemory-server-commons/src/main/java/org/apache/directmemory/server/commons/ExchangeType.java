@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.commons;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,42 +17,40 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 /**
  * @author Olivier Lamy
  */
-public enum ExchangeType
-{
-    JSON( "application/json", 1 ), JAVA_SERIALIZED_OBJECT(
-    DirectMemoryHttpConstants.JAVA_SERIALIZED_OBJECT_CONTENT_TYPE_HEADER, 2 ), TEXT_PLAIN( "text/plain", 3 );
+public enum ExchangeType {
+
+    JSON("application/json", 1), JAVA_SERIALIZED_OBJECT(
+            DirectMemoryHttpConstants.JAVA_SERIALIZED_OBJECT_CONTENT_TYPE_HEADER, 2), TEXT_PLAIN("text/plain", 3);
 
     private String contentType;
 
     private int type;
 
-    private ExchangeType( String contentType, int type )
-    {
+    private ExchangeType(String contentType, int type) {
         this.contentType = contentType;
         this.type = type;
     }
 
-    public String getContentType()
-    {
+    public String getContentType() {
         return contentType;
     }
 
-    public int getType()
-    {
+    public int getType() {
         return type;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( "ExchangeType" );
-        sb.append( "{contentType='" ).append( contentType ).append( '\'' );
-        sb.append( ", type=" ).append( type );
-        sb.append( '}' );
+        sb.append("ExchangeType");
+        sb.append("{contentType='").append(contentType).append('\'');
+        sb.append(", type=").append(type);
+        sb.append('}');
         return sb.toString();
     }
 }

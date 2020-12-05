@@ -1,5 +1,3 @@
-package org.apache.directmemory.conf;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,30 +17,30 @@ package org.apache.directmemory.conf;
  * under the License.
  */
 
+package org.apache.directmemory.conf;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class ConfigurationTest
-{
+public class ConfigurationTest {
+
     @Test
-    public void testBaseConfiguration()
-    {
-        assertTrue( Configuration.getNumberOfBuffers() > 0 );
-        assertTrue( Configuration.getInitialCapacity() > 0 );
-        assertTrue( Configuration.getRamMegaBytes() > 0 );
-        assertTrue( Configuration.getConcurrencyLevel() > 0 );
-        assertTrue( Configuration.getDisposalTime() > 0L );
+    public void testBaseConfiguration() {
+        assertTrue(Configuration.getNumberOfBuffers() > 0);
+        assertTrue(Configuration.getInitialCapacity() > 0);
+        assertTrue(Configuration.getRamMegaBytes() > 0);
+        assertTrue(Configuration.getConcurrencyLevel() > 0);
+        assertTrue(Configuration.getDisposalTime() > 0L);
     }
 
     @Test
-    public void testYamlConfiguration()
-    {
+    public void testYamlConfiguration() {
         Configuration.configureFromYaml();
-        assertTrue( Configuration.getNumberOfBuffers() > 0 );
-        assertTrue( Configuration.getInitialCapacity() > 0 );
-        assertTrue( Configuration.getRamMegaBytes() > 0 );
-        assertTrue( Configuration.getConcurrencyLevel() > 0 );
-        assertTrue( Configuration.getDisposalTime() > 0L );
+        assertTrue(Configuration.getNumberOfBuffers() > 0);
+        assertTrue(Configuration.getInitialCapacity() > 0);
+        assertTrue(Configuration.getRamMegaBytes() > 0);
+        assertTrue(Configuration.getConcurrencyLevel() > 0);
+        assertTrue(Configuration.getDisposalTime() > 0L);
     }
 }

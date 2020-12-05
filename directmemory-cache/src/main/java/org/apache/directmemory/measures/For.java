@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,13 +17,12 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
-public class For
-    extends In
-{
+package org.apache.directmemory.measures;
 
-    public For( double measure )
-    {
-        super( measure );
+public class For extends In {
+
+    public For(double measure) {
+        super(measure);
     }
 
 }

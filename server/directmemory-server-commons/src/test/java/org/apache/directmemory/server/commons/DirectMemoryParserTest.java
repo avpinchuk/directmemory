@@ -1,4 +1,3 @@
-package org.apache.directmemory.server.commons;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +17,8 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
+
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -28,45 +29,38 @@ import static org.junit.Assert.*;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryParserTest
-{
-    @Test
-    public void parseRequest()
-        throws Exception
-    {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream( "cache-rq.json" );
-        assertNotNull( is );
-        DirectMemoryRequest dmRq = DirectMemoryParser.instance().buildRequest( is );
-        assertNotNull( dmRq );
+public class DirectMemoryParserTest {
 
-        assertEquals( "101", dmRq.getKey() );
-        assertEquals( true, dmRq.isUpdate() );
-        assertEquals( 123, dmRq.getExpiresIn() );
+    @Test
+    public void parseRequest() throws Exception {
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("cache-rq.json");
+        assertNotNull(is);
+        DirectMemoryRequest dmRq = DirectMemoryParser.instance().buildRequest(is);
+        assertNotNull(dmRq);
+
+        assertEquals("101", dmRq.getKey());
+        assertEquals(true, dmRq.isUpdate());
+        assertEquals(123, dmRq.getExpiresIn());
     }
 
     @Test
-    public void parseResponse()
-        throws Exception
-    {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream( "cache-rs.json" );
-        assertNotNull( is );
-        DirectMemoryResponse dmRs = DirectMemoryParser.instance().buildResponse( is );
-        assertNotNull( dmRs );
+    public void parseResponse() throws Exception {
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("cache-rs.json");
+        assertNotNull(is);
+        DirectMemoryResponse dmRs = DirectMemoryParser.instance().buildResponse(is);
+        assertNotNull(dmRs);
 
-        assertEquals( "foo", dmRs.getKey() );
-        assertEquals( true, dmRs.isFound() );
-        assertEquals( false, dmRs.isStored() );
-        assertEquals( "foo bar", new String( dmRs.getCacheContent() ) );
+        assertEquals("foo", dmRs.getKey());
+        assertEquals(true, dmRs.isFound());
+        assertEquals(false, dmRs.isStored());
+        assertEquals("foo bar", new String(dmRs.getCacheContent()));
     }
 
     @Test
-    public void parseEmptyRequest()
-        throws Exception
-    {
-        InputStream is = new ByteArrayInputStream( new byte[0] );
-        DirectMemoryRequest dmRq = DirectMemoryParser.instance().buildRequest( is );
-        assertNotNull( dmRq );
-        assertNull( dmRq.getCacheContent() );
-
+    public void parseEmptyRequest() throws Exception {
+        InputStream is = new ByteArrayInputStream(new byte[0]);
+        DirectMemoryRequest dmRq = DirectMemoryParser.instance().buildRequest(is);
+        assertNotNull(dmRq);
+        assertNull(dmRq.getCacheContent());
     }
 }

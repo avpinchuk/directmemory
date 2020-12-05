@@ -1,4 +1,3 @@
-package org.apache.directmemory.server.commons;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +17,7 @@ package org.apache.directmemory.server.commons;
  * under the License.
  */
 
+package org.apache.directmemory.server.commons;
 
 import org.apache.directmemory.serialization.Serializer;
 import org.apache.directmemory.serialization.SerializerFactory;
@@ -34,72 +34,66 @@ import static org.junit.Assert.*;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryWriterTest
-{
-    private Logger log = LoggerFactory.getLogger( getClass() );
+public class DirectMemoryWriterTest {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @Test
-    public void writeRequestWithString()
-        throws Exception
-    {
+    public void writeRequestWithString() throws Exception {
         DirectMemoryRequest dmRq =
-            new DirectMemoryRequest().setKey( "101" ).setUpdate( true ).setExpiresIn( 123 ).setCacheContent(
-                "foo bar".getBytes() );
-        String rq = DirectMemoryWriter.instance().generateJsonRequest( dmRq );
+                new DirectMemoryRequest().setKey("101").setUpdate(true).setExpiresIn(123).setCacheContent(
+                        "foo bar".getBytes());
+        String rq = DirectMemoryWriter.instance().generateJsonRequest(dmRq);
 
-        dmRq = DirectMemoryParser.instance().buildRequest( new ByteArrayInputStream( rq.getBytes() ) );
-        assertNotNull( dmRq );
+        dmRq = DirectMemoryParser.instance().buildRequest(new ByteArrayInputStream(rq.getBytes()));
+        assertNotNull(dmRq);
 
-        assertEquals( "101", dmRq.getKey() );
-        assertTrue( dmRq.isUpdate() );
-        assertEquals( 123, dmRq.getExpiresIn() );
-        assertEquals( "foo bar", new String( dmRq.getCacheContent() ) );
+        assertEquals("101", dmRq.getKey());
+        assertTrue(dmRq.isUpdate());
+        assertEquals(123, dmRq.getExpiresIn());
+        assertEquals("foo bar", new String(dmRq.getCacheContent()));
     }
 
     @Test
-    public void writeRequestWithObject()
-        throws Exception
-    {
+    public void writeRequestWithObject() throws Exception {
         Wine wine = new Wine();
-        wine.setName( "Bordeaux" );
+        wine.setName("Bordeaux");
 
         Serializer serializer = SerializerFactory.createNewSerializer();
 
         DirectMemoryRequest dmRq =
-            new DirectMemoryRequest().setKey( "101" ).setUpdate( true ).setExpiresIn( 123 ).setObject(
-                wine ).setSerializer( serializer );
-        String rq = DirectMemoryWriter.instance().generateJsonRequest( dmRq );
-        log.info( "rq:" + rq );
+                new DirectMemoryRequest().setKey("101").setUpdate(true).setExpiresIn(123).setObject(
+                        wine).setSerializer(serializer);
+        String rq = DirectMemoryWriter.instance().generateJsonRequest(dmRq);
+        log.info("rq:" + rq);
 
-        dmRq = DirectMemoryParser.instance().buildRequest( new ByteArrayInputStream( rq.getBytes() ) );
-        assertNotNull( dmRq );
+        dmRq = DirectMemoryParser.instance().buildRequest(new ByteArrayInputStream(rq.getBytes()));
+        assertNotNull(dmRq);
 
-        assertEquals( "101", dmRq.getKey() );
-        assertTrue( dmRq.isUpdate() );
-        assertEquals( 123, dmRq.getExpiresIn() );
+        assertEquals("101", dmRq.getKey());
+        assertTrue(dmRq.isUpdate());
+        assertEquals(123, dmRq.getExpiresIn());
 
-        wine = serializer.deserialize( dmRq.getCacheContent(), Wine.class );
-        assertEquals( "Bordeaux", wine.getName() );
+        wine = serializer.deserialize(dmRq.getCacheContent(), Wine.class);
+        assertEquals("Bordeaux", wine.getName());
 
     }
 
     @Test
-    public void writeResponseWithString()
-        throws Exception
-    {
+    public void writeResponseWithString() throws Exception {
         DirectMemoryResponse rs =
-            new DirectMemoryResponse().setKey( "101" ).setFound( true ).setStored( false ).setCacheContent(
-                "foo bar".getBytes() );
-        String jsonRs = DirectMemoryWriter.instance().generateJsonResponse( rs );
+                new DirectMemoryResponse().setKey("101").setFound(true).setStored(false).setCacheContent(
+                        "foo bar".getBytes());
+        String jsonRs = DirectMemoryWriter.instance().generateJsonResponse(rs);
 
-        rs = DirectMemoryParser.instance().buildResponse( new ByteArrayInputStream( jsonRs.getBytes() ) );
-        assertNotNull( rs );
+        rs = DirectMemoryParser.instance().buildResponse(new ByteArrayInputStream(jsonRs.getBytes()));
+        assertNotNull(rs);
 
-        log.info( "jsonRs:" + jsonRs );
+        log.info("jsonRs:" + jsonRs);
 
-        assertEquals( "101", rs.getKey() );
-        assertTrue( rs.isFound() );
-        assertFalse( rs.isStored() );
-        assertEquals( "foo bar", new String( rs.getCacheContent() ) );
+        assertEquals("101", rs.getKey());
+        assertTrue(rs.isFound());
+        assertFalse(rs.isStored());
+        assertEquals("foo bar", new String(rs.getCacheContent()));
     }
 }

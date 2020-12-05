@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.services;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,9 +17,10 @@ package org.apache.directmemory.server.services;
  * under the License.
  */
 
+package org.apache.directmemory.server.services;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.directmemory.server.commons.DirectMemoryException;
 import org.apache.directmemory.server.commons.DirectMemoryHttpConstants;
 import org.apache.directmemory.server.commons.DirectMemoryRequest;
 import org.slf4j.Logger;
@@ -34,28 +33,22 @@ import java.io.IOException;
 /**
  * @author Olivier Lamy
  */
-public class JavaSerializedContentTypeHandler
-    implements ContentTypeHandler
-{
-    private Logger log = LoggerFactory.getLogger( getClass() );
+public class JavaSerializedContentTypeHandler implements ContentTypeHandler {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public byte[] handleGet( DirectMemoryRequest request, byte[] cacheResponseContent, HttpServletResponse resp,
-                             HttpServletRequest req )
-        throws DirectMemoryException, IOException
-    {
-        resp.setContentType( DirectMemoryHttpConstants.JAVA_SERIALIZED_OBJECT_CONTENT_TYPE_HEADER );
+    public byte[] handleGet(DirectMemoryRequest request, byte[] cacheResponseContent, HttpServletResponse resp, HttpServletRequest req) {
+        resp.setContentType(DirectMemoryHttpConstants.JAVA_SERIALIZED_OBJECT_CONTENT_TYPE_HEADER);
         return cacheResponseContent;
     }
 
     @Override
-    public DirectMemoryRequest handlePut( HttpServletRequest request, HttpServletResponse response )
-        throws DirectMemoryException, IOException
-    {
-        String expiresInHeader = request.getHeader( DirectMemoryHttpConstants.EXPIRES_IN_HTTP_HEADER );
-        int expiresIn = StringUtils.isEmpty( expiresInHeader ) ? 0 : Integer.valueOf( expiresInHeader );
-        log.debug( "expiresIn: {} for header value: {}", expiresIn, expiresInHeader );
-        return new DirectMemoryRequest().setExpiresIn( expiresIn ).setCacheContent(
-            IOUtils.toByteArray( request.getInputStream() ) );
+    public DirectMemoryRequest handlePut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String expiresInHeader = request.getHeader(DirectMemoryHttpConstants.EXPIRES_IN_HTTP_HEADER);
+        int expiresIn = StringUtils.isEmpty(expiresInHeader) ? 0 : Integer.valueOf(expiresInHeader);
+        log.debug("expiresIn: {} for header value: {}", expiresIn, expiresInHeader);
+        return new DirectMemoryRequest().setExpiresIn(expiresIn).setCacheContent(
+                IOUtils.toByteArray(request.getInputStream()));
     }
 }

@@ -17,113 +17,107 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <groupId>org.apache.directmemory</groupId>
-    <artifactId>itests</artifactId>
-    <version>0.3-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+        <groupId>org.apache.directmemory</groupId>
+        <artifactId>itests</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </parent>
 
-  <groupId>org.apache.directmemory.itests</groupId>
-  <artifactId>osgi</artifactId>
-  <name>Apache DirectMemory :: Integration Tests :: OSGi</name>
-  <description>${project.name}</description>
-  <properties>
-    <osgi.debug>false</osgi.debug>
-    <osgi.debug.port>5005</osgi.debug.port>
-    <osgi.debug.suspend>true</osgi.debug.suspend>
-    <pax.logging.version>1.7.0</pax.logging.version>
-  </properties>
-  <dependencies>
+    <groupId>org.apache.directmemory.itests</groupId>
+    <artifactId>osgi</artifactId>
+    <name>Apache DirectMemory :: Integration Tests :: OSGi</name>
+    <description>${project.name}</description>
 
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-    </dependency>
+    <properties>
+        <osgi.debug>false</osgi.debug>
+        <osgi.debug.port>5005</osgi.debug.port>
+        <osgi.debug.suspend>true</osgi.debug.suspend>
+        <pax.logging.version>1.7.0</pax.logging.version>
+    </properties>
 
-    <!-- Test -->
-    <dependency>
-      <groupId>org.apache.directmemory</groupId>
-      <artifactId>directmemory-cache</artifactId>
-      <scope>test</scope>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>org.apache.directmemory</groupId>
+            <artifactId>directmemory-cache</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directmemory</groupId>
+            <artifactId>directmemory-ehcache</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-api</artifactId>
+            <version>${pax.logging.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-service</artifactId>
+            <version>${pax.logging.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-default</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-tinybundles</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    <dependency>
-      <groupId>org.apache.directmemory</groupId>
-      <artifactId>directmemory-ehcache</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-api</artifactId>
-      <version>${pax.logging.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-service</artifactId>
-      <version>${pax.logging.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam-junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam-container-default</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.swissbox</groupId>
-      <artifactId>pax-swissbox-tinybundles</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skipTests>true</skipTests>
-          <argLine>-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m</argLine>
-          <systemPropertyVariables>
-            <osgi.debug>${osgi.debug}</osgi.debug>
-            <osgi.debug.port>${osgi.debug.port}</osgi.debug.port>
-            <osgi.debug.suspend>${osgi.debug.suspend}</osgi.debug.suspend>
-            <direct.memory.version>${project.version}</direct.memory.version>
-            <ehcache.bundle.version>${ehcache.bundle.version}</ehcache.bundle.version>
-            <pax.logging.version>${pax.logging.version}</pax.logging.version>
-            <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <argLine>-Xmx512m -Xms512m -XX:MaxDirectMemorySize=512m</argLine>
+                    <systemPropertyVariables>
+                        <osgi.debug>${osgi.debug}</osgi.debug>
+                        <osgi.debug.port>${osgi.debug.port}</osgi.debug.port>
+                        <osgi.debug.suspend>${osgi.debug.suspend}</osgi.debug.suspend>
+                        <direct.memory.version>${project.version}</direct.memory.version>
+                        <ehcache.bundle.version>${ehcache.bundle.version}</ehcache.bundle.version>
+                        <pax.logging.version>${pax.logging.version}</pax.logging.version>
+                        <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

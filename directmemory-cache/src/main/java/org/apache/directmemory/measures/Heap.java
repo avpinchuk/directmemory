@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,8 +17,8 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
-public class Heap
-    extends Sizing
-{
+package org.apache.directmemory.measures;
+
+public class Heap extends Sizing {
 
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -38,8 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.MapMaker;
 
-public final class DirectMemory<K, V>
-{
+public final class DirectMemory<K, V> {
 
     public static final int DEFAULT_CONCURRENCY_LEVEL = 4;
 
@@ -47,7 +46,7 @@ public final class DirectMemory<K, V>
 
     public static final int DEFAULT_DISPOSAL_TIME = 10; // seconds
 
-    private final Logger logger = LoggerFactory.getLogger( getClass() );
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private int numberOfBuffers;
 
@@ -57,7 +56,7 @@ public final class DirectMemory<K, V>
 
     private int concurrencyLevel = DEFAULT_CONCURRENCY_LEVEL;
 
-    private long disposalTime = seconds( DEFAULT_DISPOSAL_TIME );
+    private long disposalTime = seconds(DEFAULT_DISPOSAL_TIME);
 
     private ConcurrentMap<K, Pointer<V>> map;
 
@@ -65,14 +64,12 @@ public final class DirectMemory<K, V>
 
     private MemoryManagerService<V> memoryManager;
 
-    public DirectMemory()
-    {
+    public DirectMemory() {
         // does nothing
     }
 
-    public DirectMemory( DirectMemory<K, V> prototype )
-    {
-        checkArgument( prototype != null, "Impossible to create a DirectMemory instance from a null prototype" );
+    public DirectMemory(DirectMemory<K, V> prototype) {
+        checkArgument(prototype != null, "Impossible to create a DirectMemory instance from a null prototype");
 
         numberOfBuffers = prototype.numberOfBuffers;
         size = prototype.size;
@@ -85,95 +82,83 @@ public final class DirectMemory<K, V>
         memoryManager = prototype.memoryManager;
     }
 
-    public DirectMemory<K, V> setNumberOfBuffers( int numberOfBuffers )
-    {
-        checkArgument( numberOfBuffers > 0, "Impossible to create a CacheService with a number of buffers lesser than 1" );
+    public DirectMemory<K, V> setNumberOfBuffers(int numberOfBuffers) {
+        checkArgument(numberOfBuffers > 0, "Impossible to create a CacheService with a number of buffers lesser than 1");
         this.numberOfBuffers = numberOfBuffers;
         return this;
     }
 
-    public DirectMemory<K, V> setSize( int size )
-    {
-        checkArgument( size > 0, "Impossible to create a CacheService with a size lesser than 1" );
+    public DirectMemory<K, V> setSize(int size) {
+        checkArgument(size > 0, "Impossible to create a CacheService with a size lesser than 1");
         this.size = size;
         return this;
     }
 
-    public DirectMemory<K, V> setInitialCapacity( int initialCapacity )
-    {
-        checkArgument( initialCapacity > 0, "Impossible to create a CacheService with an initialCapacity lesser than 1" );
+    public DirectMemory<K, V> setInitialCapacity(int initialCapacity) {
+        checkArgument(initialCapacity > 0, "Impossible to create a CacheService with an initialCapacity lesser than 1");
         this.initialCapacity = initialCapacity;
         return this;
     }
 
-    public DirectMemory<K, V> setConcurrencyLevel( int concurrencyLevel )
-    {
-        checkArgument( concurrencyLevel > 0, "Impossible to create a CacheService with a concurrencyLevel lesser than 1" );
+    public DirectMemory<K, V> setConcurrencyLevel(int concurrencyLevel) {
+        checkArgument(concurrencyLevel > 0, "Impossible to create a CacheService with a concurrencyLevel lesser than 1");
         this.concurrencyLevel = concurrencyLevel;
         return this;
     }
 
-    public DirectMemory<K, V> setDisposalTime( long disposalTime )
-    {
-        checkArgument( disposalTime > 0, "Impossible to create a CacheService with a disposalTime lesser than 1" );
+    public DirectMemory<K, V> setDisposalTime(long disposalTime) {
+        checkArgument(disposalTime > 0, "Impossible to create a CacheService with a disposalTime lesser than 1");
         this.disposalTime = disposalTime;
         return this;
     }
 
-    public DirectMemory<K, V> setMap( ConcurrentMap<K, Pointer<V>> map )
-    {
-        checkArgument( map != null, "Impossible to create a CacheService with a null map" );
+    public DirectMemory<K, V> setMap(ConcurrentMap<K, Pointer<V>> map) {
+        checkArgument(map != null, "Impossible to create a CacheService with a null map");
         this.map = map;
         return this;
     }
 
-    public DirectMemory<K, V> setSerializer( Serializer serializer )
-    {
-        checkArgument( serializer != null, "Impossible to create a CacheService with a null serializer" );
+    public DirectMemory<K, V> setSerializer(Serializer serializer) {
+        checkArgument(serializer != null, "Impossible to create a CacheService with a null serializer");
         this.serializer = serializer;
         return this;
     }
 
-    public DirectMemory<K, V> setMemoryManager( MemoryManagerService<V> memoryManager )
-    {
-        checkArgument( memoryManager != null, "Impossible to create a CacheService with a null memoryManager" );
+    public DirectMemory<K, V> setMemoryManager(MemoryManagerService<V> memoryManager) {
+        checkArgument(memoryManager != null, "Impossible to create a CacheService with a null memoryManager");
         this.memoryManager = memoryManager;
         return this;
     }
 
-    public CacheService<K, V> newCacheService()
-    {
-        if ( map == null )
-        {
-            map = new MapMaker().concurrencyLevel( concurrencyLevel ).initialCapacity( initialCapacity ).makeMap();
+    public CacheService<K, V> newCacheService() {
+        if (map == null) {
+            map = new MapMaker().concurrencyLevel(concurrencyLevel).initialCapacity(initialCapacity).makeMap();
         }
-        if ( memoryManager == null )
-        {
+        if (memoryManager == null) {
             memoryManager = new MemoryManagerServiceImpl<V>();
         }
-        if ( serializer == null )
-        {
+        if (serializer == null) {
             serializer = createNewSerializer();
         }
 
-        logger.info( "******************************** initializing *******************************" );
-        logger.info( "         ____  _                 __  __  ___" );
-        logger.info( "        / __ \\(_)________  _____/ /_/  |/  /___  ____ ___  ____  _______  __" );
-        logger.info( "       / / / / // ___/ _ \\/ ___/ __/ /|_/ // _ \\/ __ `__ \\/ __ \\/ ___/ / / /" );
-        logger.info( "      / /_/ / // /  /  __/ /__/ /_/ /  / //  __/ / / / / / /_/ / /  / /_/ / " );
-        logger.info( "     /_____/_//_/   \\___/\\___/\\__/_/  /_/ \\___/_/ /_/ /_/\\____/_/   \\__, /" );
-        logger.info( "                                                                   /____/   " );
-        logger.info( "********************************************************************************" );
+        logger.info("******************************** initializing *******************************");
+        logger.info("         ____  _                 __  __  ___");
+        logger.info("        / __ \\(_)________  _____/ /_/  |/  /___  ____ ___  ____  _______  __");
+        logger.info("       / / / / // ___/ _ \\/ ___/ __/ /|_/ // _ \\/ __ `__ \\/ __ \\/ ___/ / / /");
+        logger.info("      / /_/ / // /  /  __/ /__/ /_/ /  / //  __/ / / / / / /_/ / /  / /_/ / ");
+        logger.info("     /_____/_//_/   \\___/\\___/\\__/_/  /_/ \\___/_/ /_/ /_/\\____/_/   \\__, /");
+        logger.info("                                                                   /____/   ");
+        logger.info("********************************************************************************");
 
-        memoryManager.init( numberOfBuffers, size );
+        memoryManager.init(numberOfBuffers, size);
 
-        logger.info( "initialized" );
-        logger.info( format( "number of buffer(s): \t%1d  with %2s each", numberOfBuffers, Ram.inMb( size ) ) );
-        logger.info( format( "initial capacity: \t%1d", initialCapacity ) );
-        logger.info( format( "concurrency level: \t%1d", concurrencyLevel ) );
+        logger.info("initialized");
+        logger.info(format("number of buffer(s): \t%1d  with %2s each", numberOfBuffers, Ram.inMb(size)));
+        logger.info(format("initial capacity: \t%1d", initialCapacity));
+        logger.info(format("concurrency level: \t%1d", concurrencyLevel));
 
-        CacheService<K, V> cacheService = new CacheServiceImpl<K, V>( map, memoryManager, serializer );
-        cacheService.scheduleDisposalEvery( disposalTime );
+        CacheService<K, V> cacheService = new CacheServiceImpl<K, V>(map, memoryManager, serializer);
+        cacheService.scheduleDisposalEvery(disposalTime);
         return cacheService;
     }
 

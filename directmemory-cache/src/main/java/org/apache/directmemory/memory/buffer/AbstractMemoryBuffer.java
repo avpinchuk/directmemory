@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory.buffer;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,363 +17,296 @@ package org.apache.directmemory.memory.buffer;
  * under the License.
  */
 
+package org.apache.directmemory.memory.buffer;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public abstract class AbstractMemoryBuffer
-    implements MemoryBuffer
-{
+public abstract class AbstractMemoryBuffer implements MemoryBuffer {
 
     protected long writerIndex = 0;
 
     protected long readerIndex = 0;
 
     @Override
-    public boolean readable()
-    {
+    public boolean readable() {
         return readerIndex() < writerIndex();
     }
 
     @Override
-    public long readableBytes()
-    {
+    public long readableBytes() {
         return writerIndex() - readerIndex();
     }
 
     @Override
-    public boolean readBoolean()
-    {
+    public boolean readBoolean() {
         return readByte() == 1;
     }
 
     @Override
-    public byte readByte()
-    {
-        return readByte( readerIndex++ );
+    public byte readByte() {
+        return readByte(readerIndex++);
     }
 
     @Override
-    public int readBytes( byte[] bytes )
-    {
-        return readBytes( bytes, 0, bytes.length );
+    public int readBytes(byte[] bytes) {
+        return readBytes(bytes, 0, bytes.length);
     }
 
     @Override
-    public int readBytes( byte[] bytes, int offset, int length )
-    {
-        for ( int pos = offset; pos < offset + length; pos++ )
-        {
+    public int readBytes(byte[] bytes, int offset, int length) {
+        for (int pos = offset; pos < offset + length; pos++) {
             bytes[pos] = readByte();
         }
         return length;
     }
 
     @Override
-    public int readBuffer( ByteBuffer byteBuffer )
-    {
-        int remaining = Math.min( byteBuffer.remaining(), (int) readableBytes() );
-        return readBuffer( byteBuffer, byteBuffer.position(), remaining );
+    public int readBuffer(ByteBuffer byteBuffer) {
+        int remaining = Math.min(byteBuffer.remaining(), (int) readableBytes());
+        return readBuffer(byteBuffer, byteBuffer.position(), remaining);
     }
 
     @Override
-    public int readBuffer( ByteBuffer byteBuffer, int offset, int length )
-    {
-        if ( byteBuffer.hasArray() )
-        {
-            readBytes( byteBuffer.array(), offset, length );
-        }
-        else
-        {
-            for ( int pos = offset; pos < offset + length; pos++ )
-            {
-                byteBuffer.put( offset, readByte() );
+    public int readBuffer(ByteBuffer byteBuffer, int offset, int length) {
+        if (byteBuffer.hasArray()) {
+            readBytes(byteBuffer.array(), offset, length);
+        } else {
+            for (int pos = offset; pos < offset + length; pos++) {
+                byteBuffer.put(offset, readByte());
             }
         }
         return length;
     }
 
     @Override
-    public long readBuffer( WritableMemoryBuffer memoryBuffer )
-    {
-        long remaining = Math.min( memoryBuffer.writableBytes(), readableBytes() );
-        return readBuffer( memoryBuffer, memoryBuffer.writerIndex(), remaining );
+    public long readBuffer(WritableMemoryBuffer memoryBuffer) {
+        long remaining = Math.min(memoryBuffer.writableBytes(), readableBytes());
+        return readBuffer(memoryBuffer, memoryBuffer.writerIndex(), remaining);
     }
 
     @Override
-    public long readBuffer( WritableMemoryBuffer memoryBuffer, long offset, long length )
-    {
-        if ( memoryBuffer instanceof AbstractMemoryBuffer )
-        {
+    public long readBuffer(WritableMemoryBuffer memoryBuffer, long offset, long length) {
+        if (memoryBuffer instanceof AbstractMemoryBuffer) {
             AbstractMemoryBuffer mb = (AbstractMemoryBuffer) memoryBuffer;
-            for ( long pos = offset; pos < offset + length; pos++ )
-            {
-                mb.writeByte( offset, readByte() );
+            for (long pos = offset; pos < offset + length; pos++) {
+                mb.writeByte(offset, readByte());
             }
-        }
-        else
-        {
+        } else {
             long mark = memoryBuffer.writerIndex();
-            memoryBuffer.writerIndex( offset );
-            for ( long pos = offset; pos < offset + length; pos++ )
-            {
-                memoryBuffer.writeByte( readByte() );
+            memoryBuffer.writerIndex(offset);
+            for (long pos = offset; pos < offset + length; pos++) {
+                memoryBuffer.writeByte(readByte());
             }
-            memoryBuffer.writerIndex( Math.max( mark, memoryBuffer.writerIndex() ) );
+            memoryBuffer.writerIndex(Math.max(mark, memoryBuffer.writerIndex()));
         }
         return length;
     }
 
     @Override
-    public short readUnsignedByte()
-    {
-        return (short) ( readByte() & 0xFF );
+    public short readUnsignedByte() {
+        return (short) (readByte() & 0xFF);
     }
 
     @Override
-    public short readShort()
-    {
-        return ByteOrderUtils.getShort( this, byteOrder() == ByteOrder.BIG_ENDIAN );
+    public short readShort() {
+        return ByteOrderUtils.getShort(this, byteOrder() == ByteOrder.BIG_ENDIAN);
     }
 
     @Override
-    public char readChar()
-    {
+    public char readChar() {
         return (char) readShort();
     }
 
     @Override
-    public int readInt()
-    {
-        return ByteOrderUtils.getInt( this, byteOrder() == ByteOrder.BIG_ENDIAN );
+    public int readInt() {
+        return ByteOrderUtils.getInt(this, byteOrder() == ByteOrder.BIG_ENDIAN);
     }
 
     @Override
-    public int readCompressedInt()
-    {
-        return Int32Compressor.readInt32( this );
+    public int readCompressedInt() {
+        return Int32Compressor.readInt32(this);
     }
 
     @Override
-    public long readLong()
-    {
-        return ByteOrderUtils.getLong( this, byteOrder() == ByteOrder.BIG_ENDIAN );
+    public long readLong() {
+        return ByteOrderUtils.getLong(this, byteOrder() == ByteOrder.BIG_ENDIAN);
     }
 
     @Override
-    public long readCompressedLong()
-    {
-        return Int64Compressor.readInt64( this );
+    public long readCompressedLong() {
+        return Int64Compressor.readInt64(this);
     }
 
     @Override
-    public float readFloat()
-    {
-        return Float.intBitsToFloat( readInt() );
+    public float readFloat() {
+        return Float.intBitsToFloat(readInt());
     }
 
     @Override
-    public double readDouble()
-    {
-        return Double.longBitsToDouble( readLong() );
+    public double readDouble() {
+        return Double.longBitsToDouble(readLong());
     }
 
     @Override
-    public String readString()
-    {
-        return UnicodeUtil.UTF8toUTF16( this );
+    public String readString() {
+        return UnicodeUtil.UTF8toUTF16(this);
     }
 
     @Override
-    public long readerIndex()
-    {
+    public long readerIndex() {
         return readerIndex;
     }
 
     @Override
-    public void readerIndex( long readerIndex )
-    {
+    public void readerIndex(long readerIndex) {
         this.readerIndex = readerIndex;
     }
 
     @Override
-    public boolean writable()
-    {
+    public boolean writable() {
         return growing() || writerIndex() < maxCapacity();
     }
 
     @Override
-    public void writeBoolean( boolean value )
-    {
-        writeByte( (byte) ( value ? 1 : 0 ) );
+    public void writeBoolean(boolean value) {
+        writeByte((byte) (value ? 1 : 0));
     }
 
     @Override
-    public void writeByte( byte value )
-    {
-        writeByte( writerIndex++, value );
+    public void writeByte(byte value) {
+        writeByte(writerIndex++, value);
     }
 
     @Override
-    public long writableBytes()
-    {
+    public long writableBytes() {
         return maxCapacity() - writerIndex();
     }
 
     @Override
-    public void writeBytes( byte[] bytes )
-    {
-        writeBytes( bytes, 0, bytes.length );
+    public void writeBytes(byte[] bytes) {
+        writeBytes(bytes, 0, bytes.length);
     }
 
     @Override
-    public void writeBytes( byte[] bytes, int offset, int length )
-    {
-        for ( int pos = offset; pos < length; pos++ )
-        {
-            writeByte( bytes[pos] );
+    public void writeBytes(byte[] bytes, int offset, int length) {
+        for (int pos = offset; pos < length; pos++) {
+            writeByte(bytes[pos]);
         }
     }
 
     @Override
-    public void writeBuffer( ByteBuffer byteBuffer )
-    {
-        int remaining = Math.min( byteBuffer.remaining(), (int) writableBytes() );
-        writeBuffer( byteBuffer, byteBuffer.position(), remaining );
+    public void writeBuffer(ByteBuffer byteBuffer) {
+        int remaining = Math.min(byteBuffer.remaining(), (int) writableBytes());
+        writeBuffer(byteBuffer, byteBuffer.position(), remaining);
     }
 
     @Override
-    public void writeBuffer( ByteBuffer byteBuffer, int offset, int length )
-    {
-        if ( byteBuffer.hasArray() )
-        {
-            writeBytes( byteBuffer.array(), offset, length );
-        }
-        else
-        {
-            for ( int pos = offset; pos < offset + length; pos++ )
-            {
-                writeByte( byteBuffer.get( offset ) );
+    public void writeBuffer(ByteBuffer byteBuffer, int offset, int length) {
+        if (byteBuffer.hasArray()) {
+            writeBytes(byteBuffer.array(), offset, length);
+        } else {
+            for (int pos = offset; pos < offset + length; pos++) {
+                writeByte(byteBuffer.get(offset));
             }
         }
     }
 
     @Override
-    public void writeBuffer( ReadableMemoryBuffer memoryBuffer )
-    {
-        long remaining = Math.min( memoryBuffer.readableBytes(), writableBytes() );
-        writeBuffer( memoryBuffer, memoryBuffer.readerIndex(), remaining );
+    public void writeBuffer(ReadableMemoryBuffer memoryBuffer) {
+        long remaining = Math.min(memoryBuffer.readableBytes(), writableBytes());
+        writeBuffer(memoryBuffer, memoryBuffer.readerIndex(), remaining);
     }
 
     @Override
-    public void writeBuffer( ReadableMemoryBuffer memoryBuffer, long offset, long length )
-    {
-        if ( memoryBuffer instanceof AbstractMemoryBuffer )
-        {
+    public void writeBuffer(ReadableMemoryBuffer memoryBuffer, long offset, long length) {
+        if (memoryBuffer instanceof AbstractMemoryBuffer) {
             AbstractMemoryBuffer mb = (AbstractMemoryBuffer) memoryBuffer;
-            for ( long pos = offset; pos < offset + length; pos++ )
-            {
-                writeByte( mb.readByte( offset ) );
+            for (long pos = offset; pos < offset + length; pos++) {
+                writeByte(mb.readByte(offset));
             }
-        }
-        else
-        {
+        } else {
             long mark = memoryBuffer.readerIndex();
-            memoryBuffer.readerIndex( offset );
-            for ( long pos = offset; pos < offset + length; pos++ )
-            {
-                writeByte( memoryBuffer.readByte() );
+            memoryBuffer.readerIndex(offset);
+            for (long pos = offset; pos < offset + length; pos++) {
+                writeByte(memoryBuffer.readByte());
             }
-            memoryBuffer.readerIndex( Math.max( mark, memoryBuffer.readerIndex() ) );
+            memoryBuffer.readerIndex(Math.max(mark, memoryBuffer.readerIndex()));
         }
     }
 
     @Override
-    public void writeUnsignedByte( short value )
-    {
-        writeByte( (byte) value );
+    public void writeUnsignedByte(short value) {
+        writeByte((byte) value);
     }
 
     @Override
-    public void writeShort( short value )
-    {
-        ByteOrderUtils.putShort( value, this, byteOrder() == ByteOrder.BIG_ENDIAN );
+    public void writeShort(short value) {
+        ByteOrderUtils.putShort(value, this, byteOrder() == ByteOrder.BIG_ENDIAN);
     }
 
     @Override
-    public void writeChar( char value )
-    {
-        writeShort( (short) value );
+    public void writeChar(char value) {
+        writeShort((short) value);
     }
 
     @Override
-    public void writeInt( int value )
-    {
-        ByteOrderUtils.putInt( value, this, byteOrder() == ByteOrder.BIG_ENDIAN );
+    public void writeInt(int value) {
+        ByteOrderUtils.putInt(value, this, byteOrder() == ByteOrder.BIG_ENDIAN);
     }
 
     @Override
-    public void writeCompressedInt( int value )
-    {
-        Int32Compressor.writeInt32( value, this );
+    public void writeCompressedInt(int value) {
+        Int32Compressor.writeInt32(value, this);
     }
 
     @Override
-    public void writeLong( long value )
-    {
-        ByteOrderUtils.putLong( value, this, byteOrder() == ByteOrder.BIG_ENDIAN );
+    public void writeLong(long value) {
+        ByteOrderUtils.putLong(value, this, byteOrder() == ByteOrder.BIG_ENDIAN);
     }
 
     @Override
-    public void writeCompressedLong( long value )
-    {
-        Int64Compressor.writeInt64( value, this );
+    public void writeCompressedLong(long value) {
+        Int64Compressor.writeInt64(value, this);
     }
 
     @Override
-    public void writeFloat( float value )
-    {
-        writeInt( Float.floatToIntBits( value ) );
+    public void writeFloat(float value) {
+        writeInt(Float.floatToIntBits(value));
     }
 
     @Override
-    public void writeDouble( double value )
-    {
-        writeLong( Double.doubleToLongBits( value ) );
+    public void writeDouble(double value) {
+        writeLong(Double.doubleToLongBits(value));
     }
 
     @Override
-    public void writeString( String value )
-    {
-        UnicodeUtil.UTF16toUTF8( value, this );
+    public void writeString(String value) {
+        UnicodeUtil.UTF16toUTF8(value, this);
     }
 
     @Override
-    public long writerIndex()
-    {
+    public long writerIndex() {
         return writerIndex;
     }
 
     @Override
-    public void writerIndex( long writerIndex )
-    {
+    public void writerIndex(long writerIndex) {
         this.writerIndex = writerIndex;
     }
 
-    protected void rangeCheck( long offset )
-    {
-        if ( offset < 0 )
-        {
-            throw new IndexOutOfBoundsException( String.format( "Offset %s is below 0", offset ) );
+    protected void rangeCheck(long offset) {
+        if (offset < 0) {
+            throw new IndexOutOfBoundsException(String.format("Offset %s is below 0", offset));
         }
-        if ( offset >= maxCapacity() )
-        {
-            throw new IndexOutOfBoundsException( String.format( "Offset %s is higher than maximum legal index %d",
-                                                                offset, ( maxCapacity() - 1 ) ) );
+        if (offset >= maxCapacity()) {
+            throw new IndexOutOfBoundsException(String.format("Offset %s is higher than maximum legal index %d",
+                                                              offset, (maxCapacity() - 1)));
         }
     }
 
-    protected abstract void writeByte( long offset, byte value );
+    protected abstract void writeByte(long offset, byte value);
 
-    protected abstract byte readByte( long offset );
+    protected abstract byte readByte(long offset);
 
 }

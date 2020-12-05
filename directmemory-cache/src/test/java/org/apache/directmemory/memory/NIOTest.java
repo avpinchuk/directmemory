@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import org.apache.directmemory.measures.Ram;
 import org.apache.directmemory.memory.buffer.MemoryBuffer;
 import org.junit.AfterClass;
@@ -29,67 +29,59 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Ignore
-public class NIOTest
-{
+public class NIOTest {
 
-    private static Logger logger = LoggerFactory.getLogger( NIOTest.class );
+    private static Logger logger = LoggerFactory.getLogger(NIOTest.class);
 
     @BeforeClass
-    public static void init()
-    {
+    public static void init() {
         byte[] payload = "012345678901234567890123456789012345678901234567890123456789".getBytes();
 
-        logger.info( "init" );
-        MemoryManager.init( 1, Ram.Mb( 100 ) );
+        logger.info("init");
+        MemoryManager.init(1, Ram.Mb(100));
 
-        logger.info( "payload size=" + Ram.inKb( payload.length ) );
-        long howMany = ( MemoryManager.capacity() / payload.length );
-        howMany = ( howMany * 50 ) / 100;
+        logger.info("payload size=" + Ram.inKb(payload.length));
+        long howMany = (MemoryManager.capacity() / payload.length);
+        howMany = (howMany * 50) / 100;
 
-        for ( int i = 0; i < howMany; i++ )
-        {
-            Pointer<Object> p = MemoryManager.store( payload );
-            assertNotNull( p );
+        for (int i = 0; i < howMany; i++) {
+            Pointer<Object> p = MemoryManager.store(payload);
+            assertNotNull(p);
         }
 
-        logger.info( "" + howMany + " items stored" );
+        logger.info("" + howMany + " items stored");
     }
 
     @AfterClass
-    public static void cleanup()
-        throws IOException
-    {
+    public static void cleanup() throws IOException {
         MemoryManager.close();
     }
 
     @Test
-    public void nioTest()
-    {
+    public void nioTest() {
         Random rnd = new Random();
-        int size = rnd.nextInt( 10 ) * (int) MemoryManager.capacity() / 100;
-        logger.info( "payload size=" + Ram.inKb( size ) );
-        Pointer<Object> p = MemoryManager.allocate( size );
+        int size = rnd.nextInt(10) * (int) MemoryManager.capacity() / 100;
+        logger.info("payload size=" + Ram.inKb(size));
+        Pointer<Object> p = MemoryManager.allocate(size);
         MemoryBuffer b = p.getMemoryBuffer();
-        logger.info( "allocated" );
-        assertNotNull( p );
-        assertNotNull( b );
+        logger.info("allocated");
+        assertNotNull(p);
+        assertNotNull(b);
 
         // assertTrue( b.isDirect() );
-        assertEquals( 0, b.readerIndex() );
-        assertEquals( size, b.capacity() );
+        assertEquals(0, b.readerIndex());
+        assertEquals(size, b.capacity());
 
-        byte[] check = MemoryManager.retrieve( p );
+        byte[] check = MemoryManager.retrieve(p);
+        assertNotNull(check);
+        assertEquals(size, p.getCapacity());
 
-        assertNotNull( check );
-
-        assertEquals( size, p.getCapacity() );
-        logger.info( "end" );
+        logger.info("end");
     }
-
 }

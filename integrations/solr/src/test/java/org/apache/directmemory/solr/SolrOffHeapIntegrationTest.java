@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.directmemory.solr;
 
 import java.util.Map;
@@ -26,9 +27,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ *
  */
-public class SolrOffHeapIntegrationTest
-        extends SolrTestCaseJ4 {
+public class SolrOffHeapIntegrationTest extends SolrTestCaseJ4 {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -36,10 +37,7 @@ public class SolrOffHeapIntegrationTest
     }
 
     @Test
-    public void testSingleQueryWithQueryResultCache()
-        throws Exception
-    {
-
+    public void testSingleQueryWithQueryResultCache() throws Exception {
         // add a doc to Solr
         assertU(adoc("id", "1", "text", "something is happening here"));
         assertU(commit());
@@ -57,13 +55,10 @@ public class SolrOffHeapIntegrationTest
         assertEquals(Long.valueOf(1l), lookups);
         Long inserts = (Long) stats.get("inserts");
         assertEquals(Long.valueOf(1l), inserts);
-
     }
 
     @Test
-    public void testSameQueryMultipleTimesWithDocumentCache()
-            throws Exception
-    {
+    public void testSameQueryMultipleTimesWithDocumentCache() throws Exception {
         // add a doc to Solr
         assertU(adoc("id", "1", "text", "something is happening here"));
         assertU(commit());
@@ -85,8 +80,5 @@ public class SolrOffHeapIntegrationTest
         assertEquals(Long.valueOf(1l), inserts);
         Long hits = (Long) stats.get("hits");
         assertEquals(Long.valueOf(7l), hits);
-
-
     }
-
 }

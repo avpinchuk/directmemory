@@ -1,5 +1,3 @@
-package org.apache.directmemory.conf;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,11 +17,13 @@ package org.apache.directmemory.conf;
  * under the License.
  */
 
+package org.apache.directmemory.conf;
+
 /**
  * @since 0.2
  */
-public interface ConfigurationService
-{
+public interface ConfigurationService {
+
     int getNumberOfBuffers();
 
     int getInitialCapacity();
@@ -34,14 +34,13 @@ public interface ConfigurationService
 
     long getDisposalTime();
 
-    void setNumberOfBuffers( int numberOfBuffers );
+    void setNumberOfBuffers(int numberOfBuffers);
 
-    void setInitialCapacity( int initialCapacity );
+    void setInitialCapacity(int initialCapacity);
 
-    void setRamMegaBytes( int ramMegaBytes );
+    void setRamMegaBytes(int ramMegaBytes);
 
-    void setConcurrencyLevel( int concurrencyLevel );
+    void setConcurrencyLevel(int concurrencyLevel);
 
-    void setDisposalTime( long disposalTime );
-
+    void setDisposalTime(long disposalTime);
 }

@@ -1,5 +1,3 @@
-package org.apache.directmemory.server.client.providers.asynchttpclient;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.server.client.providers.asynchttpclient;
  * under the License.
  */
 
+package org.apache.directmemory.server.client.providers.asynchttpclient;
+
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import org.apache.directmemory.server.commons.DirectMemoryRequest;
@@ -27,27 +27,21 @@ import org.apache.directmemory.server.commons.DirectMemoryResponse;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryDeleteHandler
-    extends AsyncCompletionHandler<DirectMemoryResponse>
-{
+public class DirectMemoryDeleteHandler extends AsyncCompletionHandler<DirectMemoryResponse> {
 
     private DirectMemoryRequest request;
 
-    public DirectMemoryDeleteHandler( DirectMemoryRequest request )
-    {
+    public DirectMemoryDeleteHandler(DirectMemoryRequest request) {
         this.request = request;
     }
 
     @Override
-    public DirectMemoryResponse onCompleted( Response response )
-        throws Exception
-    {
+    public DirectMemoryResponse onCompleted(Response response) {
         int statusCode = response.getStatusCode();
 
         // handle no content response
-
         return statusCode == 204
-            ? new DirectMemoryResponse().setFound( false ).setDeleted( false )
-            : new DirectMemoryResponse().setFound( true ).setDeleted( true );
+               ? new DirectMemoryResponse().setFound(false).setDeleted(false)
+               : new DirectMemoryResponse().setFound(true).setDeleted(true);
     }
 }

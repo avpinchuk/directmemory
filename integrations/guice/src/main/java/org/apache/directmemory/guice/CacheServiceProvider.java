@@ -1,5 +1,3 @@
-package org.apache.directmemory.guice;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.guice;
  * under the License.
  */
 
+package org.apache.directmemory.guice;
+
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.directmemory.cache.CacheService;
@@ -30,9 +30,7 @@ import org.apache.directmemory.serialization.Serializer;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public final class CacheServiceProvider<K, V>
-    implements Provider<CacheService<K, V>>
-{
+public final class CacheServiceProvider<K, V> implements Provider<CacheService<K, V>> {
 
     @Inject
     private ConcurrentMap<K, Pointer<V>> map;
@@ -43,25 +41,20 @@ public final class CacheServiceProvider<K, V>
     @Inject
     private Serializer serializer;
 
-    public void setMap( ConcurrentMap<K, Pointer<V>> map )
-    {
+    public void setMap(ConcurrentMap<K, Pointer<V>> map) {
         this.map = map;
     }
 
-    public void setMemoryManager( MemoryManagerService<V> memoryManager )
-    {
+    public void setMemoryManager(MemoryManagerService<V> memoryManager) {
         this.memoryManager = memoryManager;
     }
 
-    public void setSerializer( Serializer serializer )
-    {
+    public void setSerializer(Serializer serializer) {
         this.serializer = serializer;
     }
 
     @Override
-    public CacheService<K, V> get()
-    {
-        return new CacheServiceImpl<K, V>( map, memoryManager, serializer );
+    public CacheService<K, V> get() {
+        return new CacheServiceImpl<K, V>(map, memoryManager, serializer);
     }
-
 }

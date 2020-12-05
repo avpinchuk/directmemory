@@ -1,5 +1,3 @@
-package org.apache.directmemory.serialization;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,18 +17,18 @@ package org.apache.directmemory.serialization;
  * under the License.
  */
 
+package org.apache.directmemory.serialization;
+
 import java.io.IOException;
 
 /**
  * <b>All implementations must be thread-safe</b>
  */
-public interface Serializer
-{
+public interface Serializer {
 
-    <T> byte[] serialize( T obj )
-        throws IOException;
+    <T> byte[] serialize(T obj) throws IOException;
 
-    <T> T deserialize( byte[] source, Class<T> clazz )
-        throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException;
+    <T> T deserialize(byte[] source, Class<T> clazz)
+            throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException;
 
 }

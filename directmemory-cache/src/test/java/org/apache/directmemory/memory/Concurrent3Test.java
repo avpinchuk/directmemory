@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.memory;
  * under the License.
  */
 
+package org.apache.directmemory.memory;
+
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.annotation.AxisRange;
 import com.carrotsearch.junitbenchmarks.annotation.BenchmarkHistoryChart;
@@ -26,8 +26,6 @@ import com.carrotsearch.junitbenchmarks.annotation.BenchmarkMethodChart;
 import com.carrotsearch.junitbenchmarks.annotation.LabelType;
 import com.google.common.collect.MapMaker;
 import org.apache.directmemory.measures.Ram;
-import org.apache.directmemory.memory.MemoryManager;
-import org.apache.directmemory.memory.Pointer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -39,12 +37,13 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@AxisRange( min = 0, max = 1 )
+@AxisRange(min = 0, max = 1)
 @BenchmarkMethodChart()
-@BenchmarkHistoryChart( labelWith = LabelType.CUSTOM_KEY, maxRuns = 5 )
+@BenchmarkHistoryChart(labelWith = LabelType.CUSTOM_KEY, maxRuns = 5)
 @Ignore
-public class Concurrent3Test
-{
+public class Concurrent3Test {
+
+    private static Logger logger = LoggerFactory.getLogger(Concurrent3Test.class);
 
     private final static int entries = 100000;
 
@@ -63,97 +62,79 @@ public class Concurrent3Test
     private static AtomicInteger disposals = new AtomicInteger();
 
     public static ConcurrentMap<String, Pointer<Object>> map =
-        new MapMaker().concurrencyLevel( 4 ).initialCapacity( 100000 ).makeMap();
+            new MapMaker().concurrencyLevel(4).initialCapacity(100000).makeMap();
 
+    Random rndGen = new Random();
 
-    @BenchmarkOptions( benchmarkRounds = 100000, warmupRounds = 0, concurrency = 100 )
+    @BenchmarkOptions(benchmarkRounds = 100000, warmupRounds = 0, concurrency = 100)
     @Test
-    public void store()
-    {
+    public void store() {
         final String key = "test-" + count.incrementAndGet();
-        put( key );
+        put(key);
     }
 
-    @BenchmarkOptions( benchmarkRounds = 500, warmupRounds = 0, concurrency = 10 )
+    @BenchmarkOptions(benchmarkRounds = 500, warmupRounds = 0, concurrency = 10)
     @Test
-    public void storeSomeWithExpiry()
-    {
+    public void storeSomeWithExpiry() {
         final String key = "test-" + count.incrementAndGet();
-        putWithExpiry( key );
+        putWithExpiry(key);
     }
 
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100 )
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100)
     @Test
-    public void retrieveCatchThemAll()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries ) + 1 );
-        get( key );
+    public void retrieveCatchThemAll() {
+        String key = "test-" + (rndGen.nextInt(entries) + 1);
+        get(key);
     }
 
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100 )
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 100)
     @Test
-    public void retrieveCatchHalfOfThem()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries * 2 ) + 1 );
-        get( key );
+    public void retrieveCatchHalfOfThem() {
+        String key = "test-" + (rndGen.nextInt(entries * 2) + 1);
+        get(key);
     }
 
-    private void get( String key )
-    {
-        Pointer<Object> p = map.get( key );
+    private void get(String key) {
+        Pointer<Object> p = map.get(key);
         read.incrementAndGet();
-        if ( p != null )
-        {
+        if (p != null) {
             got.incrementAndGet();
-            byte[] payload = MemoryManager.retrieve( p );
-            if ( ( new String( payload ) ).startsWith( key ) )
-            {
+            byte[] payload = MemoryManager.retrieve(p);
+            if ((new String(payload)).startsWith(key)) {
                 good.incrementAndGet();
-            }
-            else
-            {
+            } else {
                 bad.incrementAndGet();
             }
-        }
-        else
-        {
+        } else {
             missed.incrementAndGet();
         }
     }
 
-    private void put( String key )
-    {
+    private void put(String key) {
         final StringBuilder bldr = new StringBuilder();
-        for ( int i = 0; i < 100; i++ )
-        {
-            bldr.append( key );
+        for (int i = 0; i < 100; i++) {
+            bldr.append(key);
         }
-        map.put( key, MemoryManager.store( bldr.toString().getBytes() ) );
+        map.put(key, MemoryManager.store(bldr.toString().getBytes()));
     }
 
-    private void putWithExpiry( String key )
-    {
+    private void putWithExpiry(String key) {
         final StringBuilder bldr = new StringBuilder();
-        for ( int i = 0; i < 100; i++ )
-        {
-            bldr.append( key );
+        for (int i = 0; i < 100; i++) {
+            bldr.append(key);
         }
-        map.put( key, MemoryManager.store( bldr.toString().getBytes(), rndGen.nextInt( 2000 ) ) );
+        map.put(key, MemoryManager.store(bldr.toString().getBytes(), rndGen.nextInt(2000)));
     }
 
 
-    @BenchmarkOptions( benchmarkRounds = 50000, warmupRounds = 0, concurrency = 10 )
+    @BenchmarkOptions(benchmarkRounds = 50000, warmupRounds = 0, concurrency = 10)
     @Test
-    public void write1Read8AndSomeDisposal()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries * 2 ) + 1 );
-
-        int what = rndGen.nextInt( 10 );
-
-        switch ( what )
-        {
+    public void write1Read8AndSomeDisposal() {
+        String key = "test-" + (rndGen.nextInt(entries * 2) + 1);
+        int what = rndGen.nextInt(10);
+        switch (what) {
             case 0:
-                put( key );
+                put(key);
                 break;
             case 1:
             case 2:
@@ -163,103 +144,82 @@ public class Concurrent3Test
             case 6:
             case 7:
             case 8:
-                get( key );
+                get(key);
                 break;
             default:
-                final int rndVal = rndGen.nextInt( 1000 );
-                if ( rndVal > 995 )
-                {
+                final int rndVal = rndGen.nextInt(1000);
+                if (rndVal > 995) {
                     disposals.incrementAndGet();
                     final long start = System.currentTimeMillis();
                     long howMany = MemoryManager.collectExpired();
                     final long end = System.currentTimeMillis();
-                    logger.info( "" + howMany + " disposed in " + ( end - start ) + " milliseconds" );
+                    logger.info("" + howMany + " disposed in " + (end - start) + " milliseconds");
                 }
         }
-
     }
 
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10 )
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10)
     @Test
-    public void write3Read7()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries * 2 ) + 1 );
-
-        int what = rndGen.nextInt( 10 );
-
-        switch ( what )
-        {
+    public void write3Read7() {
+        String key = "test-" + (rndGen.nextInt(entries * 2) + 1);
+        int what = rndGen.nextInt(10);
+        switch (what) {
             case 0:
             case 1:
             case 2:
-                put( key );
+                put(key);
                 break;
             default:
-                get( key );
+                get(key);
                 break;
         }
     }
 
-    @BenchmarkOptions( benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10 )
+    @BenchmarkOptions(benchmarkRounds = 1000000, warmupRounds = 0, concurrency = 10)
     @Test
-    public void write1Read9()
-    {
-        String key = "test-" + ( rndGen.nextInt( entries * 2 ) + 1 );
-
-        int what = rndGen.nextInt( 10 );
-
-        switch ( what )
-        {
+    public void write1Read9() {
+        String key = "test-" + (rndGen.nextInt(entries * 2) + 1);
+        int what = rndGen.nextInt(10);
+        switch (what) {
             case 0:
-                put( key );
+                put(key);
                 break;
             default:
-                get( key );
+                get(key);
                 break;
-
         }
-
     }
 
-    Random rndGen = new Random();
-
-    private static Logger logger = LoggerFactory.getLogger( Concurrent3Test.class );
-
-    private static void dump( MemoryManagerService<Object> mms )
-    {
-        logger.info( "off-heap - allocated: " + Ram.inMb( mms.capacity() ) );
-        logger.info( "off-heap - used:      " + Ram.inMb( mms.used() ) );
-        logger.info( "heap    - max: " + Ram.inMb( Runtime.getRuntime().maxMemory() ) );
-        logger.info( "heap     - allocated: " + Ram.inMb( Runtime.getRuntime().totalMemory() ) );
-        logger.info( "heap     - free : " + Ram.inMb( Runtime.getRuntime().freeMemory() ) );
-        logger.info( "************************************************" );
+    private static void dump(MemoryManagerService<Object> mms) {
+        logger.info("off-heap - allocated: " + Ram.inMb(mms.capacity()));
+        logger.info("off-heap - used:      " + Ram.inMb(mms.used()));
+        logger.info("heap    - max: " + Ram.inMb(Runtime.getRuntime().maxMemory()));
+        logger.info("heap     - allocated: " + Ram.inMb(Runtime.getRuntime().totalMemory()));
+        logger.info("heap     - free : " + Ram.inMb(Runtime.getRuntime().freeMemory()));
+        logger.info("************************************************");
     }
 
     @BeforeClass
-    public static void init()
-    {
-        MemoryManager.init( 1, Ram.Mb( 512 ) );
+    public static void init() {
+        MemoryManager.init(1, Ram.Mb(512));
     }
 
     @AfterClass
-    public static void dump()
-    {
+    public static void dump() {
+        dump(MemoryManager.getMemoryManager());
 
-        dump( MemoryManager.getMemoryManager() );
-
-        logger.info( "************************************************" );
-        logger.info( "entries: " + entries );
-        logger.info( "inserted: " + map.size() );
-        logger.info( "reads: " + read );
-        logger.info( "count: " + count );
-        logger.info( "got: " + got );
-        logger.info( "missed: " + missed );
-        logger.info( "good: " + good );
-        logger.info( "bad: " + bad );
-        logger.info( "disposals: " + disposals );
-        logger.info( "************************************************" );
+        logger.info("************************************************");
+        logger.info("entries: " + entries);
+        logger.info("inserted: " + map.size());
+        logger.info("reads: " + read);
+        logger.info("count: " + count);
+        logger.info("got: " + got);
+        logger.info("missed: " + missed);
+        logger.info("good: " + good);
+        logger.info("bad: " + bad);
+        logger.info("disposals: " + disposals);
+        logger.info("************************************************");
     }
-
 }
 
 

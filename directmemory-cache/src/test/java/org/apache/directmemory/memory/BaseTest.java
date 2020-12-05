@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,8 @@ package org.apache.directmemory.memory;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.memory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,50 +43,9 @@ import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.google.common.collect.Maps;
 
 @Ignore
-public class BaseTest
-    extends AbstractBenchmark
-{
+public class BaseTest extends AbstractBenchmark {
 
-    MemoryManagerService<Object> mem;
-
-    @Before
-    public void initMMS()
-    {
-        mem = new MemoryManagerServiceImpl<Object>();
-        mem.init( 1, 1 * 1024 * 1024 );
-    }
-
-    @After
-    public void cleanup()
-        throws IOException
-    {
-        if ( mem != null )
-        {
-            mem.close();
-        }
-    }
-
-    @Test
-    public void smokeTest()
-    {
-        logger.info( "buffer size=" + mem.capacity() );
-        assertNotNull( mem );
-
-        Random rnd = new Random();
-
-        int size = 0;// rnd.nextInt( 10 ) * (int) mem.capacity() / 100;
-
-        logger.info( "size=" + size );
-
-        Pointer<Object> p = mem.store( new byte[size] );
-        assertNotNull( p );
-        assertEquals( size, p.getSize() );
-        assertEquals( size, mem.used() );
-        mem.free( p );
-        assertEquals( 0, mem.used() );
-    }
-
-    private static Logger logger = LoggerFactory.getLogger( MallocTest.class );
+    private static Logger logger = LoggerFactory.getLogger(MallocTest.class);
 
     private static Random rnd = new Random();
 
@@ -94,156 +53,176 @@ public class BaseTest
 
     private static int errors;
 
-    public long crc( String str )
-    {
+    MemoryManagerService<Object> mem;
+
+    @Before
+    public void initMMS() {
+        mem = new MemoryManagerServiceImpl<Object>();
+        mem.init(1, 1 * 1024 * 1024);
+    }
+
+    @After
+    public void cleanup()
+            throws IOException {
+        if (mem != null) {
+            mem.close();
+        }
+    }
+
+    @Test
+    public void smokeTest() {
+        logger.info("buffer size=" + mem.capacity());
+        assertNotNull(mem);
+
+        Random rnd = new Random();
+
+        int size = 0;// rnd.nextInt( 10 ) * (int) mem.capacity() / 100;
+
+        logger.info("size=" + size);
+
+        Pointer<Object> p = mem.store(new byte[size]);
+        assertNotNull(p);
+        assertEquals(size, p.getSize());
+        assertEquals(size, mem.used());
+        mem.free(p);
+        assertEquals(0, mem.used());
+    }
+
+    public long crc(String str) {
         final Checksum checksum = new CRC32();
 
         final byte bytes[] = str.getBytes();
-        checksum.update( bytes, 0, bytes.length );
+        checksum.update(bytes, 0, bytes.length);
         return checksum.getValue();
     }
 
     @BeforeClass
     @AfterClass
-    public static void setup()
-    {
+    public static void setup() {
         rnd = new Random();
         // logger.info("off-heap allocated: " + Ram.inMb(mem.capacity()));
         // logger.info("off-heap used:      " + Ram.inMb(mem.used()));
-        logger.info( "test - size: " + test.size() );
-        logger.info( "test - errors: " + errors );
-        logger.info( "heap - max: " + Ram.inMb( Runtime.getRuntime().maxMemory() ) );
-        logger.info( "heap - allocated: " + Ram.inMb( Runtime.getRuntime().totalMemory() ) );
-        logger.info( "heap - free : " + Ram.inMb( Runtime.getRuntime().freeMemory() ) );
-        logger.info( "************************************************" );
+        logger.info("test - size: " + test.size());
+        logger.info("test - errors: " + errors);
+        logger.info("heap - max: " + Ram.inMb(Runtime.getRuntime().maxMemory()));
+        logger.info("heap - allocated: " + Ram.inMb(Runtime.getRuntime().totalMemory()));
+        logger.info("heap - free : " + Ram.inMb(Runtime.getRuntime().freeMemory()));
+        logger.info("************************************************");
     }
 
-    @BenchmarkOptions( benchmarkRounds = 10000, warmupRounds = 0, concurrency = 10 )
+    @BenchmarkOptions(benchmarkRounds = 10000, warmupRounds = 0, concurrency = 10)
     @Test
-    public void anyDuplicates()
-    {
-        String key = "test" + rnd.nextInt( 100000 );
-        if ( test.containsKey( key ) )
-        {
-            logger.error( "key " + key + " has already been used" );
+    public void anyDuplicates() {
+        String key = "test" + rnd.nextInt(100000);
+        if (test.containsKey(key)) {
+            logger.error("key " + key + " has already been used");
             errors++;
         }
-        test.put( key, (byte) 0 );
+        test.put(key, (byte) 0);
     }
 
     @Test
-    public void aFewEntriesWithRead()
-    {
-        logger.info( "total capacity=" + Ram.inMb( mem.capacity() ) );
-        assertNotNull( mem );
+    public void aFewEntriesWithRead() {
+        logger.info("total capacity=" + Ram.inMb(mem.capacity()));
+        assertNotNull(mem);
         int howMany = 10000;
-        logger.info( "payload size is variable" );
-        logger.info( "entries=" + howMany );
+        logger.info("payload size is variable");
+        logger.info("entries=" + howMany);
         String test = "this is a nicely crafted test";
-        for ( int i = 0; i < howMany; i++ )
-        {
-            final byte[] payload = ( test + " - " + i ).getBytes();
-            Pointer<Object> p = mem.store( payload );
-            final byte[] check = mem.retrieve( p );
-            assertNotNull( check );
-            assertEquals( test + " - " + i, new String( check ) );
-            long crc1 = crc32( payload );
-            long crc2 = crc32( check );
-            assertEquals( crc1, crc2 );
+        for (int i = 0; i < howMany; i++) {
+            final byte[] payload = (test + " - " + i).getBytes();
+            Pointer<Object> p = mem.store(payload);
+            final byte[] check = mem.retrieve(p);
+            assertNotNull(check);
+            assertEquals(test + " - " + i, new String(check));
+            long crc1 = crc32(payload);
+            long crc2 = crc32(check);
+            assertEquals(crc1, crc2);
         }
 
-        logger.info( "total used=" + Ram.inMb( mem.used() ) );
+        logger.info("total used=" + Ram.inMb(mem.used()));
     }
 
-    private static long crc32( byte[] payload )
-    {
+    private static long crc32(byte[] payload) {
         final Checksum checksum = new CRC32();
-        checksum.update( payload, 0, payload.length );
+        checksum.update(payload, 0, payload.length);
         return checksum.getValue();
     }
 
     @Test
-    public void aFewEntriesWithCheck()
-    {
-        logger.info( "total capacity=" + Ram.inMb( mem.capacity() ) );
-        assertNotNull( mem );
+    public void aFewEntriesWithCheck() {
+        logger.info("total capacity=" + Ram.inMb(mem.capacity()));
+        assertNotNull(mem);
         int howMany = 10;
-        logger.info( "payload size is variable" );
-        logger.info( "entries=" + howMany );
+        logger.info("payload size is variable");
+        logger.info("entries=" + howMany);
         String test = "this is a nicely crafted test";
         Pointer<Object> lastP = null;
-        for ( int i = 0; i < howMany; i++ )
-        {
-            byte[] payload = ( test + " - " + i ).getBytes();
-            Pointer<Object> p = mem.store( payload );
+        for (int i = 0; i < howMany; i++) {
+            byte[] payload = (test + " - " + i).getBytes();
+            Pointer<Object> p = mem.store(payload);
             // logger.info( "p.start=" + p.getStart() );
-            logger.info( "p.end=" + p.getSize() );
-            if ( lastP != null )
-            {
+            logger.info("p.end=" + p.getSize());
+            if (lastP != null) {
                 // TODO CE: this check may not work for native memory access like sun.misc.Unsafe
                 // assertEquals( lastP.getSize() + 1, p.getStart() );
             }
-            assertEquals( p.getCapacity(), payload.length );
+            assertEquals(p.getCapacity(), payload.length);
             lastP = p;
-            logger.info( "---" );
+            logger.info("---");
         }
 
-        logger.info( "total used=" + Ram.inMb( mem.used() ) );
+        logger.info("total used=" + Ram.inMb(mem.used()));
     }
 
     @Test
     public void checkExpiration()
-        throws InterruptedException
-    {
-        assertNotNull( mem );
+            throws InterruptedException {
+        assertNotNull(mem);
         int size = 400;
         int howMany = 5000;
 
-        logger.info( "off-heap capacity=" + Ram.inMb( mem.capacity() ) );
-        logger.info( "payload size=" + Ram.inKb( size ) );
-        logger.info( "entries=" + howMany );
+        logger.info("off-heap capacity=" + Ram.inMb(mem.capacity()));
+        logger.info("payload size=" + Ram.inKb(size));
+        logger.info("entries=" + howMany);
 
         byte[] payload = new byte[size];
-        for ( int i = 0; i < howMany; i++ )
-        {
-            mem.store( payload, 2000 );
+        for (int i = 0; i < howMany; i++) {
+            mem.store(payload, 2000);
         }
 
-        assertEquals( size * howMany, mem.used() );
+        assertEquals(size * howMany, mem.used());
 
-        logger.info( "entries with relative expiration=" + ( howMany / 2 ) );
-        for ( int i = 0; i < howMany / 2; i++ )
-        {
-            mem.store( payload, 100 );
+        logger.info("entries with relative expiration=" + (howMany / 2));
+        for (int i = 0; i < howMany / 2; i++) {
+            mem.store(payload, 100);
         }
-        assertEquals( size * howMany + size * howMany / 2, mem.used() );
+        assertEquals(size * howMany + size * howMany / 2, mem.used());
 
-        logger.info( "entries with absolute expiration=" + ( howMany / 2 ) );
-        for ( int i = 0; i < howMany / 2; i++ )
-        {
-            mem.store( payload, 1 );
+        logger.info("entries with absolute expiration=" + (howMany / 2));
+        for (int i = 0; i < howMany / 2; i++) {
+            mem.store(payload, 1);
         }
-        assertEquals( size * howMany * 2, mem.used() );
-        logger.info( "total used=" + Ram.inMb( mem.used() ) );
+        assertEquals(size * howMany * 2, mem.used());
+        logger.info("total used=" + Ram.inMb(mem.used()));
 
-        Thread.sleep( 1000 );
+        Thread.sleep(1000);
 
-        logger.info( "calling disposeExpiredAbsolute" );
+        logger.info("calling disposeExpiredAbsolute");
         mem.collectExpired();
-        logger.info( "total used=" + Ram.inMb( mem.used() ) );
-        assertEquals( size * howMany + size * howMany / 2, mem.used() );
+        logger.info("total used=" + Ram.inMb(mem.used()));
+        assertEquals(size * howMany + size * howMany / 2, mem.used());
 
-        logger.info( "calling disposeExpiredRelative" );
+        logger.info("calling disposeExpiredRelative");
         mem.collectExpired();
-        logger.info( "total used=" + Ram.inMb( mem.used() ) );
-        assertEquals( size * howMany, mem.used() );
+        logger.info("total used=" + Ram.inMb(mem.used()));
+        assertEquals(size * howMany, mem.used());
 
-        Thread.sleep( 2000 );
+        Thread.sleep(2000);
 
-        logger.info( "calling disposeExpiredRelative again" );
+        logger.info("calling disposeExpiredRelative again");
         mem.collectExpired();
-        logger.info( "total used=" + Ram.inMb( mem.used() ) );
-        assertEquals( 0, mem.used() );
-
+        logger.info("total used=" + Ram.inMb(mem.used()));
+        assertEquals(0, mem.used());
     }
 }

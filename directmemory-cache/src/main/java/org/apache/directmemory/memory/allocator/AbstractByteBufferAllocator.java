@@ -1,5 +1,3 @@
-package org.apache.directmemory.memory.allocator;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,52 +17,45 @@ package org.apache.directmemory.memory.allocator;
  * under the License.
  */
 
+package org.apache.directmemory.memory.allocator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+public abstract class AbstractByteBufferAllocator implements Allocator {
 
-public abstract class AbstractByteBufferAllocator
-    implements Allocator
-{
-
-    protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final int number;
 
-    private final AtomicBoolean closed = new AtomicBoolean( false );
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    AbstractByteBufferAllocator( final int number )
-    {
+    AbstractByteBufferAllocator(final int number) {
         this.number = number;
     }
 
     @Override
-    public int getNumber()
-    {
+    public int getNumber() {
         return number;
     }
 
-    protected final Logger getLogger()
-    {
+    protected final Logger getLogger() {
         return logger;
     }
 
-    protected final boolean isClosed()
-    {
+    protected final boolean isClosed() {
         return closed.get();
     }
 
-    protected final void setClosed( final boolean closed )
-    {
-        this.closed.set( closed );
+    protected final void setClosed(final boolean closed) {
+        this.closed.set(closed);
     }
 
-    protected static Integer getHash( final ByteBuffer buffer )
-    {
-        return System.identityHashCode( buffer );
+    protected static Integer getHash(final ByteBuffer buffer) {
+        return System.identityHashCode(buffer);
     }
 
 }

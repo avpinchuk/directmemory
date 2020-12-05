@@ -1,4 +1,3 @@
-package org.apache.directmemory.server.services;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +17,8 @@ package org.apache.directmemory.server.services;
  * under the License.
  */
 
+package org.apache.directmemory.server.services;
+
 import junit.framework.TestCase;
 import org.apache.directmemory.server.client.providers.asynchttpclient.AsyncHttpClientDirectMemoryHttpClient;
 import org.apache.directmemory.server.client.providers.httpclient.HttpClientDirectMemoryHttpClient;
@@ -31,33 +32,28 @@ import org.junit.runners.JUnit4;
 /**
  * @author Olivier Lamy
  */
-@RunWith( JUnit4.class )
-public class AsyncHttpClientTest
-    extends TestCase
-{
+@RunWith(JUnit4.class)
+public class AsyncHttpClientTest extends TestCase {
+
     @BeforeClass
-    public static void setupHttpClientClassName()
-    {
+    public static void setupHttpClientClassName() {
         ServletWithClientBinaryTypeTest.httpClientClassName = AsyncHttpClientDirectMemoryHttpClient.class.getName();
         ServletWithClientTextPlainTypeTest.httpClientClassName = AsyncHttpClientDirectMemoryHttpClient.class.getName();
         ServletWithClientJsonTypeTest.httpClientClassName = AsyncHttpClientDirectMemoryHttpClient.class.getName();
     }
 
     @AfterClass
-    public static void restoreHttpClientClassName()
-    {
+    public static void restoreHttpClientClassName() {
         ServletWithClientBinaryTypeTest.httpClientClassName = HttpClientDirectMemoryHttpClient.class.getName();
         ServletWithClientTextPlainTypeTest.httpClientClassName = HttpClientDirectMemoryHttpClient.class.getName();
         ServletWithClientJsonTypeTest.httpClientClassName = HttpClientDirectMemoryHttpClient.class.getName();
     }
 
     @Test
-    public void testRunAll()
-    {
-
+    public void testRunAll() {
         JUnitCore core = new JUnitCore();
-        core.run( ServletWithClientBinaryTypeTest.class );
-        core.run( ServletWithClientTextPlainTypeTest.class );
-        core.run( ServletWithClientJsonTypeTest.class );
+        core.run(ServletWithClientBinaryTypeTest.class);
+        core.run(ServletWithClientTextPlainTypeTest.class);
+        core.run(ServletWithClientJsonTypeTest.class);
     }
 }

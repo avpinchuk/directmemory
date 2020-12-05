@@ -1,4 +1,3 @@
-package org.apache.directmemory.server.services;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,6 +16,8 @@ package org.apache.directmemory.server.services;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.directmemory.server.services;
 
 import org.apache.directmemory.serialization.Serializer;
 import org.apache.directmemory.serialization.SerializerFactory;
@@ -43,9 +44,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Olivier Lamy
  */
-public class DirectMemoryServletTest
-{
-    private Logger log = LoggerFactory.getLogger( getClass() );
+public class DirectMemoryServletTest {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     DirectMemoryServlet directMemoryServlet = new DirectMemoryServlet();
 
@@ -54,242 +55,222 @@ public class DirectMemoryServletTest
     DirectMemoryParser parser = DirectMemoryParser.instance();
 
     @Before
-    public void init()
-        throws Exception
-    {
-
+    public void init() throws Exception {
         MockServletContext mockServletContext = new MockServletContext();
-        mockServletContext.setContextPath( "direct-memory" );
+        mockServletContext.setContextPath("direct-memory");
 
-        MockServletConfig mockServletConfig = new MockServletConfig( mockServletContext );
+        MockServletConfig mockServletConfig = new MockServletConfig(mockServletContext);
 
-        directMemoryServlet.init( mockServletConfig );
+        directMemoryServlet.init(mockServletConfig);
     }
 
     @Test
-    public void badRequest()
-        throws Exception
-    {
-
+    public void badRequest() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader( "Accept", MediaType.APPLICATION_JSON );
+        request.addHeader("Accept", MediaType.APPLICATION_JSON);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        directMemoryServlet.doGet( request, response );
+        directMemoryServlet.doGet(request, response);
 
-        assertEquals( HttpServletResponse.SC_BAD_REQUEST, response.getStatus() );
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
 
 
     }
 
     @Test
-    public void keyNotFound()
-        throws Exception
-    {
-
+    public void keyNotFound() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader( "Accept", MediaType.APPLICATION_JSON );
+        request.addHeader("Accept", MediaType.APPLICATION_JSON);
 
-        request.setServletPath( "cache" );
+        request.setServletPath("cache");
 
-        request.setPathInfo( "/foo" );
+        request.setPathInfo("/foo");
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        directMemoryServlet.doGet( request, response );
+        directMemoryServlet.doGet(request, response);
 
-        assertEquals( HttpServletResponse.SC_NO_CONTENT, response.getStatus() );
+        assertEquals(HttpServletResponse.SC_NO_CONTENT, response.getStatus());
 
     }
 
     @Test
-    public void storeObject()
-        throws Exception
-    {
-
+    public void storeObject() throws Exception {
         Serializer serializer = SerializerFactory.createNewSerializer();
 
-        Wine bordeaux = new Wine( "Bordeaux", "very great wine" );
+        Wine bordeaux = new Wine("Bordeaux", "very great wine");
 
         DirectMemoryRequest directMemoryRequest =
-            new DirectMemoryRequest().setKey( "bordeaux" ).setCacheContent( serializer.serialize( bordeaux ) );
+                new DirectMemoryRequest().setKey("bordeaux").setCacheContent(serializer.serialize(bordeaux));
 
-        String rq = writer.generateJsonRequest( directMemoryRequest );
+        String rq = writer.generateJsonRequest(directMemoryRequest);
 
         MockHttpServletRequest putRequest = new MockHttpServletRequest();
 
-        putRequest.setContentType( MediaType.APPLICATION_JSON );
+        putRequest.setContentType(MediaType.APPLICATION_JSON);
 
-        putRequest.setServletPath( "cache" );
+        putRequest.setServletPath("cache");
 
-        putRequest.setPathInfo( "/bordeaux" );
+        putRequest.setPathInfo("/bordeaux");
 
-        putRequest.setContent( rq.getBytes() );
+        putRequest.setContent(rq.getBytes());
 
         MockHttpServletResponse putResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doPut( putRequest, putResponse );
+        directMemoryServlet.doPut(putRequest, putResponse);
 
-        assertEquals( HttpServletResponse.SC_OK, putResponse.getStatus() );
+        assertEquals(HttpServletResponse.SC_OK, putResponse.getStatus());
 
         // now retrieve the content
 
         MockHttpServletRequest getRequest = new MockHttpServletRequest();
 
-        getRequest.addHeader( "Accept", MediaType.APPLICATION_JSON );
+        getRequest.addHeader("Accept", MediaType.APPLICATION_JSON);
 
-        getRequest.setPathInfo( "/bordeaux" );
+        getRequest.setPathInfo("/bordeaux");
 
         MockHttpServletResponse getResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doGet( getRequest, getResponse );
+        directMemoryServlet.doGet(getRequest, getResponse);
 
-        assertEquals( HttpServletResponse.SC_OK, getResponse.getStatus() );
+        assertEquals(HttpServletResponse.SC_OK, getResponse.getStatus());
 
-        assertEquals( MediaType.APPLICATION_JSON, getResponse.getContentType() );
+        assertEquals(MediaType.APPLICATION_JSON, getResponse.getContentType());
 
         DirectMemoryResponse response =
-            parser.buildResponse( new ByteArrayInputStream( getResponse.getContentAsByteArray() ) );
+                parser.buildResponse(new ByteArrayInputStream(getResponse.getContentAsByteArray()));
 
-        Wine wineFromCache = serializer.deserialize( response.getCacheContent(), Wine.class );
+        Wine wineFromCache = serializer.deserialize(response.getCacheContent(), Wine.class);
 
-        assertEquals( bordeaux.getName(), wineFromCache.getName() );
-        assertEquals( bordeaux.getDescription(), wineFromCache.getDescription() );
+        assertEquals(bordeaux.getName(), wineFromCache.getName());
+        assertEquals(bordeaux.getDescription(), wineFromCache.getDescription());
 
     }
 
     @Test
-    public void storeExpiredObject()
-        throws Exception
-    {
-
+    public void storeExpiredObject() throws Exception {
         Serializer serializer = SerializerFactory.createNewSerializer();
 
-        Wine bordeaux = new Wine( "Bordeaux", "very great wine" );
+        Wine bordeaux = new Wine("Bordeaux", "very great wine");
 
         DirectMemoryRequest directMemoryRequest =
-            new DirectMemoryRequest().setKey( "bordeaux" ).setCacheContent(
-                serializer.serialize( bordeaux ) ).setExpiresIn( 3 );
+                new DirectMemoryRequest().setKey("bordeaux").setCacheContent(
+                        serializer.serialize(bordeaux)).setExpiresIn(3);
 
-        String rq = writer.generateJsonRequest( directMemoryRequest );
+        String rq = writer.generateJsonRequest(directMemoryRequest);
 
         MockHttpServletRequest putRequest = new MockHttpServletRequest();
 
-        putRequest.setContentType( MediaType.APPLICATION_JSON );
+        putRequest.setContentType(MediaType.APPLICATION_JSON);
 
-        putRequest.setServletPath( "cache" );
+        putRequest.setServletPath("cache");
 
-        putRequest.setPathInfo( "/bordeaux" );
+        putRequest.setPathInfo("/bordeaux");
 
-        putRequest.setContent( rq.getBytes() );
+        putRequest.setContent(rq.getBytes());
 
         MockHttpServletResponse putResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doPut( putRequest, putResponse );
+        directMemoryServlet.doPut(putRequest, putResponse);
 
-        assertEquals( HttpServletResponse.SC_OK, putResponse.getStatus() );
+        assertEquals(HttpServletResponse.SC_OK, putResponse.getStatus());
 
-        Thread.sleep( 10 );
+        Thread.sleep(10);
 
         // now retrieve the content
 
         MockHttpServletRequest getRequest = new MockHttpServletRequest();
 
-        getRequest.addHeader( "Accept", MediaType.APPLICATION_JSON );
+        getRequest.addHeader("Accept", MediaType.APPLICATION_JSON);
 
-        getRequest.setPathInfo( "/bordeaux" );
+        getRequest.setPathInfo("/bordeaux");
 
         MockHttpServletResponse getResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doGet( getRequest, getResponse );
+        directMemoryServlet.doGet(getRequest, getResponse);
 
-        assertEquals( HttpServletResponse.SC_NO_CONTENT, getResponse.getStatus() );
+        assertEquals(HttpServletResponse.SC_NO_CONTENT, getResponse.getStatus());
 
 
     }
 
 
     @Test
-    public void storeObjectThenRemove()
-        throws Exception
-    {
-
+    public void storeObjectThenRemove() throws Exception {
         Serializer serializer = SerializerFactory.createNewSerializer();
 
-        Wine bordeaux = new Wine( "Bordeaux", "very great wine" );
+        Wine bordeaux = new Wine("Bordeaux", "very great wine");
 
         DirectMemoryRequest directMemoryRequest =
-            new DirectMemoryRequest().setKey( "bordeaux" ).setCacheContent( serializer.serialize( bordeaux ) );
+                new DirectMemoryRequest().setKey("bordeaux").setCacheContent(serializer.serialize(bordeaux));
 
-        String rq = writer.generateJsonRequest( directMemoryRequest );
+        String rq = writer.generateJsonRequest(directMemoryRequest);
 
         MockHttpServletRequest putRequest = new MockHttpServletRequest();
 
-        putRequest.setContentType( MediaType.APPLICATION_JSON );
+        putRequest.setContentType(MediaType.APPLICATION_JSON);
 
-        putRequest.setServletPath( "cache" );
+        putRequest.setServletPath("cache");
 
-        putRequest.setPathInfo( "/bordeaux" );
+        putRequest.setPathInfo("/bordeaux");
 
-        putRequest.setContent( rq.getBytes() );
+        putRequest.setContent(rq.getBytes());
 
         MockHttpServletResponse putResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doPut( putRequest, putResponse );
+        directMemoryServlet.doPut(putRequest, putResponse);
 
-        assertEquals( HttpServletResponse.SC_OK, putResponse.getStatus() );
+        assertEquals(HttpServletResponse.SC_OK, putResponse.getStatus());
 
         // now retrieve the content
 
         MockHttpServletRequest getRequest = new MockHttpServletRequest();
 
-        getRequest.addHeader( "Accept", MediaType.APPLICATION_JSON );
+        getRequest.addHeader("Accept", MediaType.APPLICATION_JSON);
 
-        getRequest.setPathInfo( "/bordeaux" );
+        getRequest.setPathInfo("/bordeaux");
 
         MockHttpServletResponse getResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doGet( getRequest, getResponse );
+        directMemoryServlet.doGet(getRequest, getResponse);
 
-        assertEquals( HttpServletResponse.SC_OK, getResponse.getStatus() );
+        assertEquals(HttpServletResponse.SC_OK, getResponse.getStatus());
 
-        assertEquals( MediaType.APPLICATION_JSON, getResponse.getContentType() );
+        assertEquals(MediaType.APPLICATION_JSON, getResponse.getContentType());
 
         DirectMemoryResponse response =
-            parser.buildResponse( new ByteArrayInputStream( getResponse.getContentAsByteArray() ) );
+                parser.buildResponse(new ByteArrayInputStream(getResponse.getContentAsByteArray()));
 
-        Wine wineFromCache = serializer.deserialize( response.getCacheContent(), Wine.class );
+        Wine wineFromCache = serializer.deserialize(response.getCacheContent(), Wine.class);
 
-        assertEquals( bordeaux.getName(), wineFromCache.getName() );
-        assertEquals( bordeaux.getDescription(), wineFromCache.getDescription() );
+        assertEquals(bordeaux.getName(), wineFromCache.getName());
+        assertEquals(bordeaux.getDescription(), wineFromCache.getDescription());
 
         // now delete the content
 
         MockHttpServletRequest deleteRq = new MockHttpServletRequest();
 
-        deleteRq.setPathInfo( "/bordeaux" );
+        deleteRq.setPathInfo("/bordeaux");
 
         MockHttpServletResponse deleteResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doDelete( deleteRq, deleteResponse );
+        directMemoryServlet.doDelete(deleteRq, deleteResponse);
 
-        assertEquals( HttpServletResponse.SC_OK, deleteResponse.getStatus() );
+        assertEquals(HttpServletResponse.SC_OK, deleteResponse.getStatus());
 
         // now try again a read MUST be not content
 
         getRequest = new MockHttpServletRequest();
 
-        getRequest.addHeader( "Accept", MediaType.APPLICATION_JSON );
+        getRequest.addHeader("Accept", MediaType.APPLICATION_JSON);
 
-        getRequest.setPathInfo( "/bordeaux" );
+        getRequest.setPathInfo("/bordeaux");
 
         getResponse = new MockHttpServletResponse();
 
-        directMemoryServlet.doGet( getRequest, getResponse );
+        directMemoryServlet.doGet(getRequest, getResponse);
 
-        assertEquals( HttpServletResponse.SC_NO_CONTENT, getResponse.getStatus() );
-
+        assertEquals(HttpServletResponse.SC_NO_CONTENT, getResponse.getStatus());
     }
-
 }

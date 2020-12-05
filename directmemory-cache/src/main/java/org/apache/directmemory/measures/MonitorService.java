@@ -1,5 +1,3 @@
-package org.apache.directmemory.measures;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,15 +17,15 @@ package org.apache.directmemory.measures;
  * under the License.
  */
 
+package org.apache.directmemory.measures;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public interface MonitorService
-{
+public interface MonitorService {
 
     long start();
 
-    long stop( long begunAt );
+    long stop(long begunAt);
 
     long hits();
 
@@ -35,7 +33,7 @@ public interface MonitorService
 
     long average();
 
-    void dump( String prefix );
+    void dump(String prefix);
 
     void dump();
 
@@ -43,15 +41,15 @@ public interface MonitorService
 
     long getTotalTime();
 
-    void addToTotalTime( long time );
+    void addToTotalTime(long time);
 
     long getMin();
 
-    void setMin( long min );
+    void setMin(long min);
 
     long getMax();
 
-    void setMax( long max );
+    void setMax(long max);
 
     String getName();
 

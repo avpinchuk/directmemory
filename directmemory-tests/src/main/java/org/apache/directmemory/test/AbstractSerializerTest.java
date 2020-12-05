@@ -1,5 +1,3 @@
-package org.apache.directmemory.test;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +17,8 @@ package org.apache.directmemory.test;
  * under the License.
  */
 
+package org.apache.directmemory.test;
+
 import org.apache.directmemory.serialization.Serializer;
 import org.apache.directmemory.serialization.SerializerFactory;
 import org.apache.directmemory.serialization.SerializerNotFoundException;
@@ -29,45 +29,34 @@ import static junit.framework.Assert.assertEquals;
 /**
  * A kind of tck test for serializer.
  */
-public abstract class AbstractSerializerTest
-{
+public abstract class AbstractSerializerTest {
+
     public abstract String getSerializerClassName();
 
     @Test
-    public void factoryWithFQDN()
-        throws Exception
-    {
-        assertEquals( getSerializerClassName(),
-                      SerializerFactory.createNewSerializer( getSerializerClassName() ).getClass().getName() );
+    public void factoryWithFQDN() throws Exception {
+        assertEquals(getSerializerClassName(),
+                     SerializerFactory.createNewSerializer(getSerializerClassName()).getClass().getName());
     }
 
     @Test
-    public void simpleSerialization()
-        throws Exception
-    {
+    public void simpleSerialization() throws Exception {
         Wine wine = getWineInstance();
 
-        Serializer serializer = SerializerFactory.createNewSerializer( getSerializerClassName() );
-
-        byte[] bytes = serializer.serialize( wine );
-
-        Wine newWine = serializer.deserialize( bytes, Wine.class );
-
-        assertEquals( wine.getName(), newWine.getName() );
-        assertEquals( wine.getDescription(), newWine.getDescription() );
-
+        Serializer serializer = SerializerFactory.createNewSerializer(getSerializerClassName());
+        byte[] bytes = serializer.serialize(wine);
+        Wine newWine = serializer.deserialize(bytes, Wine.class);
+        assertEquals(wine.getName(), newWine.getName());
+        assertEquals(wine.getDescription(), newWine.getDescription());
     }
 
-    protected Wine getWineInstance()
-    {
-        return new Wine( "Gevrey-Chambertin", "nice French wine from Bourgogne" );
+    protected Wine getWineInstance() {
+        return new Wine("Gevrey-Chambertin", "nice French wine from Bourgogne");
     }
 
-    @Test( expected = SerializerNotFoundException.class )
-    public void serialiazerNotFoundException()
-        throws Exception
-    {
+    @Test(expected = SerializerNotFoundException.class)
+    public void serialiazerNotFoundException() throws Exception {
         // toto.titi means foo.bar in French :-)
-        SerializerFactory.createNewSerializer( "toto.titi" );
+        SerializerFactory.createNewSerializer("toto.titi");
     }
 }
